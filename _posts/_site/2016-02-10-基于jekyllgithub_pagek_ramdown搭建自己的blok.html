@@ -67,14 +67,14 @@ many tildes as the starting line.
 <p>It is easy to insert a horizontal rule in kramdown: just use three or more asterisks, dashes or underscores, optionally separated by spaces or tabs, on an otherwise blank line<br />
 使用三个或者更多的星号（*）、破折号（-）、下划线（_）。后面跟随可选分割符，包括tab、空行，下面是具体的例子：<br />
 ~~~<br />
-* * *</p>
+* * *  水平制表符</p>
 
-<hr />
+<p>— 水平制表符</p>
 
-<hr />
+<p>_  _  _  _  水平制表符</p>
 
-<hr />
-<p>~~~~</p>
+<p>—————  水平制表符
+~~~~</p>
 
 <ul>
   <li>
@@ -88,11 +88,15 @@ many tildes as the starting line.
   </li>
 </ul>
 
-<p>***  你好</p>
+<p>***   你好</p>
 
-<p>—  你好</p>
+<p>—   你好</p>
 
-<p>_  _  _  _ 你好</p>
+<p>_  _  _  _  你好</p>
 
-<p>————— 你好</p>
+<p>—————  你好</p>
+
+<h4 id="section-5">列</h4>
+<p>kramdown supports ordered and unordered lists. Ordered lists are started by using a number followed by a period, a space and then the list item text. The content of a list item consists of block-level elements. All lines which have the same indent as the text of the line with the list marker belong to the list item:<br />
+kramdown支持两种风格的列，有序和无序，有序列</p>
 
