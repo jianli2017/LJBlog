@@ -32,7 +32,9 @@ Explicit line breaks in a paragraph can be made by using two spaces or two backs
 kramdown supports Setext style headers and atx style headers. A header must always be preceded by a blank line except at the beginning of the document
 
 kramdown支持六级标题 ，一级标题使用一个#，二级标题使用两个#，以此类推,写法如下：  
+
 ~~~
+
 # H1 header
 
 ## H2 header
@@ -45,6 +47,7 @@ kramdown支持六级标题 ，一级标题使用一个#，二级标题使用两�
 
 ###### H6 header
 ~~~  
+
 #### 引用  
 A blockquote is started using the > marker followed by an optional space; all following lines that are also started with the blockquote marker belong to the blockquote. You can use any block-level elements inside a blockquote  
 
