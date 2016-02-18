@@ -60,3 +60,37 @@ and this line.
 
 But this is a separate paragraph.
 ~~~
+
+#### 代码段  
+kramdown supports two different code block styles. One uses lines indented with either four spaces or one tab whereas the other uses lines with tilde characters as delimiters – therefore the content does not need to be indented。  
+kramdown 支持两种风格的代码段，一种是用四个空格或一个tab制表符，另一种使用多个波浪线开始，后面跟代码（代码中不需要添加波浪线），并以多个波浪线结束（个数多余开始波浪线的个数）。下面是示例代码：  
+~~~~~~
+This is also a code block.
+~~~
+Ending lines must have at least as
+many tildes as the starting line.
+~~~~~~~~~~~~  
+
+#### 水平指标符  
+It is easy to insert a horizontal rule in kramdown: just use three or more asterisks, dashes or underscores, optionally separated by spaces or tabs, on an otherwise blank line  
+使用三个或者更多的星号（*）、破折号（-）、下划线（_）。后面跟随可选分割符，包括tab、空行，下面是具体的例子：  
+~~~
+* * *
+
+---
+
+_  _  _  _
+
+---------------
+~~~~ 
+
+* * *  你好 
+
+***  你好
+
+---  你好
+
+_  _  _  _ 你好
+
+--------------- 你好 
+
