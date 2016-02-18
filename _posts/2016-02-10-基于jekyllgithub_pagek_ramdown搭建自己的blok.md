@@ -29,7 +29,7 @@ Explicit line breaks in a paragraph can be made by using two spaces or two backs
 
 ####标题
 
-{%row&}
+{%row%}
 ># H1 header
 
 >## H2 header
@@ -41,5 +41,5 @@ Explicit line breaks in a paragraph can be made by using two spaces or two backs
 >##### H5 header
 
 >###### H6 header
-{%endrow&}
+{%endrow%}
 
