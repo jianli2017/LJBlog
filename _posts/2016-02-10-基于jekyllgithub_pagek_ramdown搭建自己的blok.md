@@ -12,7 +12,7 @@ comments: true
 
 下面是自己学习kramdown是的一点中文笔记，方便自己以后查找。  
 
-    kramdown has two main classes of elements: block and span-level elements. Block-level elements are used to create paragraphs, headers, lists and so on whereas span-level elements are used to markup text phrases as emphasized, as a link and so on.  
+kramdown has two main classes of elements: block and span-level elements. Block-level elements are used to create paragraphs, headers, lists and so on whereas span-level elements are used to markup text phrases as emphasized, as a link and so on.  
 
 kramdown主要有两类元素：块元素、span-level elements。block元素用于创建段落、标题、列表等待，span-level elements主要用来标记文本为连接等。 
 
@@ -31,8 +31,7 @@ Explicit line breaks in a paragraph can be made by using two spaces or two backs
 
 kramdown supports Setext style headers and atx style headers. A header must always be preceded by a blank line except at the beginning of the document
 
-kramdown支持六级标题 ，一级标题使用一个#，二级标题使用两个#，以此类推
-
+kramdown支持六级标题 ，一级标题使用一个#，二级标题使用两个#，以此类推,写法如下：  
 ~~~
 # H1 header
 
