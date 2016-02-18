@@ -18,6 +18,7 @@ kramdown主要有两类元素：块元素、span-level elements。block元素用
 
 ## Block-level Elements - Main Structural Elements  
 
-#### 标记段落  
+#### 标记段落   
+Consecutive lines of text are considered to be one paragraph. As with other block level elements you have to add a blank line to separate it from the following block-level element:
 
 
