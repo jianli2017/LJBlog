@@ -44,5 +44,16 @@ kramdown支持六级标题 ，一级标题使用一个#，二级标题使用两�
 ##### H5 header
 
 ###### H6 header
-~~~
+~~~  
+#### 引用  
+A blockquote is started using the > marker followed by an optional space; all following lines that are also started with the blockquote marker belong to the blockquote. You can use any block-level elements inside a blockquote  
 
+使用>和可选的空格 标记，创建一个引用block。所有后续的引用中的行都包含>,你可以在引用元素中添加任意其他的元素。下面是具体的例子  
+
+~~~
+> This is a blockquote
+continued on this
+and this line.  
+
+But this is a separate paragraph.
+~~~
