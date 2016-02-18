@@ -27,25 +27,25 @@ Explicit line breaks in a paragraph can be made by using two spaces or two backs
 
 在行的末尾添加两个空格或两个反斜杠，将在段落中显示的创建新行
 
-####标题
+#### 标题
 
 kramdown supports Setext style headers and atx style headers. A header must always be preceded by a blank line except at the beginning of the document
 
 kramdown支持六级标题 ，一级标题使用一个#，二级标题使用两个#，以此类推
 
 ~~~
-{% raw %}
-># H1 header
 
->## H2 header
+# H1 header
 
->### H3 header
+## H2 header
 
->#### H4 header
+### H3 header
 
->##### H5 header
+#### H4 header
 
->###### H6 header
+##### H5 header
+
+###### H6 header
 {% endraw %}
 ~~~
 
