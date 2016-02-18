@@ -74,7 +74,7 @@ many tildes as the starting line.
 #### 水平指标符  
 It is easy to insert a horizontal rule in kramdown: just use three or more asterisks, dashes or underscores, optionally separated by spaces or tabs, on an otherwise blank line  
 使用三个或者更多的星号（*）、破折号（-）、下划线（_）。后面跟随可选分割符，包括tab、空行，下面是具体的例子：  
-~~~
+~~~  
 * * *
 
 ---
