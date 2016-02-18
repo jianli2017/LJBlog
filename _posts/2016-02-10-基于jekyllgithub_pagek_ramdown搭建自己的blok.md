@@ -21,4 +21,25 @@ kramdown主要有两类元素：块元素、span-level elements。block元素用
 #### 标记段落   
 Consecutive lines of text are considered to be one paragraph. As with other block level elements you have to add a blank line to separate it from the following block-level element:
 
+通过在段落的末尾添加一个空行，将段落和其他block分割开。 （这个觉得比较有用，）
+
+Explicit line breaks in a paragraph can be made by using two spaces or two backslashes at the end of a line:
+
+在行的末尾添加两个空格或两个反斜杠，将在段落中显示的创建新行
+
+####标题
+
+{%row&}
+># H1 header
+
+>## H2 header
+
+>### H3 header
+
+>#### H4 header
+
+>##### H5 header
+
+>###### H6 header
+{%endrow&}
 
