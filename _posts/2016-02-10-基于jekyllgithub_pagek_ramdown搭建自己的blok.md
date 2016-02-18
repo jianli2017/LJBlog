@@ -31,7 +31,9 @@ Explicit line breaks in a paragraph can be made by using two spaces or two backs
 
 kramdown supports Setext style headers and atx style headers. A header must always be preceded by a blank line except at the beginning of the document
 
-kramdown支持六级标题 
+kramdown支持六级标题 ，一级标题使用一个#，二级标题使用两个#，以此类推
+
+~~~
 {% raw %}
 ># H1 header
 
@@ -45,4 +47,5 @@ kramdown支持六级标题
 
 >###### H6 header
 {% endraw %}
+~~~
 
