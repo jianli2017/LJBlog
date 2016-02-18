@@ -34,7 +34,6 @@ kramdown supports Setext style headers and atx style headers. A header must alwa
 kramdown支持六级标题 ，一级标题使用一个#，二级标题使用两个#，以此类推
 
 ~~~
-
 # H1 header
 
 ## H2 header
@@ -46,6 +45,5 @@ kramdown支持六级标题 ，一级标题使用一个#，二级标题使用两�
 ##### H5 header
 
 ###### H6 header
-{% endraw %}
 ~~~
 
