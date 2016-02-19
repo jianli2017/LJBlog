@@ -95,7 +95,8 @@ kramdown支持两种风格的列，有序和无序，有序列用数字开始，
 
 1. Item one
     1. sub 1
-    2. sub 2     
+    2. sub 2 
+1. item Two
 
 
 Unordered lists are started by using an asterisk, a dash or a plus sign (they can be mixed) and a space. Apart from that unordered lists follow the same rules as ordered lists
@@ -113,3 +114,10 @@ Unordered lists are started by using an asterisk, a dash or a plus sign (they ca
 - item
 
 
+## liquid用法笔记
+
+下面是[liquid](http://blog.csdn.net/dont27/article/details/38097581)用法的说明。
+
+## jekyll 使用指南
+
+下面是[jekyll](http://jekyllcn.com/docs/configuration/)的使用指南  
