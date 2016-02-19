@@ -245,7 +245,7 @@ Images can be created in a similar way: just use an exclamation mark before the 
 
 图像连接可以用类似的方式。只在方括号的前面添加叹号。
 
-a image:![image]({{site.url}/images/2016-02-16-1.png})
+a image:![image]({{site.url}}/images/2016-02-16-1.png)
 
 
 
