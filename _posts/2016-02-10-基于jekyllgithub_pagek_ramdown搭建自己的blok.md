@@ -121,3 +121,6 @@ Unordered lists are started by using an asterisk, a dash or a plus sign (they ca
 ## jekyll 使用指南
 
 下面是[jekyll](http://jekyllcn.com/docs/configuration/)的使用指南  
+
+下面是参考的博文：
+[采用Jekyll + github + pygments构建个人博客的最终说明](http://www.jianshu.com/p/609e1197754c)
