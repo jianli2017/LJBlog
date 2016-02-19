@@ -79,18 +79,18 @@ It is easy to insert a horizontal rule in kramdown: just use three or more aster
 使用三个或者更多的星号（*）、破折号（-）、下划线（_）。后面跟随可选分割符，包括tab、空行，下面是具体的例子：  
 
  
-#### 列 
+#### 列表（lists）
 
-kramdown supports ordered and unordered lists. Ordered lists are started by using a number followed by a period, a space and then the list item text. The content of a list item consists of block-level elements. All lines which have the same indent as the text of the line with the list marker belong to the list item:  
+kramdown supports ordered and unordered lists. Ordered lists are started by using a number followed by a period, a space and then the list item text. The content of a list item consists of block-level elements. All lines which have the same indent as the text of the line with the list marker belong to the list item。  
 
-kramdown支持两种风格的列，有序和无序，有序列用数字开始，后面跟随period（.） + 列的内容，所有行有相同的缩进
+kramdown支持两种风格的列，有序和无序。有序列表用数字开始，后面跟随period（.），接着是空格和列表的内容。 列表的内容可以包含其他类型的块元素。
 
 ~~~
 1. Item one
     1. sub item one
     2. sub item two
-    3. sub item three
-    2. Item two
+    3. sub item three  
+2. Item two
 ~~~~
 
 1. Item one
@@ -113,6 +113,97 @@ Unordered lists are started by using an asterisk, a dash or a plus sign (they ca
 + item
 - item
 
+#### 定义列表（Definition Lists）  
+A definition list works similar to a normal list and is used to associate definitions with terms. Definition lists are started when a normal paragraph is followed by a line starting with a colon and then the definition text. One term can have many definitions and multiple terms can have the same definition. Each line of the preceding paragraph is assumed to contain one term, for example。
+定义列表：用于术语相关的定义，他的工作方式类似于常规的列表。定义列表的格式：开始于正常的段落，后面跟随一行，这行以冒号（：）开始，后面是定义内容。  
+
+~~~~
+term
+: defination
+: defination2
+~~~~~
+
+term  
+: defination
+: defination2
+
+If you insert a blank line before a definition (note: there must only be one blank line between the terms and the first definition), the definition will be wrapped in a paragraph  
+
+如果在定义前面插入一个空行，那么定义被打包到一个段落中。  
+
+Each term can be styled using span-level elements and each definition is parsed as block-level elements, i.e. you can use any block-level in a definition. Just use the same indent for the lines following the definition line  
+
+每个术语可以使用span-level elements定制分割，每个定义被解析为一个block-level elements，你可以在定义中使用任何的block-level elements。  
+
+#### 表（tables） 
+ 
+kramdown supports a syntax for creating simple tables. A line starting with a pipe character (|) starts a table row. However, if the pipe characters is immediately followed by a dash (-), a separator line is created. Separator lines are used to split the table header from the table body (and optionally align the table columns) and to split the table body into multiple parts. If the pipe character is followed by an equal sign (=), the tables rows below it are part of the table footer.  
+
+kramdown具有创建表的语法。 表的每行使用竖线（|）开始，如果竖线后面紧跟着的是破折号，那么会创建分隔符。分隔符用于分离表头和表体或者将表体分割为多个部分。如果竖线后面紧跟着的是等号，那么后面的行是表的尾部。  
+~~~
+| Header1 | Header1 |  Header3|  
+|:       :|:       :|:       :|  	
+| cell1   |  cell2  | cell3   |  
+| cell4   |  cell5  | cell6   |  
+|———  
+| cell1   |  cell2  | cell3   |  
+| cell4   |  cell5  | cell6   |  
+|=====
+| Foot1   |  Foot2  | Foot3   |  
+~~~~
+
+| Header1 | Header1 |  Header3|  
+|:       :|:       :|:       :|  	
+| cell1   |  cell2  | cell3   |  
+| cell4   |  cell5  | cell6   |  
+|———  
+| cell1   |  cell2  | cell3   |  
+| cell4   |  cell5  | cell6   |  
+|=====
+| Foot1   |  Foot2  | Foot3   | 
+
+#### HTML elements  
+
+kramdown allows you to use block-level HTML tags (div, p, pre, …) to markup whole blocks of text – just start a line with a block-level HTML tag. kramdown syntax is normally not processed inside an HTML tag but this can be changed with the parse_block_html option. If this options is set to true, then the content of a block-level HTML tag is parsed by kramdown either as block level or span-level text, depending on the tag 
+ 
+kramdown支持用html标记标识文本块。 语法： 新起一行，添加html标记。一般，在html标记中的kramdown原始是不被kramdown处理的。你可以设置parse_block_html为true，这样包含在html标记中的kramdown原始可以被kramdown处理。更过关于html标记的学习，可以参考[这里](http://www.w3school.com.cn/tags/tag_div.asp)
+  
+<div style="float: right">
+Something that stays right and is not wrapped in a para.
+</div>
+~~~
+{::options parse_block_html="true" /}
+
+<div>
+This is wrapped in a para.
+</div>
+<p>
+This can contain only *span* level elements.
+</p>  
+~~~
+
+<div style="float: right">
+Something that stays right and is not wrapped in a para.
+</div>
+
+{::options parse_block_html="true" /}
+
+<div>
+This is wrapped in a para.
+</div>
+<p>
+This can contain only *span* level elements.
+</p>  
+
+#### Block Attributes  
+
+
+
+
+
+
+
+
 
 ## liquid用法笔记
 
@@ -124,3 +215,35 @@ Unordered lists are started by using an asterisk, a dash or a plus sign (they ca
 
 下面是参考的博文：
 [采用Jekyll + github + pygments构建个人博客的最终说明](http://www.jianshu.com/p/609e1197754c)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

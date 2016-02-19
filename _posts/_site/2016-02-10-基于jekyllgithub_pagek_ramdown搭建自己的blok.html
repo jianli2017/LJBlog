@@ -70,17 +70,17 @@ many tildes as the starting line.
 <p>It is easy to insert a horizontal rule in kramdown: just use three or more asterisks, dashes or underscores, optionally separated by spaces or tabs, on an otherwise blank line<br />
 使用三个或者更多的星号（*）、破折号（-）、下划线（_）。后面跟随可选分割符，包括tab、空行，下面是具体的例子：</p>
 
-<h4 id="section-5">列</h4>
+<h4 id="lists">列表（lists）</h4>
 
-<p>kramdown supports ordered and unordered lists. Ordered lists are started by using a number followed by a period, a space and then the list item text. The content of a list item consists of block-level elements. All lines which have the same indent as the text of the line with the list marker belong to the list item:</p>
+<p>kramdown supports ordered and unordered lists. Ordered lists are started by using a number followed by a period, a space and then the list item text. The content of a list item consists of block-level elements. All lines which have the same indent as the text of the line with the list marker belong to the list item。</p>
 
-<p>kramdown支持两种风格的列，有序和无序，有序列用数字开始，后面跟随period（.） + 列的内容，所有行有相同的缩进</p>
+<p>kramdown支持两种风格的列，有序和无序。有序列表用数字开始，后面跟随period（.），接着是空格和列表的内容。 列表的内容可以包含其他类型的块元素。</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>1. Item one
     1. sub item one
     2. sub item two
-    3. sub item three
-    2. Item two
+    3. sub item three  
+2. Item two
 </code></pre>
 </div>
 
@@ -110,6 +110,134 @@ many tildes as the starting line.
   <li>item</li>
 </ul>
 
+<h4 id="definition-lists">定义列表（Definition Lists）</h4>
+<p>A definition list works similar to a normal list and is used to associate definitions with terms. Definition lists are started when a normal paragraph is followed by a line starting with a colon and then the definition text. One term can have many definitions and multiple terms can have the same definition. Each line of the preceding paragraph is assumed to contain one term, for example。
+定义列表：用于术语相关的定义，他的工作方式类似于常规的列表。定义列表的格式：开始于正常的段落，后面跟随一行，这行以冒号（：）开始，后面是定义内容。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>term
+: defination
+: defination2
+</code></pre>
+</div>
+
+<dl>
+  <dt>term</dt>
+  <dd>defination</dd>
+  <dd>defination2</dd>
+</dl>
+
+<p>If you insert a blank line before a definition (note: there must only be one blank line between the terms and the first definition), the definition will be wrapped in a paragraph</p>
+
+<p>如果在定义前面插入一个空行，那么定义被打包到一个段落中。</p>
+
+<p>Each term can be styled using span-level elements and each definition is parsed as block-level elements, i.e. you can use any block-level in a definition. Just use the same indent for the lines following the definition line</p>
+
+<p>每个术语可以使用span-level elements定制分割，每个定义被解析为一个block-level elements，你可以在定义中使用任何的block-level elements。</p>
+
+<h4 id="tables">表（tables）</h4>
+
+<table>
+  <tbody>
+    <tr>
+      <td>kramdown supports a syntax for creating simple tables. A line starting with a pipe character (</td>
+      <td>) starts a table row. However, if the pipe characters is immediately followed by a dash (-), a separator line is created. Separator lines are used to split the table header from the table body (and optionally align the table columns) and to split the table body into multiple parts. If the pipe character is followed by an equal sign (=), the tables rows below it are part of the table footer.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>kramdown具有创建表的语法。 表的每行使用竖线（|）开始，如果竖线后面紧跟着的是破折号，那么会创建分隔符。分隔符用于分离表头和表体或者将表体分割为多个部分。如果竖线后面紧跟着的是等号，那么后面的行是表的尾部。<br />
+~~~
+| Header1 | Header1 |  Header3|<br />
+|:       :|:       :|:       :|  	
+| cell1   |  cell2  | cell3   |<br />
+| cell4   |  cell5  | cell6   |<br />
+|———<br />
+| cell1   |  cell2  | cell3   |<br />
+| cell4   |  cell5  | cell6   |<br />
+|=====
+| Foot1   |  Foot2  | Foot3   |<br />
+~~~~</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Header1</td>
+      <td>Header1</td>
+      <td>Header3</td>
+    </tr>
+    <tr>
+      <td>:       :</td>
+      <td>:       :</td>
+      <td>:       :</td>
+    </tr>
+    <tr>
+      <td>cell1</td>
+      <td>cell2</td>
+      <td>cell3</td>
+    </tr>
+    <tr>
+      <td>cell4</td>
+      <td>cell5</td>
+      <td>cell6</td>
+    </tr>
+    <tr>
+      <td>———</td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>cell1</td>
+      <td>cell2</td>
+      <td>cell3</td>
+    </tr>
+    <tr>
+      <td>cell4</td>
+      <td>cell5</td>
+      <td>cell6</td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td>Foot1</td>
+      <td>Foot2</td>
+      <td>Foot3</td>
+    </tr>
+  </tfoot>
+</table>
+
+<h4 id="html-elements">HTML elements</h4>
+
+<p>kramdown allows you to use block-level HTML tags (div, p, pre, …) to markup whole blocks of text – just start a line with a block-level HTML tag. kramdown syntax is normally not processed inside an HTML tag but this can be changed with the parse_block_html option. If this options is set to true, then the content of a block-level HTML tag is parsed by kramdown either as block level or span-level text, depending on the tag</p>
+
+<p>kramdown支持用html标记标识文本块。 语法： 新起一行，添加html标记。一般，在html标记中的kramdown原始是不被kramdown处理的。你可以设置parse_block_html为true，这样包含在html标记中的kramdown原始可以被kramdown处理。更过关于html标记的学习，可以参考<a href="http://www.w3school.com.cn/tags/tag_div.asp">这里</a></p>
+
+<div style="float: right">
+Something that stays right and is not wrapped in a para.
+</div>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="err">::options</span><span class="w"> </span><span class="err">parse_block_html=</span><span class="nt">"true"</span><span class="w"> </span><span class="err">/}</span><span class="w">
+
+</span><span class="err">&lt;div&gt;</span><span class="w">
+</span><span class="err">This</span><span class="w"> </span><span class="err">is</span><span class="w"> </span><span class="err">wrapped</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="err">a</span><span class="w"> </span><span class="err">para.</span><span class="w">
+</span><span class="err">&lt;/div&gt;</span><span class="w">
+</span><span class="err">&lt;p&gt;</span><span class="w">
+</span><span class="err">This</span><span class="w"> </span><span class="err">can</span><span class="w"> </span><span class="err">contain</span><span class="w"> </span><span class="err">only</span><span class="w"> </span><span class="err">*span*</span><span class="w"> </span><span class="err">level</span><span class="w"> </span><span class="err">elements.</span><span class="w">
+</span><span class="err">&lt;/p&gt;</span><span class="w">  
+</span></code></pre>
+</div>
+
+<div style="float: right">
+Something that stays right and is not wrapped in a para.
+</div>
+
+<div>
+  <p>This is wrapped in a para.</p>
+</div>
+<p>
+This can contain only <em>span</em> level elements.
+</p>
+
+<h4 id="block-attributes">Block Attributes</h4>
+
 <h2 id="liquid">liquid用法笔记</h2>
 
 <p>下面是<a href="http://blog.csdn.net/dont27/article/details/38097581">liquid</a>用法的说明。</p>
@@ -120,3 +248,4 @@ many tildes as the starting line.
 
 <p>下面是参考的博文：
 <a href="http://www.jianshu.com/p/609e1197754c">采用Jekyll + github + pygments构建个人博客的最终说明</a></p>
+
