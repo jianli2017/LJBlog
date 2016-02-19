@@ -140,6 +140,7 @@ Each term can be styled using span-level elements and each definition is parsed 
 kramdown supports a syntax for creating simple tables. A line starting with a pipe character (|) starts a table row. However, if the pipe characters is immediately followed by a dash (-), a separator line is created. Separator lines are used to split the table header from the table body (and optionally align the table columns) and to split the table body into multiple parts. If the pipe character is followed by an equal sign (=), the tables rows below it are part of the table footer.  
 
 kramdown具有创建表的语法。 表的每行使用竖线（|）开始，如果竖线后面紧跟着的是破折号，那么会创建分隔符。分隔符用于分离表头和表体或者将表体分割为多个部分。如果竖线后面紧跟着的是等号，那么后面的行是表的尾部。  
+
 ~~~
 | Header1 | Header1 |  Header3|  
 |:       :|:       :|:       :|  	
@@ -167,11 +168,12 @@ kramdown具有创建表的语法。 表的每行使用竖线（|）开始，如�
 kramdown allows you to use block-level HTML tags (div, p, pre, …) to markup whole blocks of text – just start a line with a block-level HTML tag. kramdown syntax is normally not processed inside an HTML tag but this can be changed with the parse_block_html option. If this options is set to true, then the content of a block-level HTML tag is parsed by kramdown either as block level or span-level text, depending on the tag 
  
 kramdown支持用html标记标识文本块。 语法： 新起一行，添加html标记。一般，在html标记中的kramdown原始是不被kramdown处理的。你可以设置parse_block_html为true，这样包含在html标记中的kramdown原始可以被kramdown处理。更过关于html标记的学习，可以参考[这里](http://www.w3school.com.cn/tags/tag_div.asp)
-  
+ 
+~~~ 
 <div style="float: right">
 Something that stays right and is not wrapped in a para.
 </div>
-~~~
+
 {::options parse_block_html="true" /}
 
 <div>

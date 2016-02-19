@@ -145,18 +145,26 @@ many tildes as the starting line.
   </tbody>
 </table>
 
-<p>kramdown具有创建表的语法。 表的每行使用竖线（|）开始，如果竖线后面紧跟着的是破折号，那么会创建分隔符。分隔符用于分离表头和表体或者将表体分割为多个部分。如果竖线后面紧跟着的是等号，那么后面的行是表的尾部。<br />
-~~~
-| Header1 | Header1 |  Header3|<br />
+<table>
+  <tbody>
+    <tr>
+      <td>kramdown具有创建表的语法。 表的每行使用竖线（</td>
+      <td>）开始，如果竖线后面紧跟着的是破折号，那么会创建分隔符。分隔符用于分离表头和表体或者将表体分割为多个部分。如果竖线后面紧跟着的是等号，那么后面的行是表的尾部。</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>| Header1 | Header1 |  Header3|  
 |:       :|:       :|:       :|  	
-| cell1   |  cell2  | cell3   |<br />
-| cell4   |  cell5  | cell6   |<br />
-|———<br />
-| cell1   |  cell2  | cell3   |<br />
-| cell4   |  cell5  | cell6   |<br />
+| cell1   |  cell2  | cell3   |  
+| cell4   |  cell5  | cell6   |  
+|———  
+| cell1   |  cell2  | cell3   |  
+| cell4   |  cell5  | cell6   |  
 |=====
-| Foot1   |  Foot2  | Foot3   |<br />
-~~~~</p>
+| Foot1   |  Foot2  | Foot3   |  
+</code></pre>
+</div>
 
 <table>
   <tbody>
@@ -211,18 +219,19 @@ many tildes as the starting line.
 
 <p>kramdown支持用html标记标识文本块。 语法： 新起一行，添加html标记。一般，在html标记中的kramdown原始是不被kramdown处理的。你可以设置parse_block_html为true，这样包含在html标记中的kramdown原始可以被kramdown处理。更过关于html标记的学习，可以参考<a href="http://www.w3school.com.cn/tags/tag_div.asp">这里</a></p>
 
-<div style="float: right">
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;div style="float: right"&gt;
 Something that stays right and is not wrapped in a para.
-</div>
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="err">::options</span><span class="w"> </span><span class="err">parse_block_html=</span><span class="nt">"true"</span><span class="w"> </span><span class="err">/}</span><span class="w">
+&lt;/div&gt;
 
-</span><span class="err">&lt;div&gt;</span><span class="w">
-</span><span class="err">This</span><span class="w"> </span><span class="err">is</span><span class="w"> </span><span class="err">wrapped</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="err">a</span><span class="w"> </span><span class="err">para.</span><span class="w">
-</span><span class="err">&lt;/div&gt;</span><span class="w">
-</span><span class="err">&lt;p&gt;</span><span class="w">
-</span><span class="err">This</span><span class="w"> </span><span class="err">can</span><span class="w"> </span><span class="err">contain</span><span class="w"> </span><span class="err">only</span><span class="w"> </span><span class="err">*span*</span><span class="w"> </span><span class="err">level</span><span class="w"> </span><span class="err">elements.</span><span class="w">
-</span><span class="err">&lt;/p&gt;</span><span class="w">  
-</span></code></pre>
+{::options parse_block_html="true" /}
+
+&lt;div&gt;
+This is wrapped in a para.
+&lt;/div&gt;
+&lt;p&gt;
+This can contain only *span* level elements.
+&lt;/p&gt;  
+</code></pre>
 </div>
 
 <div style="float: right">
