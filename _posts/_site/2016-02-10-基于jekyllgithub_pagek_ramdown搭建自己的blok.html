@@ -279,7 +279,39 @@ to the kramdown homepage.</p>
 
 <p>图像连接可以用类似的方式。只在方括号的前面添加叹号。</p>
 
+<div class="highlighter-rouge"><pre class="highlight"><code>a image:![image](/images/2016-02-16-1.png)
+</code></pre>
+</div>
+
 <p>a image:<img src="/images/2016-02-16-1.png" alt="image" /></p>
+
+<h4 id="inline-code">Inline Code</h4>
+
+<p>Text phrases can be easily marked up as code by surrounding them with backticks</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Use `Kramdown::Document.new(text).to_html`
+to convert the `text` in kramdown
+syntax to HTML.
+</code></pre>
+</div>
+
+<p>Use <code class="highlighter-rouge">Kramdown::Document.new(text).to_html</code>
+to convert the <code class="highlighter-rouge">text</code> in kramdown
+syntax to HTML.</p>
+
+<h4 id="footnotes">脚注 Footnotes</h4>
+
+<p>Footnotes can easily be used in kramdown. Just set a footnote marker (consists of square brackets with a caret and the footnote name inside) in the text and somewhere else the footnote definition (which basically looks like a reference link definition):</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>This is a text with a
+footnote[^1].
+
+[^1]: And here is the definition.
+</code></pre>
+</div>
+
+<p>This is a text with a
+footnote<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup>.</p>
 
 <h2 id="liquid">liquid用法笔记</h2>
 
@@ -292,3 +324,10 @@ to the kramdown homepage.</p>
 <p>下面是参考的博文：
 <a href="http://www.jianshu.com/p/609e1197754c">采用Jekyll + github + pygments构建个人博客的最终说明</a></p>
 
+<div class="footnotes">
+  <ol>
+    <li id="fn:1">
+      <p>And here is the definition. <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>

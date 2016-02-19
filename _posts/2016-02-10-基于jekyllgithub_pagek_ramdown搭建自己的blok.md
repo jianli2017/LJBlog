@@ -245,7 +245,41 @@ Images can be created in a similar way: just use an exclamation mark before the 
 
 图像连接可以用类似的方式。只在方括号的前面添加叹号。
 
+~~~
 a image:![image]({{site.url}}/images/2016-02-16-1.png)
+~~~~
+
+a image:![image]({{site.url}}/images/2016-02-16-1.png)
+
+#### Inline Code
+
+Text phrases can be easily marked up as code by surrounding them with backticks
+
+~~~
+Use `Kramdown::Document.new(text).to_html`
+to convert the `text` in kramdown
+syntax to HTML.
+~~~~
+
+Use `Kramdown::Document.new(text).to_html`
+to convert the `text` in kramdown
+syntax to HTML.
+
+#### 脚注 Footnotes
+
+Footnotes can easily be used in kramdown. Just set a footnote marker (consists of square brackets with a caret and the footnote name inside) in the text and somewhere else the footnote definition (which basically looks like a reference link definition):
+
+~~~
+This is a text with a
+footnote[^1].
+
+[^1]: And here is the definition.
+~~~~
+
+This is a text with a
+footnote[^1].
+
+[^1]: And here is the definition.
 
 
 
