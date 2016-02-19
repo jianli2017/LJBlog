@@ -281,6 +281,17 @@ footnote[^1].
 
 [^1]: And here is the definition.
 
+#### Inline Attributes
+
+As with a block-level element you can assign any attribute to a span-level elements using a span inline attribute list (or short: span IAL). A span IAL has the same syntax as a block IAL and must immediately follow the span-level element:
+
+~~~
+This is *red*{: style="color: red"}.
+~~~
+
+This is *red*{: style="color: red"}.
+
+
 
 
 
