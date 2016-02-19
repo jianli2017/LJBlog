@@ -137,13 +137,13 @@ Each term can be styled using span-level elements and each definition is parsed 
 
 #### 表（tables） 
  
-kramdown supports a syntax for creating simple tables. A line starting with a pipe character (|) starts a table row. However, if the pipe characters is immediately followed by a dash (-), a separator line is created. Separator lines are used to split the table header from the table body (and optionally align the table columns) and to split the table body into multiple parts. If the pipe character is followed by an equal sign (=), the tables rows below it are part of the table footer.  
+kramdown supports a syntax for creating simple tables. A line starting with a pipe character (竖线) starts a table row. However, if the pipe characters is immediately followed by a dash (-), a separator line is created. Separator lines are used to split the table header from the table body (and optionally align the table columns) and to split the table body into multiple parts. If the pipe character is followed by an equal sign (=), the tables rows below it are part of the table footer.  
 
-kramdown具有创建表的语法。 表的每行使用竖线（|）开始，如果竖线后面紧跟着的是破折号，那么会创建分隔符。分隔符用于分离表头和表体或者将表体分割为多个部分。如果竖线后面紧跟着的是等号，那么后面的行是表的尾部。  
+kramdown具有创建表的语法。 表的每行使用竖线（竖线）开始，如果竖线后面紧跟着的是破折号，那么会创建分隔符。分隔符用于分离表头和表体或者将表体分割为多个部分。如果竖线后面紧跟着的是等号，那么后面的行是表的尾部。  
 
 ~~~
 | Header1 | Header1 |  Header3|  
-|:       :|:       :|:       :|  	
+|:——————-:|:———-       :|:———       :|  	
 | cell1   |  cell2  | cell3   |  
 | cell4   |  cell5  | cell6   |  
 |———  
@@ -154,7 +154,7 @@ kramdown具有创建表的语法。 表的每行使用竖线（|）开始，如�
 ~~~~
 
 | Header1 | Header1 |  Header3|  
-|:       :|:       :|:       :|  	
+|:——-:|:——:|:———:|  	
 | cell1   |  cell2  | cell3   |  
 | cell4   |  cell5  | cell6   |  
 |———  
