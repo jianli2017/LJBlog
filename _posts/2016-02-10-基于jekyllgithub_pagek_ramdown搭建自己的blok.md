@@ -199,6 +199,25 @@ This can contain only *span* level elements.
 
 #### Block Attributes  
 
+You can assign any attribute to a block-level element. Just directly follow the block with a block inline attribute list (or short: block IAL). A block IAL consists of a left curly brace, followed by a colon, the attribute definitions and a right curly brace. Here is a simple example which sets the title attribute of a block quote.
+
+在元素的后面紧跟着元素的属性 可以设置元素的属性。属性元素的语法包括：左大括号开始，跟随冒号、属性定义、右大括号。
+
+## Span-Level Elements - Text Modifiers
+
+#### （强调或加粗）Emphasis  
+
+Emphasis can be added to text by surrounding the text with either asterisks or underscores
+
+加粗可以通过在文本的前后添加星号或者下划线  
+
+~~~
+This is *emphasized*,_this_ too!
+~~~~  
+
+This is *emphasized*,_this_ too!
+
+
 
 
 
