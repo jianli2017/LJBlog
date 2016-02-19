@@ -215,8 +215,32 @@ Emphasis can be added to text by surrounding the text with either asterisks or u
 This is *emphasized*,_this_ too!
 ~~~~  
 
-This is *emphasized*,_this_ too!
+This is *emphasized*,_this_ too! 
 
+Strong emphasis can be done by doubling the delimiters  
+进一步强调可以通过加倍分隔符实现  
+ 
+~~~
+This is **strong**,
+__this__ too!
+~~~~
+
+This is **strong**,
+__this__ too!
+
+#### Links and Images
+
+A simple link can be created by surrounding the text with square brackets and the link URL with parentheses  
+
+简单的link语法： 创建一段用中括号包括的文字，后面跟随url，url使用小括号括起来。
+
+~~~
+A [link](http://kramdown.gettalong.org)
+to the kramdown homepage.
+~~~~
+
+A [link](http://kramdown.gettalong.org)
+to the kramdown homepage.
 
 
 
