@@ -62,32 +62,29 @@
 
 <p>QQsdk有两个文件，TencentOpenAPI.framework和TencentOpenApi_IOS_Bundle.bundle。将这两个文件拷贝到应用程序开发的目录下。</p>
 
-<ol>
-  <li>
-    <p>TencentOpenAPI.framework添加到 Build Phases-》link binary with labraries中。</p>
-  </li>
-  <li>
-    <p>在Build Phases-》link binary with labraries 添加TencentOpenAPI.framework 的依赖库：“Security.framework”, “libiconv.dylib”，“SystemConfiguration.framework”，“CoreGraphics.Framework”，“libsqlite3.dylib”，“CoreTelephony.framework”，“libstdc++.dylib”，“libz.dylib”，配置完的截图如下：</p>
-  </li>
-</ol>
+<p>1.添加QQframework</p>
+
+<p>TencentOpenAPI.framework添加到 Build Phases-》link binary with labraries中。</p>
+
+<p>2.添加QQ framework的依赖库</p>
+
+<p>在Build Phases-》link binary with labraries 添加TencentOpenAPI.framework 的依赖库：“Security.framework”, “libiconv.dylib”，“SystemConfiguration.framework”，“CoreGraphics.Framework”，“libsqlite3.dylib”，“CoreTelephony.framework”，“libstdc++.dylib”，“libz.dylib”，配置完的截图如下：</p>
 
 <p><img src="/LJBlog/images/2016-02-22-分享总结_1.png" alt="2016-02-22-分享总结_1" /></p>
 
-<ol>
-  <li>在Build Phases-》copy bundle resources 中添加资源文件TencentOpenApi_IOS_Bundle.bundle。添加完的截图如下:</li>
-</ol>
+<p>3.设置资源包</p>
+
+<p>在Build Phases-》copy bundle resources 中添加资源文件TencentOpenApi_IOS_Bundle.bundle。添加完的截图如下:</p>
 
 <p><img src="/LJBlog/images/2016-02-22-分享总结_2.png" alt="2016-02-22-分享总结_2" /></p>
 
-<ol>
-  <li>添加URL scheme。在XCode中，选择你的工程设置项，选中“TARGETS”一栏，在“info”标签栏的“URL type”添加一条新的“URL scheme”，新的scheme = tencent + appid，identifier为tencent。</li>
-</ol>
+<p>4.添加URL scheme。</p>
+
+<p>在XCode中，选择你的工程设置项，选中“TARGETS”一栏，在“info”标签栏的“URL type”添加一条新的“URL scheme”，新的scheme = tencent + appid，identifier为tencent。</p>
 
 <p><img src="/LJBlog/images/2016-02-22-分享总结_3.png" alt="2016-02-22-分享总结_3" /></p>
 
-<ol>
-  <li>添加白名单</li>
-</ol>
+<p>5.添加白名单</p>
 
 <p>　　　　</p>
 
