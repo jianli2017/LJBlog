@@ -44,13 +44,52 @@
       <span class="banner-fix"></span>
 
       <section id="main_content">
-        <h1>sdfdfdfsdfqfsdfdfdfs</h1>
+        <h1>分享总结</h1>
 
-    <h1 id="section">第一首</h1>
+    <h1 id="section">概述</h1>
 
-<p>　　　　
-是打发士大夫盛大发售的方式大法师打发士大夫撒大<br />
-nsdfdf</p>
+<p>为了在新的项目中快速的集成分享的功能，本项目将分享的功能集成为动态库，方便重复的使用，不用每次集成分享的功能需要重新熟悉各种分享sdk的使用。 本项目目前支持的分享种类包括QQ、微信、新浪微博、支付宝好友 。</p>
+
+<h1 id="section-1">总体的使用方法</h1>
+
+<h1 id="sdk">sdk的框架</h1>
+
+<h1 id="qq">QQ的集成</h1>
+
+<p>QQ分享的详细参考文档详见：<a href="http://wiki.open.qq.com/wiki/IOS_API%E8%B0%83%E7%94%A8%E8%AF%B4%E6%98%8E">开发文档下载和实例demo</a></p>
+
+<h3 id="section-2">集成步骤</h3>
+
+<p>QQsdk有两个文件，TencentOpenAPI.framework和TencentOpenApi_IOS_Bundle.bundle。将这两个文件拷贝到应用程序开发的目录下。</p>
+
+<ol>
+  <li>
+    <p>TencentOpenAPI.framework添加到 Build Phases-》link binary with labraries中。</p>
+  </li>
+  <li>
+    <p>在Build Phases-》link binary with labraries 添加TencentOpenAPI.framework 的依赖库：“Security.framework”, “libiconv.dylib”，“SystemConfiguration.framework”，“CoreGraphics.Framework”、“libsqlite3.dylib”、“CoreTelephony.framework”、“libstdc++.dylib”、“libz.dylib”，配置完的截图如下：</p>
+  </li>
+</ol>
+
+<p><img src="/LJBlog/images/2016-02-22-分享总结_1.png" alt="2016-02-22-分享总结_1" /></p>
+
+<ol>
+  <li>在Build Phases-》copy bundle resources 中添加资源文件TencentOpenApi_IOS_Bundle.bundle。添加完的截图如下</li>
+</ol>
+
+<p><img src="/LJBlog/images/2016-02-22-分享总结_2.png" alt="2016-02-22-分享总结_2" /></p>
+
+<ol>
+  <li>添加URL scheme。在XCode中，选择你的工程设置项，选中“TARGETS”一栏，在“info”标签栏的“URL type”添加一条新的“URL scheme”，新的scheme = tencent + appid，identifier为tencent。</li>
+</ol>
+
+<p><img src="/images/2016-02-22-分享总结_3.png" alt="2016-02-22-分享总结_2" /></p>
+
+<ol>
+  <li>添加白名单</li>
+</ol>
+
+<p>　　　　</p>
 
 
       </section>
