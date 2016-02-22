@@ -48,17 +48,13 @@
 
     <h1 id="section">概述</h1>
 
-<p>为了在新的项目中快速的集成分享的功能，本项目将分享的功能集成为动态库，方便重复的使用，不用每次集成分享的功能需要重新熟悉各种分享sdk的使用。 本项目目前支持的分享种类包括QQ、微信、新浪微博、支付宝好友 。</p>
-
-<h1 id="section-1">总体的使用方法</h1>
-
-<h1 id="sdk">sdk的框架</h1>
+<p>为了在新的项目中快速的集成分享的功能，本项目将分享的功能集成为动态库，方便重复的使用，不用每次集成分享的功能需要重新熟悉各种分享sdk的使用。 本项目目前支持的分享种类包括QQ、微信、新浪微博、支付宝好友 。下面分别介绍各个sdk的集成方法。</p>
 
 <h1 id="qq">QQ的集成</h1>
 
-<p>QQ分享的详细参考文档详见：<a href="http://wiki.open.qq.com/wiki/IOS_API%E8%B0%83%E7%94%A8%E8%AF%B4%E6%98%8E">开发文档下载和实例demo</a></p>
+<p>如果想直接使用QQ原生的sdk实现分享的功能，可以直接参考：<a href="http://wiki.open.qq.com/wiki/IOS_API%E8%B0%83%E7%94%A8%E8%AF%B4%E6%98%8E">开发文档下载和实例demo</a>，下面是使用本项目集成的步骤。</p>
 
-<h3 id="section-2">集成步骤</h3>
+<h3 id="section-1">集成步骤</h3>
 
 <p>QQsdk有两个文件，TencentOpenAPI.framework和TencentOpenApi_IOS_Bundle.bundle。将这两个文件拷贝到应用程序开发的目录下。</p>
 
@@ -107,14 +103,99 @@
 
 <p>7.分享的调用方法</p>
 
-<p>[[GMAuthShareEngine shareWeChatEngine:GME_Third_App_Type_QQ] authWithSuccessCallBack:^(GMFAuthShareResult *result)
+<div class="highlighter-rouge"><pre class="highlight"><code> [[GMAuthShareEngine shareWeChatEngine:GME_Third_App_Type_QQ] authWithSuccessCallBack:^(GMFAuthShareResult *result)
     {
-        NSLog(@”result = %@”,result);
+        NSLog(@"result = %@",result);
     }
                                                                     failCallBack:^(GMFAuthShareResult *result)
     {
-         NSLog(@”result = %@”,result);
-    }];</p>
+         NSLog(@"result = %@",result);
+    }];
+    ~~~~
+    
+ 8.授权的示例代码  
+ 
+</code></pre>
+</div>
+<p>[[GMAuthShareEngine authShareEngine:GME_Third_App_Type_QQ]
+    authWithSuccessCallBack:^(GMFAuthShareResult *result)
+    {</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>}
+ failCallBack:^(GMFAuthShareResult *result) {
+    
+}]; ~~~~
+</code></pre>
+</div>
+
+<h1 id="section-2">微信的集成</h1>
+
+<p>如果想直接调用微信的sdk，可以直接到 <a href="https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&amp;t=resource/res_list&amp;verify=1&amp;lang=zh_CN">微信分享的资料</a> ,下面是本项目集成微信分享的步骤。</p>
+
+<h3 id="section-3">集成的步骤</h3>
+
+<p>1.添加微信的sdk</p>
+
+<p>由于微信的sdk以静态库的形式提供，分为三个文件：libWeChatSDK.a、WechatAuthSDK.h、WXApi.h。所以直接集成到本项目中，该步骤不需要具体的操作。</p>
+
+<p>2.添加微信sdk的依赖库</p>
+
+<p>微信sdk依赖下面几个框架：SystemConfiguration.framework,libz.dylib,libsqlite3.0.dylib,libc++.dylib。
+在Build Phases-》link binary with labraries 分别添加上面的几个依赖。</p>
+
+<p>4.添加URL scheme。</p>
+
+<p>在XCode中，选择你的工程设置项，选中“TARGETS”一栏，在“info”标签栏的“URL type”添加一条新的“URL scheme”，新的scheme = wx + appid，identifier为weixin。</p>
+
+<p>5.http请求设置</p>
+
+<p>大多数的分享平台不支持https请求 ，所以将https暂时退回到http，需要在工程对应的plist文件中添加NSAppTransportSecurity健， 类型为Dictionary，并同时设置里面NSAllowsArbitraryLoads 属性值为 YES，具体设置可参照以下截图：</p>
+
+<p><img src="/LJBlog/images/2016-02-22-分享总结_4.png" alt="2016-02-22-分享总结_4" /></p>
+
+<p>5.添加白名单</p>
+
+<p>在IOS9平台涉及客户端跳转，系统会自动到项目的info.plist下检测是否包含Scheme，对于需要手动配置的Scheme，如果没有设置，就无法跳转到客户端，因此需要配置Scheme名单。在项目的info.plist中添加一个LSApplicationQueriesSchemes，类型为Array。添加需要支持的项目，类型为字符串。</p>
+
+<p><img src="/LJBlog/images/2016-02-22-分享总结_6.png" alt="2016-02-22-分享总结_6" /></p>
+
+<p>6.在appdelegete中处理回调的url</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>if ([[GMAuthShareEngine authShareEngine:GME_Third_App_Type_WeChat] canHandleOpenURL:url]) // 微信APP
+    {
+        [[GMAuthShareEngine authShareEngine:GME_Third_App_Type_WeChat] handleOpenURL:url];
+    }
+</code></pre>
+</div>
+
+<p>7.分享的调用方法</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code> [[GMAuthShareEngine shareWeChatEngine:GME_Third_App_Type_QQ] authWithSuccessCallBack:^(GMFAuthShareResult *result)
+    {
+        NSLog(@"result = %@",result);
+    }
+                                                                    failCallBack:^(GMFAuthShareResult *result)
+    {
+         NSLog(@"result = %@",result);
+    }];
+    ~~~~
+    
+ 8.授权的示例代码  
+ 
+</code></pre>
+</div>
+<p>[[GMAuthShareEngine authShareEngine:GME_Third_App_Type_QQ]
+    authWithSuccessCallBack:^(GMFAuthShareResult *result)
+    {</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>}
+ failCallBack:^(GMFAuthShareResult *result) {
+    
+}]; ~~~~
+</code></pre>
+</div>
+
+<h1 id="sdk">sdk的框架</h1>
 
 <p>　　　　</p>
 
