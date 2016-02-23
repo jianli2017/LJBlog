@@ -117,8 +117,11 @@
 
 <p>8.分享的示例代码</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>  [[GMAuthShareEngine authShareEngine:GME_Third_App_Type_QQ]
-    authWithSuccessCallBack:^(GMFAuthShareResult *result)
+<div class="highlighter-rouge"><pre class="highlight"><code>[[GMAuthShareEngine authShareEngine:GME_Third_App_Type_QQ]
+    shareWithContent:shareContent
+            objetType:GME_Share_Object_Type_Url
+                scene:GME_Share_Scene_QQSession
+    SuccessCallBack:^(GMFAuthShareResult *result)
     {
         
     }
