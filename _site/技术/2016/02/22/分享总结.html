@@ -102,7 +102,7 @@
 </code></pre>
 </div>
 
-<p>7.分享的调用方法</p>
+<p>7.授权的调用方法</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>[[GMAuthShareEngine shareWeChatEngine:GME_Third_App_Type_QQ] authWithSuccessCallBack:^(GMFAuthShareResult *result)
     {
@@ -115,7 +115,7 @@
 </code></pre>
 </div>
 
-<p>8.授权的示例代码</p>
+<p>8.分享的示例代码</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>  [[GMAuthShareEngine authShareEngine:GME_Third_App_Type_QQ]
     authWithSuccessCallBack:^(GMFAuthShareResult *result)
@@ -136,7 +136,7 @@
 
 <p>1.添加微信的sdk</p>
 
-<p>由于微信的sdk以静态库的形式提供，分为三个文件：libWeChatSDK.a、WechatAuthSDK.h、WXApi.h。所以直接集成到本项目中，该步骤不需要具体的操作。</p>
+<p>由于微信的sdk以静态库的形式提供，分为三个文件：libWeChatSDK.a、WechatAuthSDK.h、WXApi.h。所以直接集成到本项目中，该步骤什么也不做。</p>
 
 <p>2.添加微信sdk的依赖库</p>
 
@@ -171,7 +171,7 @@
 </code></pre>
 </div>
 
-<p>7.分享的调用方法</p>
+<p>7.授权的调用方法</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code> [[GMAuthShareEngine authShareEngine:GME_Third_App_Type_WeChat]
      authWithSuccessCallBack:^(GMFAuthShareResult *result)
@@ -184,10 +184,9 @@
 </code></pre>
 </div>
 
-<p>8.授权的示例代码</p>
+<p>8.分享的示例代码</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>GMMShareModel *shareContent = [self buildShareContent];
-    [[GMAuthShareEngine authShareEngine:GME_Third_App_Type_WeChat]
+<div class="highlighter-rouge"><pre class="highlight"><code>[[GMAuthShareEngine authShareEngine:GME_Third_App_Type_WeChat]
      shareWithContent:shareContent
      objetType:GME_Share_Object_Type_Url
      scene:GME_Share_Scene_WeChatSession
@@ -197,14 +196,13 @@
      }
      failCallBack:^(GMFAuthShareResult *result) {
          
-     }];
-  
+     }];  
 </code></pre>
 </div>
 
 <p>9.注意</p>
 
-<p>由于本项目中包含了类别，使用本静态库的app工程无法识别到静态库中的类别，需要在other link flag中添加 -all_load or -force_load flags标识。</p>
+<p>由于本项目中包含了类别，使用本静态库的app工程无法识别到静态库中的类别，需要在other link flag中添加 -all_load or -force_load flags or ObjeC标识。</p>
 
 <p><img src="/LJBlog/images/2016-02-22-分享总结_8.png" alt="2016-02-22-分享总结_8" /></p>
 
@@ -218,11 +216,11 @@
 
 <p>1.添加新浪微博的sdk</p>
 
-<p>由于新浪微博的sdk以静态库的形式提供，分为几个文件：libWeiboSDK.a、WBHttpRequest.h、WBHttpRequest+WeiboGame.h、WBHttpRequest+WeiboShare.h、WBHttpRequest+WeiboToken.h、WBHttpRequest+WeiboUser.h、WBSDKBasicButton.h、WBSDKCommentButton.h、WBSDKRelationshipButton.h、WeiboSDK.h、WeiboUser.h。所以直接集成到本项目中，引用本静态库的不需要app工程不需要完成该步骤。</p>
+<p>由于新浪微博的sdk以静态库的形式提供，分为几个文件：libWeiboSDK.a、WBHttpRequest.h、WBHttpRequest+WeiboGame.h、WBHttpRequest+WeiboShare.h、WBHttpRequest+WeiboToken.h、WBHttpRequest+WeiboUser.h、WBSDKBasicButton.h、WBSDKCommentButton.h、WBSDKRelationshipButton.h、WeiboSDK.h、WeiboUser.h。所以直接集成到静态库中，引用本静态库的app工程在该步骤什么也不做。</p>
 
 <p>2.添加新浪微博的资源文件</p>
 
-<p>新浪微博有个资源文件WeiboSDK.bundle，需要在Build Phases 的Copy BUndle Resources中添加WeiboSDK.bundle文件</p>
+<p>新浪微博有个资源文件WeiboSDK.bundle，需要在Build Phases 的Copy Bundle Resources中添加WeiboSDK.bundle文件</p>
 
 <p><img src="/LJBlog/images/2016-02-22-分享总结_9.png" alt="2016-02-22-分享总结_9" /></p>
 
@@ -243,13 +241,13 @@
 
 <p><img src="/LJBlog/images/2016-02-22-分享总结_4.png" alt="2016-02-22-分享总结_4" /></p>
 
-<p>5.添加白名单</p>
+<p>6.添加白名单</p>
 
 <p>在IOS9平台涉及客户端跳转，系统会自动到项目的info.plist下检测是否包含Scheme，对于需要手动配置的Scheme，如果没有设置，就无法跳转到客户端，因此需要配置Scheme名单。在项目的info.plist中添加一个LSApplicationQueriesSchemes，类型为Array。添加需要支持的项目，类型为字符串。</p>
 
 <p><img src="/LJBlog/images/2016-02-22-分享总结_11.png" alt="2016-02-22-分享总结_11" /></p>
 
-<p>6.在appdelegete中处理回调的url</p>
+<p>7.在appdelegete中处理回调的url</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>if ([[GMAuthShareEngine authShareEngine:GME_Third_App_Type_WeiBo] canHandleOpenURL:url]) // 新浪微博 APP
     {
@@ -258,7 +256,7 @@
 </code></pre>
 </div>
 
-<p>7.授权的调用方法</p>
+<p>8.授权的调用方法</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code> [[GMAuthShareEngine authShareEngine:GME_Third_App_Type_WeiBo]
      authWithSuccessCallBack:^(GMFAuthShareResult *result)
@@ -271,7 +269,7 @@
 </code></pre>
 </div>
 
-<p>8.分享的示例代码</p>
+<p>9.分享的示例代码</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>[[GMAuthShareEngine authShareEngine:GME_Third_App_Type_WeiBo]
      shareWithContent:shareContent
@@ -286,6 +284,8 @@
      }];
 </code></pre>
 </div>
+
+<p>10.注意</p>
 
 <p>授权的过程中，可能返回 sso package or sign error 这个错误，这需要确认下开发者平台上的bundleID 和回调地址是否设置正确。</p>
 
