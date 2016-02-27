@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=640" />
+
+    <link rel="stylesheet" href="aseurl/themes/merlot/stylesheets/core.css" media="screen"/>
+    <link rel="stylesheet" href="aseurl/themes/merlot/stylesheets/mobile.css" media="handheld, only screen and (max-device-width:640px)"/>
+    <link rel="stylesheet" href="aseurl/themes/merlot/stylesheets/pygment_trac.css"/>
+
+    <script type="text/javascript" src="aseurl/themes/merlot/javascripts/modernizr.js"></script>
+    <script type="text/javascript" src="http://lib.sinaapp.com/js/jquery/1.7/jquery.min.js"></script>
+    <script type="text/javascript" src="aseurl/themes/merlot/javascripts/headsmart.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $('#main_content').headsmart()
+      })
+    </script>
+    <title>程序员人生</title>
+  </head>
+
+  <body>
+    <a id="forkme_banner" href="https://github.com/jianli2017/aseurl/tree/gh-pages">Fork Me on GitHub</a>
+    <div class="shell">
+
+      <header>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <h1><a href="aseurl/">程序员人生</a></h1>
+            <h2>人生到处知何似，应似飞鸿踏雪泥</h2>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+      </header>
+
+   <!--    <section id="downloads">
+        <span class="inner">
+          <a href="https://github.com/cameronmcefee/headsmart/zipball/master" class="zip"><em>download</em> .ZIP</a><a href="https://github.com/cameronmcefee/headsmart/tarball/master" class="tgz"><em>download</em> .TGZ</a>
+        </span>
+      </section> -->
+
+      <span class="banner-fix"></span>
+
+      <section id="main_content">
+        <h1>Github搭建博客步骤</h1>
+
+    <h2 id="git-">一 、git 简单介绍</h2>
+
+<p>*Git是一个开源的分布式版本控制系统，用以有效、高速的处理从很小到非常大的项目版本管理。</p>
+
+<p>*GitHub可以托管各种git库的站点。</p>
+
+<p>*GitHub Pages免费的静态站点，三个特点：免费托管、自带主题、支持自制页面和Jekyll。</p>
+
+<h2 id="github-pages">二、 为什么使用GitHub Pages</h2>
+
+<ol>
+  <li>
+    <p>搭建简单而且免费；</p>
+  </li>
+  <li>
+    <p>支持静态脚本；</p>
+  </li>
+  <li>
+    <p>可以绑定你的域名；</p>
+  </li>
+  <li>
+    <p>DIY自由发挥，动手实践一些有意思的东西git,markdown,bootstrap,jekyll；</p>
+  </li>
+  <li>
+    <p>理想写博环境，git+github+markdown+jekyll；</p>
+  </li>
+</ol>
+
+<h2 id="github-pages-1">三、创建Github Pages</h2>
+
+<h3 id="git--1">安装git 工具</h3>
+
+<p><a href="http://mac.github.com/">mac版的安装地址</a></p>
+
+<h3 id="section">两种模式</h3>
+
+<p>1.个人或公司的站点</p>
+
+<p>1) 使用自己的用户名，每个用户名下面只能建立一个；</p>
+
+<p>2) 资源命名必须符合这样的规则username/username.github.com；</p>
+
+<p>3) 主干（master分支）上内容被用来构建和发布页面</p>
+
+<ol>
+  <li>Project Pages 项目站点</li>
+</ol>
+
+<p>1) gh-pages分支用于构建和发布；</p>
+
+<p>2) 如果user/org pages使用了独立域名，那么托管在账户下的所有project pages将使用相同的域名进行重定向，除非project pages使用了自己的独立域名；</p>
+
+<p>3) 如果没有使用独立域名，project pages将通过子路径的形式提供服务username.github.com/projectname；</p>
+
+<h2 id="section-1">四、 其他依赖工具</h2>
+
+<p>使用ruby 的gem 安装依赖的工具，包括jekyll 、 kramdown、 pygments、 liquid</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>gem install jekyll // 安装jekyll
+gem install kramdown // markdown语言解析包
+gem install pygments.rb // 代码高亮包
+gem install liquid // 这个包我不知道，但是好像有用
+// 还有些别的包，看需要来安装啦
+</code></pre>
+</div>
+
+<p>注意：1 、 gem 的镜像源可能被强了，使用 淘宝的镜像源</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>$ gem sources --add https://ruby.taobao.org/ --remove https://rubygems.org/
+$ gem sources -l
+*** CURRENT SOURCES ***
+
+https://ruby.taobao.org
+# 请确保只有 ruby.taobao.org
+$ gem install rails 
+</code></pre>
+</div>
+
+<p>2、 第一次执行gem install jekyll 可能出现下面的错误</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>/System/Library/Frameworks/Ruby.framework/Versions/2.0/usr/lib/ruby/2.0.0/mkmf.rb:434:in `try_do': The compiler failed to generate an executable file. (RuntimeError)
+You have to install development tools first.
+from /System/Library/Frameworks/Ruby.framework/Versions/2.0/usr/lib/ruby/2.0.0/mkmf.rb:549:in `block in try_compile'
+from /System/Library/Frameworks/Ruby.framework/Versions/2.0/usr/lib/ruby/2.0.0/mkmf.rb:502:in `with_werror'
+from /System/Library/Frameworks/Ruby.framework/Versions/2.0/usr/lib/ruby/2.0.0/mkmf.rb:549:in `try_compile'
+
+</code></pre>
+</div>
+
+<p>解决办法： 执行xcode-select —install 。这条命令的作用是： open a dialog for installation of the command line developer tools</p>
+
+<ol>
+  <li>也可能出现下面的错误</li>
+</ol>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>ERROR:  While executing gem ... (Gem::FilePermissionError)
+You don't have write permissions for the /Library/Ruby/Gems/2.0.0 directory.
+
+</code></pre>
+</div>
+
+<p>这个是权限不足，需要在命令的前面添加 sudo ，以管理员的权限执行。</p>
+
+<h2 id="section-2">五 、开始搭建博客</h2>
+
+<p>搭建博客快速的方法是先fork别人的一个，然后自己在研究，下面是我fork 的 <a href="https://github.com/minixalpha/StrayBirds">地址</a> ,这里有操作的步骤。 也可以参考<a href="http://www.ruanyifeng.com/blog/2012/08/blogging_with_jekyll.html">搭建一个免费的，无限流量的Blog—-github Pages和Jekyll入门</a>。</p>
+
+<h2 id="section-3">编写博客</h2>
+
+<p>编写博客需要输血markdown 语法，参考<a href="http://jianli2017.github.io/LJBlog/技术/2016/02/10/基于jekyllgithub_pagek_ramdown搭建自己的blok.html">下文</a></p>
+
+<p>本地运行编译：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>cd 到博客目录
+jekyll build
+jekyll server -baseurl
+</code></pre>
+</div>
+
+
+      </section>
+
+      <section id="comments">
+        
+          <div id="disqus_thread"></div>
+ <script type="text/javascript">
+     /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+     var disqus_shortname = 'jianli2017'; // required: replace example with your forum shortname
+
+     /* * * DON'T EDIT BELOW THIS LINE * * */
+     (function() {
+         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+         dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     })();
+ </script>
+ <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    
+
+        
+      </section>
+
+      <footer>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <p>this project by <a href="https://github.com/jianli2017">jianli2017</a> can be found on <a href="https://github.com/jianli2017/aseurl/tree/gh-pages">GitHub</a></p>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+        <p>Generated with <a href="http://pages.github.com">GitHub Pages</a> Theme by <a href="https://github.com/cameronmcefee/headsmart/tree/gh-pages">headsmart</a></p>
+        <span class="octocat"></span>
+      </footer>
+
+    </div>
+
+    
+  </body>
+</html>
+
