@@ -44,60 +44,80 @@
       <span class="banner-fix"></span>
 
       <section id="main_content">
-        <h1>react native简介</h1>
+        <h1>HTML 和CSS 学习记录</h1>
 
-    <h2 id="section">一、搭建开发环境</h2>
+    <h3 id="htmlcss">一、Html和CSS的关系</h3>
 
-<p>目前我研究ios 的native ，所以基于mac系统。需要的工具包括：</p>
+<p>学习web前端开发基础技术需要掌握：HTML、CSS、JavaScript语言。下面我们就来了解下这三门技术都是用来实现什么的：</p>
 
-<p>1.xocde<br />
-2.Node.js 4.0<br />
-3.使用HomeBrew安装wathman 和flow</p>
+<ol>
+  <li>
+    <p>HTML是网页内容的载体。内容就是网页制作者放在页面上想要让用户浏览的信息，可以包含文字、图片、视频等。</p>
+  </li>
+  <li>
+    <p>CSS样式是表现。就像网页的外衣。比如，标题字体、颜色变化，或为标题加入背景图片、边框等。所有这些用来改变内容外观的东西称之为表现。</p>
+  </li>
+  <li>
+    <p>JavaScript是用来实现网页上的特效效果。如：鼠标滑过弹出下拉菜单。或鼠标滑过表格的背景颜色改变。还有焦点新闻（新闻图片）的轮换。可以这么理解，有动画的，有交互的一般都是用JavaScript来实现的。</p>
+  </li>
+</ol>
 
-<p>###1.1 安装Node.js</p>
+<h3 id="html">二、认识html标签</h3>
 
-<p>前往node.js 的<a href="https://nodejs.org">官网 英文</a> <a href="http://nodejs.cn">官网中文</a>下载pkg安装包</p>
+<p><img src="/LJBlog/html和css 学习/1.png" alt="" /></p>
 
-<p>Node.js是javascript的运行环境，JavaScript作为前段语言，在浏览器中解释执行，而Node.js 是后端JavaScript运行环境，可以在mac、window、linux上执行JavaScript代码。</p>
+<p>我们来分析一下，这个网页由哪些html标签组成：</p>
 
-<p>brew.sh
-ruby -e “$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)”</p>
+<p>“勇气”是网页内容文章的标题，&lt;h1&gt;&lt;/h1&gt;就是标题标签，它在网页上的代码写成&lt;h1&gt;勇气&lt;/h1&gt;。</p>
 
-<p>brew install node</p>
+<p>“三年级时…我也没勇气参加。” 是网页中文章的段落，&lt;p&gt;&lt;/p&gt;是段落标签。它在网页上的代码写成 &lt;p&gt;三年级时…我也没勇气参加。&lt;/p&gt;</p>
 
-<p>npm install -g n</p>
+<p>网页上那张小女生的图片，由img标签来完成的，它在网页上的代码写成<img src="1.jpg" /></p>
 
-<p>n</p>
+<h3 id="section">三、标签的用法</h3>
 
-<p>node server node.js</p>
+<p>标签由英文尖括号括起来 如&lt;html&gt;  就是一个标签</p>
 
-<p>node index.js</p>
+<p>html 中的标签一般都成对出现，分开始标签和结束标签，结束标签比开始标签多一个/</p>
 
-<p>sublime  一个有用的文本编辑器</p>
+<p>标签之间可以嵌套</p>
 
-<p>commonjs  一个规范</p>
+<p>标签不区分大小写</p>
 
-<p>鱼摆摆  一个翻墙软件</p>
+<h3 id="html-1">四 、 HTML的代码注释方法</h3>
 
-<p>创建模块的流程</p>
+<p>语法：
+~~~
+<!--  注释的文字  -->
+~~~~</p>
 
-<p>创建模块   teacher.js</p>
+<h3 id="section-1">标签的学习</h3>
 
-<p>导出模块   export.add = fuction(){}</p>
+<p>主要注意两个方面的学习：标签的用途  标签在浏览器中的默认样式</p>
 
-<p>加载模块    var teacher = require(./teacher.js)</p>
+<p>body标签，网页上显示的内容放在这里</p>
 
-<p>使用模块   teacher.add(“lijian”)</p>
+<p>p 是段落标签  ，段前段后都有空白</p>
 
-<p>慕课网  可以学习nodejs</p>
+<p>h1 h2 h3 h4 h5 h6 标题标签</p>
 
-<p>终端中看node.js的方法</p>
+<p>em 和 strong 是强调标签 ，em 表示强调  用斜体表示 ，strong 表示强烈的强调 ， 用粗体表示</p>
 
-<p>在终端中输入 node</p>
+<p>span标签是没有语义的，它的作用就是为了设置单独的样式用的。</p>
 
-<p>url</p>
+<p>q是引用标签 引用标签会在引用的内容上自动加上引号，语义是引用别人的话</p>
 
-<p>url.parse(“sdfsdff”);</p>
+<p>blockquote 是长引用标签</p>
+
+<p>br 回车换行标签 ，在html文本中想输入回车换行，就必须输入<br />, br 是一个空标签 ，没有html内容的标签就是空标签 ，空标签只写一个开始标签<br />
+~~~</p>
+
+<p><br /></p>
+<hr />
+
+<p><img />
+~~~~</p>
+
 
 
       </section>
