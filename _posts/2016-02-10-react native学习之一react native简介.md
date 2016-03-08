@@ -20,10 +20,18 @@ comments: true
 
 Node.js是javascript的运行环境，JavaScript作为前端语言，在浏览器中解释执行，而Node.js 是后端JavaScript运行环境，可以在mac、window、linux上执行JavaScript代码。
 
-brew.sh
+###1.2 使用ruby安装brew
+
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
-brew install node
+### 1.3 使用home 安装 watchman 和 flow
+
+brew install watchman
+brew install flow
+
+### 1.4 使用npm 安装 react-native-cli 命令行工具
+
+install -g react-native-cli
 
 npm install -g n
 
@@ -32,6 +40,44 @@ n
 node server node.js
 
 node index.js
+
+### 1.5 创建一个项目 
+
+在终端中输入 react-native init hello  这样就创建一个项目 
+
+下面是react-native init 慢的解决方法；
+
+1.通过config命令
+
+npm config set registry https://registry.npm.taobao.org 
+npm info underscore （如果上面配置正确这个命令会有字符串response）
+
+2.命令行指定
+
+npm --registry https://registry.npm.taobao.org info underscore 
+
+3.编辑 ~/.npmrc 加入下面内容
+
+registry = https://registry.npm.taobao.org
+
+
+### 1.6 从react到react Native
+
+react 的github [地址](https://facebook.github.io/react/), React 的官方介绍是： a javascript library for building user interface   
+
+react 的特点：
+
+1.作为UI
+2.虚拟dom
+3.数据流
+
+需要掌握的内容：
+
+jsx 语法类似xml
+ES6
+前端基础知识（js 和css）
+
+react 的IDE 可以使用 WebStorm 
 
 sublime  一个有用的文本编辑器
 
