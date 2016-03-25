@@ -388,6 +388,67 @@ class Video extends React.Component {
 }
 ~~~
 
+不过我们推荐更易理解的在构造函数中初始化（这样你还可以根据需要做一些计算）：
+
+~~~
+//ES6
+class Video extends React.Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            loopsRemaining: this.props.maxLoops,
+        };
+    }
+}
+~~~
+
+#### 2.4 把方法作为回调提供
+
+很多习惯于ES6的用户反而不理解在ES5下可以这么做：
+
+~~~
+//ES5
+var PostInfo = React.createClass({
+    handleOptionsButtonClick: function(e) {
+        // Here, 'this' refers to the component instance.
+        this.setState({showOptionsModal: true});
+    },
+    render: function(){
+        return (
+            <TouchableHighlight onPress={this.handleOptionsButtonClick}>
+                <Text>{this.props.label}</Text>
+            </TouchableHighlight>
+        )
+    },
+});
+~~~
+
+在ES5下，React.createClass会把所有的方法都bind一遍，这样可以提交到任意的地方作为回调函数，而this不会变化。但官方现在逐步认为这反而是不标准、不易理解的。
+
+在ES6下，你需要通过bind来绑定this引用，或者使用箭头函数（它会绑定当前scope的this引用）来调用
+
+~~~
+//ES6
+class PostInfo extends React.Component
+{
+    handleOptionsButtonClick(e){
+        this.setState({showOptionsModal: true});
+    }
+    render(){
+        return (
+            <TouchableHighlight 
+                onPress={this.handleOptionsButtonClick.bind(this)}
+                onPress={e=>this.handleOptionsButtonClick(e)}
+                >
+                <Text>{this.props.label}</Text>
+            </TouchableHighlight>
+        )
+    },
+}
+~~~
+
+箭头函数实际上是在这里定义了一个临时的函数，箭头函数的箭头=>之前是一个空括号、单个的参数名、或用括号括起的多个参数名，而箭头之后可以是一个表达式（作为函数的返回值），或者是用花括号括起的函数体（需要自行通过return来返回值，否则返回的是undefined）。
+
 
 
 
