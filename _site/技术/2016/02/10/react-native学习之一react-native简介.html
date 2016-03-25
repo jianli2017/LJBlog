@@ -167,7 +167,266 @@ npm info underscore //（如果上面配置正确这个命令会有字符串resp
 
 <h3 id="section-2">1.6 简单修改界面</h3>
 
-<p>修改index.ios.js可以简单修改界面</p>
+<p>修改index.ios.js可以简单修改界面，下面是index.ios.js的内容：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>import React, {
+  AppRegistry,
+  Component,
+  StyleSheet,
+  Text,
+  View
+} from 'react-native';
+
+class weidian extends Component {
+  render() {
+    return (
+      &lt;View style={styles.container}&gt;
+        &lt;Text style={styles.welcome}&gt;
+          Welcome to React Native!
+        &lt;/Text&gt;
+        &lt;Text style={styles.instructions}&gt;
+          To get started, edit index.ios.js
+        &lt;/Text&gt;
+        &lt;Text style={styles.instructions}&gt;
+          Press Cmd+R to reload,{'\n'}
+          Cmd+D or shake for dev menu
+        &lt;/Text&gt;
+      &lt;/View&gt;
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+  },
+  welcome: {
+    fontSize: 20,
+    textAlign: 'center',
+    margin: 10,
+  },
+  instructions: {
+    textAlign: 'center',
+    color: '#333333',
+    marginBottom: 5,
+  },
+});
+
+AppRegistry.registerComponent('weidian', () =&gt; weidian);
+
+</code></pre>
+</div>
+
+<h2 id="es6">二、ES6的学习</h2>
+
+<p>React Native从0.18之后，新建项目默认已经采用了ES6语法，故我们推荐不熟悉ES6与ES5区别的朋友先读读这篇文章：<a href="http://bbs.reactnative.cn/topic/15/react-react-native-的es5-es6写法对照表">React/React Native 的ES5 ES6写法对照表</a>,下面是我边学习中方便记忆，又重新写了一遍。</p>
+
+<h3 id="section-3">2.1  模块</h3>
+
+<h4 id="section-4">2.1.1 引用</h4>
+
+<p>在ES5里，如果使用CommonJS标准，引入React包基本通过require进行，代码类似这样：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>//ES5
+var React = require("react-native");
+var {
+    Image,
+    Text,
+    PropTypes
+} = React;  //引用不同的React Native组件
+</code></pre>
+</div>
+
+<p>在ES6里，import写法更为标准</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>//ES6
+import React, {
+    Image, 
+    Text,
+    PropTypes
+} from 'react-native';
+</code></pre>
+</div>
+
+<h4 id="section-5">2.1.2 导出单个类</h4>
+
+<p>在ES5里，要导出一个类给别的模块用，一般通过module.exports来导出</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>//ES5
+var MyComponent = React.createClass({
+    ...
+});
+module.exports = MyComponent;
+</code></pre>
+</div>
+
+<p>在ES6里，通常用export default来实现相同的功能：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>export default class MyComponent externds React.Component{
+...
+}
+</code></pre>
+</div>
+
+<h3 id="section-6">2.2 定义组件</h3>
+
+<p>在ES5里，通常通过React.createClass来定义一个组件类，像这样：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>//ES5
+var Photo = React.createClass({
+    render: function() {
+        return (
+            &lt;Image source={this.props.source} /&gt;
+        );
+    },
+});
+</code></pre>
+</div>
+
+<p>在ES6里，我们通过定义一个继承自React.Component的class来定义一个组件类，像这样：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>//ES6
+class Photo extends React.Component {
+    render() {
+        return (
+            &lt;Image source={this.props.source} /&gt;
+        );
+    }
+}
+</code></pre>
+</div>
+
+<h4 id="section-7">2.2.1 给组件定义方法</h4>
+
+<p>从上面的例子里可以看到，给组件定义方法不再用 名字: function()的写法，而是直接用名字()，在方法的最后也不能有逗号了。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>//ES5 
+var Photo = React.createClass({
+    componentWillMount: function(){
+
+    },
+    render: function() {
+        return (
+            &lt;Image source={this.props.source} /&gt;
+        );
+    },
+});
+</code></pre>
+</div>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>class Photo extends React.Component{
+	compnentWillMount(){
+	}
+	render(){
+		return(
+			&lt;Image Source={this.props.source}/&gt;
+		);
+	}
+}
+</code></pre>
+</div>
+
+<h4 id="section-8">2.2.2 定义组件的属性类型和默认属性</h4>
+
+<p>在ES5里，属性类型和默认属性分别通过propTypes成员和getDefaultProps方法来实现</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>//ES5 
+var Video = React.createClass({
+    getDefaultProps: function() {
+        return {
+            autoPlay: false,
+            maxLoops: 10,
+        };
+    },
+    propTypes: {
+        autoPlay: React.PropTypes.bool.isRequired,
+        maxLoops: React.PropTypes.number.isRequired,
+        posterFrameSrc: React.PropTypes.string.isRequired,
+        videoSrc: React.PropTypes.string.isRequired,
+    },
+    render: function() {
+        return (
+            &lt;View /&gt;
+        );
+    },
+});
+</code></pre>
+</div>
+
+<p>在ES6里，可以统一使用static成员来实现</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>//ES6
+class Video extends React.Component {
+    static defaultProps = {
+        autoPlay: false,
+        maxLoops: 10,
+    };  // 注意这里有分号
+    static propTypes = {
+        autoPlay: React.PropTypes.bool.isRequired,
+        maxLoops: React.PropTypes.number.isRequired,
+        posterFrameSrc: React.PropTypes.string.isRequired,
+        videoSrc: React.PropTypes.string.isRequired,
+    };  // 注意这里有分号
+    render() {
+        return (
+            &lt;View /&gt;
+        );
+    } // 注意这里既没有分号也没有逗号
+}
+</code></pre>
+</div>
+
+<p>也有人这么写，虽然不推荐，但读到代码的时候你应当能明白它的意思</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>//ES6
+class Video extends React.Component {
+    render() {
+        return (
+            &lt;View /&gt;
+        );
+    }
+}
+Video.defaultProps = {
+    autoPlay: false,
+    maxLoops: 10,
+};
+Video.propTypes = {
+    autoPlay: React.PropTypes.bool.isRequired,
+    maxLoops: React.PropTypes.number.isRequired,
+    posterFrameSrc: React.PropTypes.string.isRequired,
+    videoSrc: React.PropTypes.string.isRequired,
+};
+</code></pre>
+</div>
+
+<h3 id="state">2.3 初始化STATE</h3>
+
+<p>ES5下情况类似</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>//ES5 
+var Video = React.createClass({
+    getInitialState: function() {
+        return {
+            loopsRemaining: this.props.maxLoops,
+        };
+    },
+})
+</code></pre>
+</div>
+
+<p>ES6下，有两种写法：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>//ES6
+class Video extends React.Component {
+    state = {
+        loopsRemaining: this.props.maxLoops,
+    }
+}
+</code></pre>
+</div>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>
 ### 1.6 从react到react Native
