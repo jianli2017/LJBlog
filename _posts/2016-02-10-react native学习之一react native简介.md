@@ -8,58 +8,130 @@ comments: true
 
 ##  一、搭建开发环境
 
-目前我研究ios 的native ，所以基于mac系统。需要的工具包括：
+reactive Native 的中文[网址](http://reactnative.cn),目前我研究ios 的native ，所以基于mac系统。需要的工具包括：
 
 1.xocde  
 2.Node.js 4.0  
 3.使用HomeBrew安装wathman 和flow  
 
-###1.1 安装Node.js
+### 1.1 安装Node.js
 
 前往node.js 的[官网 英文](https://nodejs.org) [官网中文](http://nodejs.cn)下载pkg安装包
 
 Node.js是javascript的运行环境，JavaScript作为前端语言，在浏览器中解释执行，而Node.js 是后端JavaScript运行环境，可以在mac、window、linux上执行JavaScript代码。
 
-###1.2 使用ruby安装brew
+### 1.2 使用ruby安装brew
 
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
 ### 1.3 使用home 安装 watchman 和 flow
 
-brew install watchman
-brew install flow
+brew install watchman   
+如果你希望使用flow来为js代码加上类型检查，那么在命令行中输入brew install flow来安装flow
 
 ### 1.4 使用npm 安装 react-native-cli 命令行工具
 
-install -g react-native-cli
+安装react-native-cli 命令行工具，在终端中输入： npm install -g react-native-cli
 
-npm install -g n
+执行成功，会有如下的显示：  
 
+~~~
+/usr/local/bin/react-native -> /usr/local/lib/node_modules/react-native-cli/index.js
+- pkginfo@0.3.1 node_modules/react-native-cli/node_modules/winston/node_modules/pkginfo
+/usr/local/lib
+└─┬ react-native-cli@0.2.0 
+  ├── minimist@1.2.0 
+  └─┬ prompt@0.2.14
+    ├── pkginfo@0.3.1 
+    └─┬ utile@0.2.1
+      └─┬ mkdirp@0.5.1
+        └── minimist@0.0.8 
+
+~~~
+
+安装n 工具，在命令行中输入：npm install -g n,安装成功，会有如下的提示：  
+
+~~~
+/usr/local/bin/n -> /usr/local/lib/node_modules/n/bin/n
+/usr/local/lib
+└── n@2.1.0 
+~~~
+
+~~~
+/* 这个目前不知道做什么*、
 n
 
 node server node.js
 
 node index.js
+~~~
 
 ### 1.5 创建一个项目 
 
-在终端中输入 react-native init hello  这样就创建一个项目 
+在终端中输入想创建工程的目录，然后输入 react-native init weidian 命令，其中weidian 是应用的名称。例如：
 
-下面是react-native init 慢的解决方法；
+~~~
+cd /Users/gome/GitHub/native_sample 
+react-native init weidian
+~~~
 
-1.通过config命令
+如果创建成功，终端会有如下输出：
 
+~~~
+This will walk you through creating a new React Native project in /Users/gome/GitHub/native_sample/weidian
+Installing react-native package from npm...
+Setting up new React Native app in /Users/gome/GitHub/native_sample/weidian
+weidian@0.0.1 /Users/gome/GitHub/native_sample/weidian
+└─┬ react@0.14.7 
+  ├─┬ envify@3.4.0 
+  │ └─┬ jstransform@10.1.0 
+  │   ├── base62@0.1.1 
+  │   ├── esprima-fb@13001.1001.0-dev-harmony-fb 
+  │   └── source-map@0.1.31 
+  └─┬ fbjs@0.6.1 
+    └── whatwg-fetch@0.9.0 
+
+To run your app on iOS:
+   cd /Users/gome/GitHub/native_sample/weidian
+   react-native run-ios
+   - or -
+   Open /Users/gome/GitHub/native_sample/weidian/ios/weidian.xcodeproj in Xcode
+   Hit the Run button
+~~~
+
+创建完的目录结构如下：
+
+~~~
+weidian
+   ├── index.ios.js
+   ├── node_modules 
+   └── package.json
+   ├── ios   
+        ├── weidian
+        ├── weidian.xcodeproj 
+~~~
+
+下面是react-native init 慢的解决方法， 替换为淘宝的镜像源，在终端中输入如下命令：
+
+~~~
 npm config set registry https://registry.npm.taobao.org 
-npm info underscore （如果上面配置正确这个命令会有字符串response）
+npm config set disturl https://npm.taobao.org/dist
+npm info underscore //（如果上面配置正确这个命令会有字符串response）
+~~~
 
-2.命令行指定
+或者前往~/.npmrc 修改内容为如下，也可以使用命令 cat  ~/.npmrc 先查看下这个文件的内容。
 
-npm --registry https://registry.npm.taobao.org info underscore 
-
-3.编辑 ~/.npmrc 加入下面内容
-
+~~~
 registry = https://registry.npm.taobao.org
+~~~
 
+### 1.6 简单修改界面
+
+修改index.ios.js可以简单修改界面
+
+
+
+~~~
 
 ### 1.6 从react到react Native
 
@@ -105,3 +177,4 @@ commonjs  一个规范
 url
 
 url.parse(“sdfsdff”);
+~~~
