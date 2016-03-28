@@ -828,6 +828,34 @@ componentDidMount
 
 state是组件的属性，他的每次改变都会引发组件的跟新，每次组件的更新都是通过修改state属性的值。ReactJS内部会监听state属性的变化，一旦发生变化，就会主动触发组件的render方法来更新DOM的结构。
 
+虚拟DOM 是将真实的DOM结构映射成一个JSON数据结构。
+
+更新阶段  
+
+componentWillReceiveProps（object nextProps） 当组件接收到新的Props时，会触发改函数，在该函数中，通常会调用this.setState方法完成对state的修改。
+
+shouldComponentUpdate（nextProps， nextState），该方法会拦截新的props 和state
+
+componentWillUpdate（nextProps，nextState） 
+
+render 根据一系列的diff算法，生成需要更新的虚拟DOM数据
+
+componentDidUpdate 常在该方法中做一些DOM操作。
+
+销毁阶段 
+
+自组件调用父组件是通过props实现的。
+
+父组件调用子组件， 子组件被设置为ref之后，父组件就可以通过this.ref.xxx 来获取子组件了，其中xxx为子组件的ref值
+
+虚拟DOM 
+
+当组件的state属性发生变化时，会自动执行组件的render方法来实现组件的更新，虚拟DOM就是将组件的DOM结构映射到这个虚拟DOM对象上，并且实现了一套diff算法，当组件需要更新的时候，会通过Diff算法找到变更的内容，然后将变化修改到实际的DOM节点上，所以组件的更新不是真的渲染整个DOM树，只是更新需要修改的DOM节点上 
+
+~~~
+console.log(root)
+~~~
+
 
 
 
