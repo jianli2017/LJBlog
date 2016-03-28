@@ -402,7 +402,7 @@ class Video extends React.Component {
 }
 ~~~
 
-#### 2.4 把方法作为回调提供
+### 2.4 把方法作为回调提供
 
 很多习惯于ES6的用户反而不理解在ES5下可以这么做：
 
@@ -450,6 +450,151 @@ class PostInfo extends React.Component
 箭头函数实际上是在这里定义了一个临时的函数，箭头函数的箭头=>之前是一个空括号、单个的参数名、或用括号括起的多个参数名，而箭头之后可以是一个表达式（作为函数的返回值），或者是用花括号括起的函数体（需要自行通过return来返回值，否则返回的是undefined）。
 
 
+~~~
+// 箭头函数的例子
+()=>1
+v=>v+1
+(a,b)=>a+b
+()=>{
+    alert("foo");
+}
+e=>{
+    if (e == 0){
+        return 0;
+    }
+    return 1000/e;
+}
+~~~
+
+需要注意的是，不论是bind还是箭头函数，每次被执行都返回的是一个新的函数引用，因此如果你还需要函数的引用去做一些别的事情（譬如卸载监听器），那么你必须自己保存这个引用
+
+~~~
+// 错误的做法
+class PauseMenu extends React.Component{
+    componentWillMount(){
+        AppStateIOS.addEventListener('change', this.onAppPaused.bind(this));
+    }
+    componentDidUnmount(){
+        AppStateIOS.removeEventListener('change', this.onAppPaused.bind(this));
+    }
+    onAppPaused(event){
+    }
+}
+
+// 正确的做法
+class PauseMenu extends React.Component{
+    constructor(props){
+        super(props);
+        this._onAppPaused = this.onAppPaused.bind(this);
+    }
+    componentWillMount(){
+        AppStateIOS.addEventListener('change', this._onAppPaused);
+    }
+    componentDidUnmount(){
+        AppStateIOS.removeEventListener('change', this._onAppPaused);
+    }
+    onAppPaused(event){
+    }
+}
+
+// 正确的做法
+class PauseMenu extends React.Component{
+    componentWillMount(){
+        AppStateIOS.addEventListener('change', this.onAppPaused);
+    }
+    componentDidUnmount(){
+        AppStateIOS.removeEventListener('change', this.onAppPaused);
+    }
+    onAppPaused = (event) => {
+        //把方法直接作为一个arrow function的属性来定义，初始化的时候就绑定好了this指针
+    }
+}
+
+~~~
+
+### 2.5 Mixins
+
+在ES5下，我们经常使用mixin来为我们的类添加一些新的方法，譬如PureRenderMixin
+
+~~~
+var PureRenderMixin = require('react-addons-pure-render-mixin');
+React.createClass({
+  mixins: [PureRenderMixin],
+
+  render: function() {
+    return <div className={this.props.className}>foo</div>;
+  }
+});
+~~~
+
+然而现在官方已经不再打算在ES6里继续推行Mixin，他们说：Mixins Are Dead. Long Live Composition。
+
+尽管如果要继续使用mixin，还是有一些第三方的方案可以用，譬如这个方案
+
+不过官方推荐，对于库编写者而言，应当尽快放弃Mixin的编写方式，上文中提到Sebastian Markbåge的一段代码推荐了一种新的编码方式：
+
+~~~
+//Enhance.js
+import { Component } from "React";
+
+export var Enhance = ComposedComponent => class extends Component {
+    constructor() {
+        this.state = { data: null };
+    }
+    componentDidMount() {
+        this.setState({ data: 'Hello' });
+    }
+    render() {
+        return <ComposedComponent {...this.props} data={this.state.data} />;
+    }
+};
+//HigherOrderComponent.js
+import { Enhance } from "./Enhance";
+
+class MyComponent {
+    render() {
+        if (!this.data) return <div>Waiting...</div>;
+        return <div>{this.data}</div>;
+    }
+}
+
+export default Enhance(MyComponent); // Enhanced component
+
+~~~
+
+用一个“增强函数”，来某个类增加一些方法，并且返回一个新类，这无疑能实现mixin所实现的大部分需求。
+
+结合使用ES6+的解构和属性延展，我们给孩子传递一批属性更为方便了。这个例子把className以外的所有属性传递给div标签：
+
+~~~
+class AutoloadingPostsGrid extends React.Component {
+    render() {
+        var {
+            className,
+            ...others,  // contains all properties of this.props except for className
+        } = this.props;
+        return (
+            <div className={className}>
+                <PostsGrid {...others} />
+                <button onClick={this.handleLoadMoreClick}>Load more</button>
+            </div>
+        );
+    }
+}
+~~~
+
+下面这种写法，则是传递所有属性的同时，用覆盖新的className值：
+
+~~~
+<div {...this.props} className="override">
+    …
+</div>
+这个例子则相反，如果属性中没有包含className，则提供默认的值，而如果属性中已经包含了，则使用属性中的值
+
+<div className="base" {...this.props}>
+    …
+</div>
+~~~
 
 
 
@@ -461,11 +606,227 @@ class PostInfo extends React.Component
 
 
 
+### 3 flexBox 模型
+
+任何一个元素都可以指定为flexbox 布局，设置为display:flex或display:inline-flex的元素称为伸缩容器，伸缩容器的子元素称为伸缩项目，下面是伸缩的模型：
+![伸缩模型]({{site.url}}/images/reactnative/1.png)
+
+###3.1 伸缩容器属性
+
+1. display
+2. flex-directon
+3. flex-wrap
+4. flex-flow
+5. justify-content
+6. align-items
+7. align-content
+
+display 指定元素是否为伸缩容器，其语法：
+
+~~~
+display:flex|inline-flex
+~~~
+
+flex-direction 指定主轴方向
+
+~~~
+flex-direction:row|row-reverse|column|column-reverse
+~~~
+
+flex-wrap 指定伸缩容器的主轴方向空间不足的情况下，是否换行以及如何换行：
+
+~~~
+felx-wrap:nowrap|wrap|wrap-reverse
+~~~
+
+flex-flow 是flex-direction和flex-wrap的缩写版本，同时定义了伸缩容器的主轴和侧轴，其默认值是row nonwrap
+
+justify-content指定伸缩项目沿主轴线的对齐方式
+
+~~~
+justify-content:flex-strat|flex-end|center|space-between|space-around
+~~~
+
+其中：space-around 指的是：伸缩项目平均的分布在主轴里，两端保留一般的空间
+
+6. align-items 改属性用来定义伸缩项目在伸缩容器的交叉轴上的对齐方式
+
+~~~
+align-items:flex-strat|flex-end|center|baseline|stretch
+~~~
+
+align-content 调整伸缩项目出现换行后再交叉轴的对齐方式
+
+~~~
+algin-content:flex-start|flex-end|center|space-between|space-around|stretch
+~~~
+
+###3.2 伸缩项目属性
+
+1. order
+2. flex-grow
+3. flex-shrink
+4. flex-basis
+5. flex
+6. align-self
+
+order用于定义项目的排列顺序。数组越小，排列越靠前，默认值为0
+
+~~~
+order:integer
+~~~
+
+flex-grow定义伸缩项目的放大比例，默认是0，即如果存在剩余空间，也不放大如果所有伸缩项目的flex-grow都为1，每个伸缩项目将设置为一个大小相等的剩余空间，如果你将其中的一个伸缩项目的flex-grow设置为2，那么这个项目所占得剩余空间是其他伸缩项目所占得剩余空间的两倍
+
+flex-shrink用于定义伸缩项目的收缩能力
+
+~~~
+flex-shrink:number /*默认值为1*/
+~~~
+
+flex-basis 设置伸缩项目的基准值，剩余空间按比率进行伸缩
+
+~~~
+flex-basis:length|auto
+~~~
+
+flex 是flex-grow、flex-shrink、flex-basis三个属性的缩写
+
+~~~
+flex:none|flex-grow flex-shrink flex-basis/*默认值为0 1 auto*/
+~~~
+
+align-self 设置单独的伸缩项目在交叉轴上的对齐方式，会复写默认的对齐方式
+
+~~~
+align-self:auto|flex-start|flex-end|center|baseline| stretch
+~~~
+
+### 2.3 React Native中使用flexBox
+
+1. alignItems
+2. alignSelf
+3. flex
+4. flexDirection
+5. flexWrap
+6. justifyContent
 
 
+flexDirection 指定主轴方向
+
+~~~
+flexDirection:row|column
+~~~
+
+flexWrap 指定伸缩容器的主轴方向空间不足的情况下，是否换行以及如何换行
+
+~~~
+flexWrap:wrap|noWrap
+~~~
+
+justifyContent指定伸缩项目沿主轴线的对齐方式
+
+~~~
+justifyContent:flex-start|flex-end|center|space-between|space-around
+~~~
+
+alignItems 该属性用来定义伸缩项目在伸缩容器的交叉轴上的对齐方式
+
+~~~
+alignSelf:auto|flex-start|flex-end|center|stretch
+~~~
+
+alignSelf
+
+~~~
+alignSelf:auto|flex-start|flex-end|center|stretch
+~~~
+
+flex
+
+~~~
+flex:number
+~~~
+
+## 3 React 中的JSX
+
+jsx允许开发者在JavaScript中书写html语法，每个html标签都转化为JavaScript代码来运行，这样对于使用JavaScript来构建组件以及组件之间关系的应用 。而不在用JavaScript操作dom来创建组件以及组件之间的嵌套关系。
+
+jsx中运行JavaScript表达式需要将表达式用{}括起来。
+
+1. 环境  
+JSX 必须借助于ReactJS环境才能运行，在编写JSX代码前需要加载ReactJS文件，还需要加载JSXTransformer
+
+2. 载入方式  
+内联方式 外联方式
+
+3. 标签  
+JSX标签其实就是HTML标签
+
+4. 转化  
+JSX为了让我们更直观的看到组件的DOM，她并不能直接在浏览器端运行，只能通过解析器将其转化为JavaScript代码才能在浏览器上运行，其实就是调用  
+
+~~~
+React.createElemnet("h1", null, "hello,ReactJS")
+~~~
+
+5. 执行JavaScript表达式  
+jsx中运行JavaScript表达式需要将表达式用{}括起来。
+
+6. 注释  
+和JavaScript相同，用// 或/*   */
+
+7. 属性  
+在HTML中，可以通过标签的属性改变当前元素的样式，在JSX中也可以
+
+8. 延伸属性  
+"..." 用于遍历对象，...props 是遍历props对象
+
+9. 自定义属性   
+凡是以data-开头的自定义属性，在页面渲染后可以显示在页面上。
+
+10. 显示HTML   
+有时候我们需要显示HTML字符串，不是节点  ，使用_html 属性
+
+11. 样式使用   
+
+~~~
+<h1 style={{color:'#ff0000',fontSize:'14px'}}> hello ,ReacJS!!! </h1>
+~~~
+
+JSX样式通过style属性定义，和传统的web不同，不是字符串，而是JavaScript对象，第一个大括号是JSX语法，第二个大括号是JavaScript对象，需要用驼峰法命名，否则需要加引号，也可以通过className方式引入样式。
+
+12. 事件绑定
 
 
+1. ReactJS 简介  
+ReactJS 和核心思想是组件化，即按照功能封装一个一个组件，各个组件维护自己的状态和UI，当状态发生变化时，会自动重新渲染整个组件，多个组件一起协作共同构成了ReactJS应用。
 
+2. 组件的生命周期  
+getDefaultProps 创建阶段  
+getInitialState 实例化阶段    
+componentWillMount  在render 之前调用   
+render 渲染并返回一个虚拟的DOM  
+componentDidMount  在render 之后调用   
+componentWillRecieveProps 在this.props被修改或者父组件调用setProps方法之后   
+shouldComponentUpdate  是否需要更新   
+componentWillUpdate  将要更新  
+componentDidUpdate  更新完毕   
+componentWillUnmount  销毁对象是调用  
+主要包括四个阶段 创建阶段、实例化阶段、更新阶段、 销毁阶段  
+创建阶段  
+
+即在条用React.createClass的时候这个阶段只会触发getDefaultProps方法，该方法返回了一个对象，并缓存下来，然后与父组件指定的props对象合并，最后赋值给this.props作为组件的默认属性，props是一个对象，是组件用来接收外面传来的参数的。组件内部是不允许修改自己的props属性的。
+
+实例化阶段  
+
+就是组件类被调用的时候，执行顺序是 
+geiInitialState,返回值赋给了this.state属性
+componentWillMount根据业务逻辑对state进行相应的操作
+render 根据state的值，生成页面需要的DOM结构，并返回该结构
+componentDidMount
+
+state是组件的属性，他的每次改变都会引发组件的跟新，每次组件的更新都是通过修改state属性的值。ReactJS内部会监听state属性的变化，一旦发生变化，就会主动触发组件的render方法来更新DOM的结构。
 
 
 
