@@ -856,6 +856,206 @@ componentDidUpdate 常在该方法中做一些DOM操作。
 console.log(root)
 ~~~
 
+## 4 样式 
+
+定义样式
+
+~~~
+var styles = StyleSheet.create({
+  base: {
+    width: 38,
+    height: 38,
+  },
+  background: {
+    backgroundColor: '#222222',
+  },
+  active: {
+    borderWidth: 2,
+    borderColor: '#00ff00',
+  },
+});
+~~~
+
+使用样式
+
+~~~
+<Text style={styles.base} />
+<View style={styles.background} />
+<View style={[styles.base, styles.background]} />
+~~~
+
+将样式作为参数传递
+
+~~~
+_handleClick = (e) => {
+    // 使用箭头函数(arrow function)
+    console.log(this);
+}
+render() {
+    return (
+        <div>
+            <h1 onClick={this._handleClick}>点击</h1>
+        </div>
+    );
+}
+~~~
+
+箭头函数的理解：是一个临时函数，返回一个函数引用
+
+## 5. 图片
+
+~~~
+<Image source={require('./my-icon.png')} />
+~~~
+
+### 6 原生模块
+
+react native 设计为可以在他的基础上编写原生的代码，并且可以访问平台的所有能力  
+
+在react native 中，一个原生模块 就是实现了RCTBridgeModlue协议的OC类 
+
+~~~
+// CalendarManager.h
+#import "RCTBridgeModule.h"
+
+@interface CalendarManager : NSObject <RCTBridgeModule>
+@end
+~~~
+
+为了实现RCTBridgeModule 协议，你需要包含RCT_EXPORT_MODULE宏，这个宏可以添加一个参数用来指定JavaScript中访问这个模块的名字。如果不指定，默认会使用这个OC类的名字  
+
+~~~
+// CalendarManager.m
+@implementation CalendarManager
+
+RCT_EXPORT_MODULE();
+
+@end
+~~~
+
+你必须明确的声明给JavaScript到处的方法，否则，react native 不导出任何方法，通过声明RCT_EXPORT_METHOD()宏来实现
+
+~~~
+RCT_EXPORT_METHOD(addEvent:(NSString *)name location:(NSString *)location)
+{
+  RCTLogInfo(@"Pretending to create an event %@ at %@", name, location);
+}
+~~~
+
+js中调用这个方法
+
+~~~
+var CalendarManager = require('react-native').NativeModules.CalendarManager;
+CalendarManager.addEvent('Birthday Party', '4 Privet Drive, Surrey');
+~~~
+
+桥接到Javascript的方法返回值类型必须是void。React Native的桥接操作是异步的，所以要返回结果给Javascript，你必须通过回调或者触发事件来进行。
+
+### 6.1 参数类型
+
+RCT_EXPORT_METHOD 支持所有标准JSON类型，包括：
+
+string (NSString)
+number (NSInteger, float, double, CGFloat, NSNumber)
+boolean (BOOL, NSNumber)
+array (NSArray) 包含本列表中任意类型
+map (NSDictionary) 包含string类型的键和本列表中任意类型的值
+function (RCTResponseSenderBlock)
+
+任何RCTConvert类支持的的类型也都可以使用[参见RCTConvert了解更多信息](https://github.com/facebook/react-native/blob/master/React/Base/RCTConvert.h)。RCTConvert还提供了一系列辅助函数，用来接收一个JSON值并转换到原生Objective-C类型或类
+
+### 6.2 回调函数
+
+原生模块还支持一种特殊的参数，回调函数，她提供了一个函数作为返回值，传给JavaScript。
+
+~~~
+RCT_EXPORT_METHOD(findEvents:(RCTResponseSenderBlock)callback)
+{
+  NSArray *events = ...
+  callback(@[[NSNull null], events]);
+}
+~~~
+
+### 6.3 导出常量
+
+原生模块可以导出一些常量，这些常量在JavaScript端随时都可以访问。用这种方法来传递一些静态数据，可以避免通过bridge进行一次来回交互。
+
+~~~
+- (NSDictionary *)constantsToExport
+{
+  return @{ @"firstDayOfTheWeek": @"Monday" };
+}
+~~~
+
+Javascript端可以随时同步地访问这个数据：
+
+~~~
+console.log(CalendarManager.firstDayOfTheWeek);
+~~~
+
+### 6.3 枚举常量
+
+用NS_ENUM定义的枚举类型必须要先扩展对应的RCTConvert方法才可以作为函数参数传递。
+
+~~~
+@implementation RCTConvert (StatusBarAnimation)
+  RCT_ENUM_CONVERTER(UIStatusBarAnimation, (@{ @"statusBarAnimationNone" : @(UIStatusBarAnimationNone),
+                                               @"statusBarAnimationFade" : @(UIStatusBarAnimationFade),
+                                               @"statusBarAnimationSlide" : @(UIStatusBarAnimationSlide)},
+                      UIStatusBarAnimationNone, integerValue)
+@end
+
+
+- (NSDictionary *)constantsToExport
+{
+  return @{ @"statusBarAnimationNone" : @(UIStatusBarAnimationNone),
+            @"statusBarAnimationFade" : @(UIStatusBarAnimationFade),
+            @"statusBarAnimationSlide" : @(UIStatusBarAnimationSlide) }
+};
+
+RCT_EXPORT_METHOD(updateStatusBarAnimation:(UIStatusBarAnimation)animation
+                                completion:(RCTResponseSenderBlock)callback)
+~~~
+
+
+### 6.4 给Javascript发送事件
+
+即使没有被JavaScript调用，本地模块也可以给JavaScript发送事件通知。最直接的方式是使用eventDispatcher:
+
+~~~
+#import "RCTBridge.h"
+#import "RCTEventDispatcher.h"
+
+@implementation CalendarManager
+
+@synthesize bridge = _bridge;
+
+- (void)calendarEventReminderReceived:(NSNotification *)notification
+{
+  NSString *eventName = notification.userInfo[@"name"];
+  [self.bridge.eventDispatcher sendAppEventWithName:@"EventReminder"
+                                               body:@{@"name": eventName}];
+}
+
+@end
+~~~
+
+在JavaScript中可以这样订阅事件：
+
+~~~
+var { NativeAppEventEmitter } = require('react-native');
+
+var subscription = NativeAppEventEmitter.addListener(
+  'EventReminder',
+  (reminder) => console.log(reminder.name)
+);
+...
+// 千万不要忘记忘记取消订阅, 通常在componentWillUnmount函数中实现。
+subscription.remove();
+~~~
+
+
+### 7 原生UI 组件
 
 
 

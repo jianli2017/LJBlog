@@ -914,6 +914,205 @@ componentDidMount</p>
 </code></pre>
 </div>
 
+<h2 id="section-12">4 样式</h2>
+
+<p>定义样式</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>var styles = StyleSheet.create({
+  base: {
+    width: 38,
+    height: 38,
+  },
+  background: {
+    backgroundColor: '#222222',
+  },
+  active: {
+    borderWidth: 2,
+    borderColor: '#00ff00',
+  },
+});
+</code></pre>
+</div>
+
+<p>使用样式</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;Text style={styles.base} /&gt;
+&lt;View style={styles.background} /&gt;
+&lt;View style={[styles.base, styles.background]} /&gt;
+</code></pre>
+</div>
+
+<p>将样式作为参数传递</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>_handleClick = (e) =&gt; {
+    // 使用箭头函数(arrow function)
+    console.log(this);
+}
+render() {
+    return (
+        &lt;div&gt;
+            &lt;h1 onClick={this._handleClick}&gt;点击&lt;/h1&gt;
+        &lt;/div&gt;
+    );
+}
+</code></pre>
+</div>
+
+<p>箭头函数的理解：是一个临时函数，返回一个函数引用</p>
+
+<h2 id="section-13">5. 图片</h2>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;Image source={require('./my-icon.png')} /&gt;
+</code></pre>
+</div>
+
+<h3 id="section-14">6 原生模块</h3>
+
+<p>react native 设计为可以在他的基础上编写原生的代码，并且可以访问平台的所有能力</p>
+
+<p>在react native 中，一个原生模块 就是实现了RCTBridgeModlue协议的OC类</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="c1">// CalendarManager.h
+</span><span class="cp">#import "RCTBridgeModule.h"
+</span>
+<span class="k">@interface</span> <span class="nc">CalendarManager</span> <span class="p">:</span> <span class="nc">NSObject</span> <span class="o">&lt;</span><span class="n">RCTBridgeModule</span><span class="o">&gt;</span>
+<span class="k">@end</span>
+</code></pre>
+</div>
+
+<p>为了实现RCTBridgeModule 协议，你需要包含RCT_EXPORT_MODULE宏，这个宏可以添加一个参数用来指定JavaScript中访问这个模块的名字。如果不指定，默认会使用这个OC类的名字</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="c1">// CalendarManager.m
+</span><span class="k">@implementation</span> <span class="nc">CalendarManager</span>
+
+<span class="n">RCT_EXPORT_MODULE</span><span class="p">();</span>
+
+<span class="k">@end</span>
+</code></pre>
+</div>
+
+<p>你必须明确的声明给JavaScript到处的方法，否则，react native 不导出任何方法，通过声明RCT_EXPORT_METHOD()宏来实现</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>RCT_EXPORT_METHOD(addEvent:(NSString *)name location:(NSString *)location)
+{
+  RCTLogInfo(@"Pretending to create an event %@ at %@", name, location);
+}
+</code></pre>
+</div>
+
+<p>js中调用这个方法</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>var CalendarManager = require('react-native').NativeModules.CalendarManager;
+CalendarManager.addEvent('Birthday Party', '4 Privet Drive, Surrey');
+</code></pre>
+</div>
+
+<p>桥接到Javascript的方法返回值类型必须是void。React Native的桥接操作是异步的，所以要返回结果给Javascript，你必须通过回调或者触发事件来进行。</p>
+
+<h3 id="section-15">6.1 参数类型</h3>
+
+<p>RCT_EXPORT_METHOD 支持所有标准JSON类型，包括：</p>
+
+<p>string (NSString)
+number (NSInteger, float, double, CGFloat, NSNumber)
+boolean (BOOL, NSNumber)
+array (NSArray) 包含本列表中任意类型
+map (NSDictionary) 包含string类型的键和本列表中任意类型的值
+function (RCTResponseSenderBlock)</p>
+
+<p>任何RCTConvert类支持的的类型也都可以使用<a href="https://github.com/facebook/react-native/blob/master/React/Base/RCTConvert.h">参见RCTConvert了解更多信息</a>。RCTConvert还提供了一系列辅助函数，用来接收一个JSON值并转换到原生Objective-C类型或类</p>
+
+<h3 id="section-16">6.2 回调函数</h3>
+
+<p>原生模块还支持一种特殊的参数，回调函数，她提供了一个函数作为返回值，传给JavaScript。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>RCT_EXPORT_METHOD(findEvents:(RCTResponseSenderBlock)callback)
+{
+  NSArray *events = ...
+  callback(@[[NSNull null], events]);
+}
+</code></pre>
+</div>
+
+<h3 id="section-17">6.3 导出常量</h3>
+
+<p>原生模块可以导出一些常量，这些常量在JavaScript端随时都可以访问。用这种方法来传递一些静态数据，可以避免通过bridge进行一次来回交互。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>- (NSDictionary *)constantsToExport
+{
+  return @{ @"firstDayOfTheWeek": @"Monday" };
+}
+</code></pre>
+</div>
+
+<p>Javascript端可以随时同步地访问这个数据：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>console.log(CalendarManager.firstDayOfTheWeek);
+</code></pre>
+</div>
+
+<h3 id="section-18">6.3 枚举常量</h3>
+
+<p>用NS_ENUM定义的枚举类型必须要先扩展对应的RCTConvert方法才可以作为函数参数传递。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">@implementation</span> <span class="nc">RCTConvert</span> <span class="p">(</span><span class="nl">StatusBarAnimation</span><span class="p">)</span>
+  <span class="nc">RCT_ENUM_CONVERTER</span><span class="p">(</span><span class="n">UIStatusBarAnimation</span><span class="p">,</span> <span class="p">(</span><span class="err">@</span><span class="p">{</span> <span class="s">@"statusBarAnimationNone"</span> <span class="o">:</span> <span class="err">@</span><span class="p">(</span><span class="n">UIStatusBarAnimationNone</span><span class="p">),</span>
+                                               <span class="s">@"statusBarAnimationFade"</span> <span class="o">:</span> <span class="err">@</span><span class="p">(</span><span class="n">UIStatusBarAnimationFade</span><span class="p">),</span>
+                                               <span class="s">@"statusBarAnimationSlide"</span> <span class="o">:</span> <span class="err">@</span><span class="p">(</span><span class="n">UIStatusBarAnimationSlide</span><span class="p">)},</span>
+                      <span class="n">UIStatusBarAnimationNone</span><span class="p">,</span> <span class="n">integerValue</span><span class="p">)</span>
+<span class="k">@end</span>
+
+
+<span class="o">-</span> <span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="n">constantsToExport</span>
+<span class="p">{</span>
+  <span class="k">return</span> <span class="err">@</span><span class="p">{</span> <span class="s">@"statusBarAnimationNone"</span> <span class="o">:</span> <span class="err">@</span><span class="p">(</span><span class="n">UIStatusBarAnimationNone</span><span class="p">),</span>
+            <span class="s">@"statusBarAnimationFade"</span> <span class="o">:</span> <span class="err">@</span><span class="p">(</span><span class="n">UIStatusBarAnimationFade</span><span class="p">),</span>
+            <span class="s">@"statusBarAnimationSlide"</span> <span class="o">:</span> <span class="err">@</span><span class="p">(</span><span class="n">UIStatusBarAnimationSlide</span><span class="p">)</span> <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="n">RCT_EXPORT_METHOD</span><span class="p">(</span><span class="n">updateStatusBarAnimation</span><span class="o">:</span><span class="p">(</span><span class="n">UIStatusBarAnimation</span><span class="p">)</span><span class="n">animation</span>
+                                <span class="n">completion</span><span class="o">:</span><span class="p">(</span><span class="n">RCTResponseSenderBlock</span><span class="p">)</span><span class="n">callback</span><span class="p">)</span>
+</code></pre>
+</div>
+
+<h3 id="javascript">6.4 给Javascript发送事件</h3>
+
+<p>即使没有被JavaScript调用，本地模块也可以给JavaScript发送事件通知。最直接的方式是使用eventDispatcher:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">#import "RCTBridge.h"
+#import "RCTEventDispatcher.h"
+</span>
+<span class="k">@implementation</span> <span class="nc">CalendarManager</span>
+
+<span class="k">@synthesize</span> <span class="n">bridge</span> <span class="o">=</span> <span class="n">_bridge</span><span class="p">;</span>
+
+<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">calendarEventReminderReceived</span><span class="p">:(</span><span class="n">NSNotification</span> <span class="o">*</span><span class="p">)</span><span class="nv">notification</span>
+<span class="p">{</span>
+  <span class="n">NSString</span> <span class="o">*</span><span class="n">eventName</span> <span class="o">=</span> <span class="n">notification</span><span class="p">.</span><span class="n">userInfo</span><span class="p">[</span><span class="s">@"name"</span><span class="p">];</span>
+  <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">bridge</span><span class="p">.</span><span class="n">eventDispatcher</span> <span class="nf">sendAppEventWithName</span><span class="p">:</span><span class="s">@"EventReminder"</span>
+                                               <span class="nf">body</span><span class="p">:</span><span class="err">@</span><span class="p">{</span><span class="s">@"name"</span><span class="o">:</span> <span class="n">eventName</span><span class="p">}];</span>
+<span class="p">}</span>
+
+<span class="k">@end</span>
+</code></pre>
+</div>
+
+<p>在JavaScript中可以这样订阅事件：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>var { NativeAppEventEmitter } = require('react-native');
+
+var subscription = NativeAppEventEmitter.addListener(
+  'EventReminder',
+  (reminder) =&gt; console.log(reminder.name)
+);
+...
+// 千万不要忘记忘记取消订阅, 通常在componentWillUnmount函数中实现。
+subscription.remove();
+</code></pre>
+</div>
+
+<h3 id="ui-">7 原生UI 组件</h3>
+
 <div class="highlighter-rouge"><pre class="highlight"><code>
 ### 1.6 从react到react Native
 
