@@ -9,7 +9,7 @@ comments: true
 ##  一、搭建开发环境
 
 reactive Native 的中文[网址](http://reactnative.cn),目前我研究ios 的native ，所以基于mac系统。需要的工具包括：
-
+http://www.open-open.com/lib/view/open1451460443901.html
 1.xocde  
 2.Node.js 4.0  
 3.使用HomeBrew安装wathman 和flow  
