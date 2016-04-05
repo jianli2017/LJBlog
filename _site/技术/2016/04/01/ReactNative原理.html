@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=640" />
+
+    <link rel="stylesheet" href="/LJBlog/themes/merlot/stylesheets/core.css" media="screen"/>
+    <link rel="stylesheet" href="/LJBlog/themes/merlot/stylesheets/mobile.css" media="handheld, only screen and (max-device-width:640px)"/>
+    <link rel="stylesheet" href="/LJBlog/themes/merlot/stylesheets/pygment_trac.css"/>
+
+    <script type="text/javascript" src="/LJBlog/themes/merlot/javascripts/modernizr.js"></script>
+    <script type="text/javascript" src="http://lib.sinaapp.com/js/jquery/1.7/jquery.min.js"></script>
+    <script type="text/javascript" src="/LJBlog/themes/merlot/javascripts/headsmart.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $('#main_content').headsmart()
+      })
+    </script>
+    <title>程序员人生</title>
+  </head>
+
+  <body>
+    <a id="forkme_banner" href="https://github.com/jianli2017//LJBlog/tree/gh-pages">Fork Me on GitHub</a>
+    <div class="shell">
+
+      <header>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <h1><a href="/LJBlog/">程序员人生</a></h1>
+            <h2>人生到处知何似，应似飞鸿踏雪泥</h2>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+      </header>
+
+   <!--    <section id="downloads">
+        <span class="inner">
+          <a href="https://github.com/cameronmcefee/headsmart/zipball/master" class="zip"><em>download</em> .ZIP</a><a href="https://github.com/cameronmcefee/headsmart/tarball/master" class="tgz"><em>download</em> .TGZ</a>
+        </span>
+      </section> -->
+
+      <span class="banner-fix"></span>
+
+      <section id="main_content">
+        <h1>native原理</h1>
+
+    <h2 id="section">一、 简介</h2>
+
+<p>reactnative 引入的原理可以参考 <a href="http://bbs.reactnative.cn/topic/14/react-native-把现代web科技带给移动开发者">把现代web科技带给移动开发者</a>,下面是自己的一点总结：</p>
+
+<h2 id="app-">1.1 开发原生的APP 比较困难</h2>
+
+<p>开发成本高，耗时，每次发版受apple的限制。</p>
+
+<h2 id="section-1">1.2 开发原生开发非常必要</h2>
+
+<ol>
+  <li>原生APP 的用户体验比web Hybird APP 的用户体验好</li>
+  <li>在web上，我们也没有一个足够完善的线程模型，很难利用多线程并行执行工作</li>
+</ol>
+
+<h2 id="section-2">1.3 将两个世界合二为一？</h2>
+
+<p>用脚本封装原生，即用JavaScript去调用原生API，优点：</p>
+
+<ol>
+  <li>能获得原生平台的所有强大之处</li>
+  <li>同时还能享受快速迭代和使用我们现有JavaScript上基础设施的好处</li>
+  <li>因为基于JavaScript构建，我们应当能使得这样技术栈跨平台。</li>
+</ol>
+
+<h2 id="section-3">1.4 用脚本封装原生是一件需要技巧的事情</h2>
+
+<ol>
+  <li>如果我们只是同步的在原生环境和解释环境之间调用，我们的UI线程很可能会被JavaScript执行阻塞住。</li>
+  <li>要提升界面的响应效率，我们知道我们必须把JavaScript放到主线程之外执行，但这么做其实很困难。最直接的困难就是资源访问竞争。如果我们的JavaScript访问什么正好在被别的线程用的东西（譬如一个渲染的View的尺寸），系统就只能加锁来确保方案安全，而这又会导致UI线程的卡顿。还有一个问题在于每次原生和JavaScript虚拟机之间互相访问，在访问过程中都会带来极大的开销。如果我们要经常跨线程访问，我们不得不一次又一次的经历这种开销。</li>
+</ol>
+
+<h2 id="react-native">1.5 引入React Native</h2>
+
+<p>react native 来源于React，React组件本来就被设计为一个纯粹的、无副作用的函数，函数返回每一个时刻当时的View状态，这样我们无需读取底层View的状态就可以为它写入新的状态。能解决上面提出的问题。</p>
+
+<ol>
+  <li>
+    <p>React Native使你能够在Javascript和React的基础上获得完全一致的开发体验，构建世界一流的原生APP。</p>
+  </li>
+  <li>
+    <p>React Native着力于提高多平台开发的开发效率 —— 仅需学习一次，编写任何平台。(Learn once, write anywhere)</p>
+  </li>
+</ol>
+
+<h2 id="react-native-">1.6 使用React Native 需要了解的知识</h2>
+
+<ol>
+  <li>前端开发工程师必须掌握的三个技能：</li>
+</ol>
+
+<ul>
+  <li>
+    <p>描述网页内容的HTML</p>
+  </li>
+  <li>
+    <p>描述网页样式的CSS ，<a href="http://www.imooc.com/learn/9">html 和css 的学习地址</a></p>
+  </li>
+  <li>
+    <p>描述网页行为的JavaScript, <a href="http://www.w3school.com.cn/js/">java 学习地址</a></p>
+  </li>
+</ul>
+
+<ol>
+  <li>
+    <p>JavaScript的语法规范 <a href="http://bbs.reactnative.cn/topic/15/react-react-native-的es5-es6写法对照表">ES5和ES6写法对照表</a></p>
+  </li>
+  <li>
+    <p>ReactNative在CSS基础上使用的布局模型：伸缩盒子模型flexBox</p>
+  </li>
+</ol>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>native 的目标是“一处学习，处处编写”，为了实现这个目标，mvc 模块的view 使用jsx（jsx 是js 和xml 混合编写代码的方式，是个语法糖，简化了js处理DOM的过程 ）编写。 ios 端和android端都在自己的平台上实现自己的原生模块的功能，然后暴露出统一的接口， jsx就可以不分平台的控制界面 。
+</code></pre>
+</div>
+
+<h2 id="section-4">二、搭建开发环境</h2>
+
+<p>reactive Native 的中文<a href="http://reactnative.cn">网址</a>,基于IOS的react Native需要的工具包括：
+1.xocde<br />
+2.Node.js 4.0<br />
+3.使用HomeBrew安装wathman 和flow</p>
+
+<h3 id="nodejs">2.1 安装Node.js</h3>
+
+<p>前往node.js 的<a href="https://nodejs.org">官网 英文</a> <a href="http://nodejs.cn">官网中文</a>下载pkg安装包</p>
+
+<p>Node.js是javascript的运行环境，JavaScript作为前端语言，在浏览器中解释执行，而Node.js 是后端JavaScript运行环境，可以在mac、window、linux上执行JavaScript代码。</p>
+
+<h3 id="rubyhome-brew">2.2 使用ruby安装home brew</h3>
+
+<p>ruby -e “$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)”</p>
+
+<h3 id="home-brew-watchman--flow">2.3 使用home brew安装 watchman 和 flow</h3>
+
+<p>brew install watchman <br />
+如果你希望使用flow来为js代码加上类型检查，那么在命令行中输入brew install flow来安装flow</p>
+
+<h3 id="npm--react-native-cli-">2.4 使用npm 安装 react-native-cli 命令行工具</h3>
+
+<p>安装react-native-cli 命令行工具，在终端中输入： npm install -g react-native-cli</p>
+
+<p>执行成功，会有如下的显示：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>/usr/local/bin/react-native -&gt; /usr/local/lib/node_modules/react-native-cli/index.js
+- pkginfo@0.3.1 node_modules/react-native-cli/node_modules/winston/node_modules/pkginfo
+/usr/local/lib
+└─┬ react-native-cli@0.2.0 
+  ├── minimist@1.2.0 
+  └─┬ prompt@0.2.14
+    ├── pkginfo@0.3.1 
+    └─┬ utile@0.2.1
+      └─┬ mkdirp@0.5.1
+        └── minimist@0.0.8 
+
+</code></pre>
+</div>
+
+<p>安装n 工具，在命令行中输入：npm install -g n,安装成功，会有如下的提示：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>/usr/local/bin/n -&gt; /usr/local/lib/node_modules/n/bin/n
+/usr/local/lib
+└── n@2.1.0 
+</code></pre>
+</div>
+
+<h3 id="section-5">2.5 创建一个项目</h3>
+
+<p>在终端中cd到想创建工程的目录，然后输入 react-native init weidian 命令，其中weidian 是应用的名称。例如：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>cd /Users/gome/GitHub/native_sample 
+react-native init weidian
+</code></pre>
+</div>
+
+<p>如果创建成功，终端会有如下输出：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>This will walk you through creating a new React Native project in /Users/gome/GitHub/native_sample/weidian
+Installing react-native package from npm...
+Setting up new React Native app in /Users/gome/GitHub/native_sample/weidian
+weidian@0.0.1 /Users/gome/GitHub/native_sample/weidian
+└─┬ react@0.14.7 
+  ├─┬ envify@3.4.0 
+  │ └─┬ jstransform@10.1.0 
+  │   ├── base62@0.1.1 
+  │   ├── esprima-fb@13001.1001.0-dev-harmony-fb 
+  │   └── source-map@0.1.31 
+  └─┬ fbjs@0.6.1 
+    └── whatwg-fetch@0.9.0 
+
+To run your app on iOS:
+   cd /Users/gome/GitHub/native_sample/weidian
+   react-native run-ios
+   - or -
+   Open /Users/gome/GitHub/native_sample/weidian/ios/weidian.xcodeproj in Xcode
+   Hit the Run button
+</code></pre>
+</div>
+
+<p>创建完的目录结构如下：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>weidian
+   ├── index.ios.js
+   ├── node_modules 
+   └── package.json
+   ├── ios   
+        ├── weidian
+        ├── weidian.xcodeproj 
+</code></pre>
+</div>
+
+<p>下面是react-native init 慢的解决方法， 替换为淘宝的镜像源，在终端中输入如下命令：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>npm config set registry https://registry.npm.taobao.org 
+npm config set disturl https://npm.taobao.org/dist
+npm info underscore //（如果上面配置正确这个命令会有字符串response）
+</code></pre>
+</div>
+
+<p>或者前往~/.npmrc 修改内容为如下，也可以使用命令 cat  ~/.npmrc 先查看下这个文件的内容。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>registry = https://registry.npm.taobao.org
+</code></pre>
+</div>
+
+<h3 id="section-6">1.6 简单修改界面</h3>
+
+<p>修改index.ios.js可以简单修改界面，下面是index.ios.js的内容：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>import React, {
+  AppRegistry,
+  Component,
+  StyleSheet,
+  Text,
+  View
+} from 'react-native';
+
+class weidian extends Component {
+  render() {
+    return (
+      &lt;View style={styles.container}&gt;
+        &lt;Text style={styles.welcome}&gt;
+          Welcome to React Native!
+        &lt;/Text&gt;
+        &lt;Text style={styles.instructions}&gt;
+          To get started, edit index.ios.js
+        &lt;/Text&gt;
+        &lt;Text style={styles.instructions}&gt;
+          Press Cmd+R to reload,{'\n'}
+          Cmd+D or shake for dev menu
+        &lt;/Text&gt;
+      &lt;/View&gt;
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+  },
+  welcome: {
+    fontSize: 20,
+    textAlign: 'center',
+    margin: 10,
+  },
+  instructions: {
+    textAlign: 'center',
+    color: '#333333',
+    marginBottom: 5,
+  },
+});
+
+AppRegistry.registerComponent('weidian', () =&gt; weidian);
+
+</code></pre>
+</div>
+
+<p>为了能让js调用原生的方法或者认识原生的方法，原生模块需要遵守一定的协议。</p>
+
+<h1 id="section-7">原生模块的规范约定</h1>
+
+<p>RCTBridgeModule 桥协议</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>#define RCT_EXPORT_MODULE(js_name) \
+RCT_EXTERN void RCTRegisterModule(Class); \
++ (NSString *)moduleName { return @#js_name; } \
++ (void)load { RCTRegisterModule(self); }
+</code></pre>
+</div>
+
+<p>可选的协议</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>#define RCT_EXPORT_METHOD(method) \
+  RCT_REMAP_METHOD(, method)
+</code></pre>
+</div>
+
+<p>　　　　   UIView *subVIew = [[UIView alloc] initWithFrame:CGRectMake(100, 300, 50, 50)];
+subVIew.backgroundColor = [UIColor grayColor];
+[self.view addSubview:subVIew];
+CAShapeLayer *shaper = [CAShapeLayer layer];
+//    UIBezierPath *base = [UIBezierPath bezierPathWithArcCenter:CGPointMake(25, 25)
+//                                                                  radius:10
+//                                                              startAngle:0
+//                                                                endAngle:2 * M_PI
+//                                                               clockwise:YES];
+//    shaper.path = base.CGPath;</p>
+
+<p>shaper.strokeColor   = [UIColor greenColor].CGColor;   // 边缘线的颜色
+shaper.lineWidth = 2.0;
+shaper.fillRule = kCAFillRuleEvenOdd;
+shaper.fillColor     = [UIColor redColor].CGColor;   // 闭环填充的颜色
+shaper.lineCap       = kCALineCapSquare;               // 边缘线的类型
+[subVIew.layer addSublayer:shaper];</p>
+
+<p>CGMutablePathRef muPath = CGPathCreateMutable();</p>
+
+<p>CGPathAddRect(muPath, nil, CGRectMake(5, 5, 40, 40));</p>
+
+<p>CGPathAddRoundedRect(muPath, nil, CGRectMake((50-10)/2,(50-10)/2, 10, 10), 5, 5);</p>
+
+<p>UIBezierPath *pazPath = [UIBezierPath bezierPathWithCGPath:muPath];
+//    [pazPath closePath];
+shaper.path = pazPath.CGPath;</p>
+
+<p>CGMutablePathRef muPathEnd = CGPathCreateMutable();</p>
+
+<p>CGPathAddRect(muPathEnd, nil, CGRectMake(5, 5, 40, 40));</p>
+
+<p>CGPathAddRoundedRect(muPathEnd, nil, CGRectMake((50-40)/2,(50-40)/2, 40, 40), 20, 20);</p>
+
+<p>UIBezierPath *pazPathEnd = [UIBezierPath bezierPathWithCGPath:muPathEnd];</p>
+
+<p>CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@”path”];
+animation.removedOnCompletion = NO;
+animation.repeatCount = 100;
+animation.autoreverses = YES;
+animation.fillMode = kCAFillModeForwards;
+animation.duration = 2.0;
+animation.fromValue = (__bridge id _Nullable)(muPath);
+animation.toValue = (__bridge id _Nullable)(muPathEnd);</p>
+
+<p>[shaper addAnimation:animation forKey:@”aa”];</p>
+
+<p>http://www.open-open.com/lib/view/open1451460443901.html</p>
+
+
+      </section>
+
+      <section id="comments">
+        
+          <div id="disqus_thread"></div>
+ <script type="text/javascript">
+     /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+     var disqus_shortname = 'jianli2017'; // required: replace example with your forum shortname
+
+     /* * * DON'T EDIT BELOW THIS LINE * * */
+     (function() {
+         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+         dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     })();
+ </script>
+ <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    
+
+        
+      </section>
+
+      <footer>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <p>this project by <a href="https://github.com/jianli2017">jianli2017</a> can be found on <a href="https://github.com/jianli2017//LJBlog/tree/gh-pages">GitHub</a></p>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+        <p>Generated with <a href="http://pages.github.com">GitHub Pages</a> Theme by <a href="https://github.com/cameronmcefee/headsmart/tree/gh-pages">headsmart</a></p>
+        <span class="octocat"></span>
+      </footer>
+
+    </div>
+
+    
+  </body>
+</html>
+

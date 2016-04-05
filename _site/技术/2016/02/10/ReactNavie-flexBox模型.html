@@ -44,12 +44,69 @@
       <span class="banner-fix"></span>
 
       <section id="main_content">
-        <h1>sdfdfdfsdfqfsdfdfdfs</h1>
+        <h1>ReactNative flexBox 伸缩盒子模型</h1>
 
-    <h1 id="section">第一首</h1>
+    <h2 id="flexbox">一、flexBox模型</h2>
 
 <p>　　　　
-http://www.cocoachina.com/bbs/read.php?tid=220409</p>
+任何一个元素都可以指定为flexbox 布局，设置为display:flex或display:inline-flex的元素称为伸缩容器，伸缩容器的子元素称为伸缩项目，下面是伸缩的模型：
+<img src="/LJBlog/images/reactnative/1.png" alt="伸缩模型" /></p>
+
+<h2 id="react-nativeflexbox">二、React Native中使用flexBox</h2>
+
+<ol>
+  <li>
+    <p>flexDirection（伸缩容器）</p>
+  </li>
+  <li>
+    <p>alignItems（伸缩容器）</p>
+  </li>
+  <li>flexWrap（伸缩容器）</li>
+  <li>justifyContent（伸缩容器）</li>
+  <li>alignSelf（伸缩项目）</li>
+  <li>flex （伸缩项目）</li>
+</ol>
+
+<p>flexDirection 指定主轴方向</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>flexDirection:row|column
+</code></pre>
+</div>
+
+<p>效果图如下：
+<a href="/LJBlog/images/reatNative FlexBox模型/1.png">row</a></p>
+
+<p><a href="/LJBlog/images/reatNative FlexBox模型/2.png">column</a></p>
+
+<p>alignItems 该属性用来定义伸缩项目在伸缩容器的交叉轴上的对齐方式</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>alignSelf:auto|flex-start|flex-end|center|stretch
+</code></pre>
+</div>
+
+<p>flexWrap 指定伸缩容器的主轴方向空间不足的情况下，是否换行以及如何换行</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>flexWrap:wrap|noWrap
+</code></pre>
+</div>
+
+<p>justifyContent指定伸缩项目沿主轴线的对齐方式</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>justifyContent:flex-start|flex-end|center|space-between|space-around
+</code></pre>
+</div>
+
+<p>alignSelf</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>alignSelf:auto|flex-start|flex-end|center|stretch
+</code></pre>
+</div>
+
+<p>flex</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>flex:number
+</code></pre>
+</div>
 
 
       </section>
