@@ -31,9 +31,9 @@ flexDirection:row|column
 ~~~
 
 效果图如下：
-[row]({{site.url}}/images/reatNative FlexBox模型/1.png)
+![row]({{site.url}}/images/reatNative FlexBox模型/1.png)
 
-[column]({{site.url}}/images/reatNative FlexBox模型/2.png)
+![column]({{site.url}}/images/reatNative FlexBox模型/2.png)
 
 
 alignItems 该属性用来定义伸缩项目在伸缩容器的交叉轴上的对齐方式
@@ -42,6 +42,11 @@ alignItems 该属性用来定义伸缩项目在伸缩容器的交叉轴上的对
 alignSelf:auto|flex-start|flex-end|center|stretch
 ~~~
 
+![flex-start]({{site.url}}/images/reatNative FlexBox模型/3.png)
+
+![flex-end]({{site.url}}/images/reatNative FlexBox模型/4.png)
+
+![flex-center]({{site.url}}/images/reatNative FlexBox模型/5.png)
 
 
 
