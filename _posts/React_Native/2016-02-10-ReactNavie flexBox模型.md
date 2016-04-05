@@ -12,7 +12,7 @@ comments: true
 
 标准的盒子模型如下图所示：
 
-![标准盒子模型]({{site.url}}/images/reactnative/17.png)
+![标准盒子模型]({{site.url}}/images/reatNative FlexBox模型/17.png)
 
 ### 1.2 伸缩盒子模型
 
