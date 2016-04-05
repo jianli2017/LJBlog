@@ -118,6 +118,8 @@
   </li>
 </ol>
 
+<p>4.<a href="https://segmentfault.com/a/1190000002646155"> JSX </a></p>
+
 <div class="highlighter-rouge"><pre class="highlight"><code>native 的目标是“一处学习，处处编写”，为了实现这个目标，mvc 模块的view 使用jsx（jsx 是js 和xml 混合编写代码的方式，是个语法糖，简化了js处理DOM的过程 ）编写。 ios 端和android端都在自己的平台上实现自己的原生模块的功能，然后暴露出统一的接口， jsx就可以不分平台的控制界面 。
 </code></pre>
 </div>
@@ -231,7 +233,7 @@ npm info underscore //（如果上面配置正确这个命令会有字符串resp
 </code></pre>
 </div>
 
-<h3 id="section-6">1.6 简单修改界面</h3>
+<h3 id="section-6">2.6 简单修改界面</h3>
 
 <p>修改index.ios.js可以简单修改界面，下面是index.ios.js的内容：</p>
 
@@ -288,7 +290,15 @@ AppRegistry.registerComponent('weidian', () =&gt; weidian);
 
 <p>为了能让js调用原生的方法或者认识原生的方法，原生模块需要遵守一定的协议。</p>
 
-<h1 id="section-7">原生模块的规范约定</h1>
+<h2 id="section-7">3. 植入原生的应用</h2>
+
+<h2 id="section-8">3. 微店的例子</h2>
+
+<p>具体的看代码</p>
+
+<h2 id="react-native--1">4. react Native 通信原理</h2>
+
+<h1 id="section-9">原生模块的规范约定</h1>
 
 <p>RCTBridgeModule 桥协议</p>
 

@@ -55,6 +55,8 @@ react native 来源于React，React组件本来就被设计为一个纯粹的、
 
 3.  ReactNative在CSS基础上使用的布局模型：[伸缩盒子模型flexBox](http://jianli2017.github.io/LJBlog/技术/2016/02/10/ReactNavie-flexBox模型.html)
 
+4.[ JSX ](https://segmentfault.com/a/1190000002646155)
+
 ~~~
 native 的目标是“一处学习，处处编写”，为了实现这个目标，mvc 模块的view 使用jsx（jsx 是js 和xml 混合编写代码的方式，是个语法糖，简化了js处理DOM的过程 ）编写。 ios 端和android端都在自己的平台上实现自己的原生模块的功能，然后暴露出统一的接口， jsx就可以不分平台的控制界面 。
 ~~~
@@ -169,7 +171,7 @@ npm info underscore //（如果上面配置正确这个命令会有字符串resp
 registry = https://registry.npm.taobao.org
 ~~~
 
-### 1.6 简单修改界面
+### 2.6 简单修改界面
 
 修改index.ios.js可以简单修改界面，下面是index.ios.js的内容：
 
@@ -227,6 +229,21 @@ AppRegistry.registerComponent('weidian', () => weidian);
 
 
 为了能让js调用原生的方法或者认识原生的方法，原生模块需要遵守一定的协议。
+
+
+## 3. 植入原生的应用
+
+
+
+
+
+## 3. 微店的例子
+
+具体的看代码
+
+
+## 4. react Native 通信原理
+
 
 # 原生模块的规范约定
 
