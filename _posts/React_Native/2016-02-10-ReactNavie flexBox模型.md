@@ -30,7 +30,7 @@ flexDirection 指定主轴方向
 flexDirection:row|column
 ~~~
 
-效果图如下：
+row、column的效果图如下：
 
 ![row]({{site.url}}/images/reatNative FlexBox模型/1.png)
 
@@ -43,7 +43,7 @@ alignItems 该属性用来定义伸缩项目在伸缩容器的交叉轴上的对
 alignSelf:auto|flex-start|flex-end|center|stretch
 ~~~
 
-效果图如下：
+flex-start、flex-end、center的效果图如下：
 
 ![flex-start]({{site.url}}/images/reatNative FlexBox模型/3.png)
 
@@ -58,7 +58,7 @@ flexWrap 指定伸缩容器的主轴方向空间不足的情况下，是否换�
 ~~~
 flexWrap:wrap|nowrap
 ~~~
-效果图如下：
+wrap、nowrap的效果图如下：
 
 ![flex-start]({{site.url}}/images/reatNative FlexBox模型/6.png)
 
@@ -70,7 +70,7 @@ justifyContent指定伸缩项目沿主轴线的对齐方式
 justifyContent:flex-start|flex-end|center|space-between|space-around
 ~~~
 
-效果图如下：
+flex-start、flex-end、center、space-between、space-around的效果图如下：
 
 ![flex-start]({{site.url}}/images/reatNative FlexBox模型/8.png)
 
@@ -82,13 +82,13 @@ justifyContent:flex-start|flex-end|center|space-between|space-around
 
 ![flex-center]({{site.url}}/images/reatNative FlexBox模型/12.png)
 
-alignSelf设置单独的伸缩项目在交叉轴上的对齐方式，会复写默认的对齐方式
+alignSelf 设置单独的伸缩项目在交叉轴上的对齐方式，会覆写默认的对齐方式
 
 ~~~
 alignSelf:auto|flex-start|flex-end|center|stretch
 ~~~
 
-效果图如下：
+lex-start、flex-end、center 的效果图如下：
 
 ![flex-start]({{site.url}}/images/reatNative FlexBox模型/13.png)
 
