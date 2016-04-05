@@ -62,7 +62,7 @@ flexWrap:wrap|nowrap
 
 ![flex-start]({{site.url}}/images/reatNative FlexBox模型/6.png)
 
-![flex-end]({{site.url}}/images/reatNative FlexBox模型/47.png)
+![flex-end]({{site.url}}/images/reatNative FlexBox模型/7.png)
 
 justifyContent指定伸缩项目沿主轴线的对齐方式
 
@@ -82,14 +82,26 @@ justifyContent:flex-start|flex-end|center|space-between|space-around
 
 ![flex-center]({{site.url}}/images/reatNative FlexBox模型/12.png)
 
-alignSelf
+alignSelf设置单独的伸缩项目在交叉轴上的对齐方式，会复写默认的对齐方式
 
 ~~~
 alignSelf:auto|flex-start|flex-end|center|stretch
 ~~~
+
+效果图如下：
+
+![flex-start]({{site.url}}/images/reatNative FlexBox模型/13.png)
+
+![flex-end]({{site.url}}/images/reatNative FlexBox模型/14.png)
+
+![flex-center]({{site.url}}/images/reatNative FlexBox模型/15.png)
 
 flex
 
 ~~~
 flex:number
 ~~~
+
+分别设置四个伸缩项目的 flex为3、2、1、4，效果图如下：
+
+![flex-start]({{site.url}}/images/reatNative FlexBox模型/16.png)
