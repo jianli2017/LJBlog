@@ -122,7 +122,7 @@ safe: false
 rouge: pygments
 title: 程序员人生
 description: 人生到处知何似，应似飞鸿踏雪泥
-theme: hack
+theme: leap-day
 disqusname: jianli2017
 
 # theme can be: hack, leap-day, merlot, midnight, minimal, modernist, slate, time-machine, kunka
