@@ -8,7 +8,7 @@ comments: true
 
 ## 一、 简介
 
-React Native 的详细内容可以参考[中文官方文档](http://reactnative.cn)。 React Native 简介可以参考 [把现代web科技带给移动开发者](http://bbs.reactnative.cn/topic/14/react-native-把现代web科技带给移动开发者)、 [唐巧：谈谈React Native](http://www.csdn.net/article/1970-01-01/2823790) 、[一个资深iOS开发者对于React Native的看法](http://www.linuxidc.com/Linux/2015-09/123239.htm) 、[如何评价 React Native？](http://www.zhihu.com/question/27852694),下面是自己餐桌《把现代web科技带给移动开发者》自己的一点总结：
+React Native 的详细内容可以参考[中文官方文档](http://reactnative.cn)。 React Native 简介可以参考 [《把现代web科技带给移动开发者》](http://bbs.reactnative.cn/topic/14/react-native-把现代web科技带给移动开发者)、 [《唐巧：谈谈React Native》](http://www.csdn.net/article/1970-01-01/2823790) 、[《一个资深iOS开发者对于React Native的看法》](http://www.linuxidc.com/Linux/2015-09/123239.htm) 、[《如何评价 React Native？》](http://www.zhihu.com/question/27852694),下面是自己参考《把现代web科技带给移动开发者》自己的一点总结：
 
 ## 1.1 开发原生的APP 比较困难
 
@@ -16,7 +16,7 @@ React Native 的详细内容可以参考[中文官方文档](http://reactnative.
 
 ## 1.2 开发原生开发非常必要 
 
-1. 原生APP 的用户体验比web Hybird APP 的用户体验好 
+1. 原生APP 的用户体验比web、Hybird APP 的用户体验好 
 2. 在web上，我们也没有一个足够完善的线程模型，很难利用多线程并行执行工作
 
 ## 1.3 将两个世界合二为一？
@@ -29,8 +29,10 @@ React Native 的详细内容可以参考[中文官方文档](http://reactnative.
 
 ## 1.4 用脚本封装原生是一件需要技巧的事情
 
-1. 如果我们只是同步的在原生环境和解释环境之间调用，我们的UI线程很可能会被JavaScript执行阻塞住。
-2. 要提升界面的响应效率，我们知道我们必须把JavaScript放到主线程之外执行，但这么做其实很困难。最直接的困难就是资源访问竞争。如果我们的JavaScript访问什么正好在被别的线程用的东西（譬如一个渲染的View的尺寸），系统就只能加锁来确保方案安全，而这又会导致UI线程的卡顿。还有一个问题在于每次原生和JavaScript虚拟机之间互相访问，在访问过程中都会带来极大的开销。如果我们要经常跨线程访问，我们不得不一次又一次的经历这种开销。
+1. 同步执行JS阻塞UI。  
+如果我们只是同步的在原生环境和解释环境之间调用，我们的UI线程很可能会被JavaScript执行阻塞住。
+2. 异步执行JS会资源竞争、加锁开销大。  
+ 要提升界面的响应效率，我们知道我们必须把JavaScript放到主线程之外执行，但这么做其实很困难。最直接的困难就是资源访问竞争。如果我们的JavaScript访问什么正好在被别的线程用的东西（譬如一个渲染的View的尺寸），系统就只能加锁来确保方案安全，而这又会导致UI线程的卡顿。还有一个问题在于每次原生和JavaScript虚拟机之间互相访问，在访问过程中都会带来极大的开销。如果我们要经常跨线程访问，我们不得不一次又一次的经历这种开销。
 
 ## 1.5 引入React Native
 
@@ -40,10 +42,6 @@ react native 来源于React，React组件本来就被设计为一个纯粹的、
 
 2. React Native着力于提高多平台开发的开发效率 —— 仅需学习一次，编写任何平台。(Learn once, write anywhere)
 3. 写界面的时候，不需要重新编译，直接刷新界面就可以了，这点感觉会大幅提高开发效率。
-
-
-
-
 
 
 ## 1.6 使用React Native 需要了解的知识
@@ -60,15 +58,13 @@ react native 来源于React，React组件本来就被设计为一个纯粹的、
 
 3.  ReactNative在CSS基础上使用的布局模型：[伸缩盒子模型flexBox](http://jianli2017.github.io/LJBlog/技术/2016/02/10/ReactNavie-flexBox模型.html)
 
-4.[ JSX ](https://segmentfault.com/a/1190000002646155)
+4.JSX ，这个一直没有找到好点的资料，可以参考[JSX在React-Native中的应用](http://www.tuicool.com/articles/byiay2N) 、或者[深入浅出React系列文章](http://www.infoq.com/cn/react1/)
 
-~~~
-native 的目标是“一处学习，处处编写”，为了实现这个目标，mvc 模块的view 使用jsx（jsx 是js 和xml 混合编写代码的方式，是个语法糖，简化了js处理DOM的过程 ）编写。 ios 端和android端都在自己的平台上实现自己的原生模块的功能，然后暴露出统一的接口， jsx就可以不分平台的控制界面 。
-~~~
 
 ##  二、搭建开发环境
 
 reactive Native 的中文[网址](http://reactnative.cn),基于IOS的react Native需要的工具包括：
+
 1.xocde  
 2.Node.js 4.0  
 3.使用HomeBrew安装wathman 和flow  
