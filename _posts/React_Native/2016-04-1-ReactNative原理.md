@@ -69,22 +69,22 @@ reactive Native 的中文[网址](http://reactnative.cn),基于IOS的react Nativ
 2.Node.js 4.0  
 3.使用HomeBrew安装wathman 和flow  
 
-### 2.1 安装Node.js
+## 2.1 安装Node.js
 
 前往node.js 的[官网 英文](https://nodejs.org) [官网中文](http://nodejs.cn)下载pkg安装包
 
 Node.js是javascript的运行环境，JavaScript作为前端语言，在浏览器中解释执行，而Node.js 是后端JavaScript运行环境，可以在mac、window、linux上执行JavaScript代码。
 
-### 2.2 使用ruby安装home brew
+## 2.2 使用ruby安装home brew
 
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
-### 2.3 使用home brew安装 watchman 和 flow
+## 2.3 使用home brew安装 watchman 和 flow
 
 brew install watchman   
 如果你希望使用flow来为js代码加上类型检查，那么在命令行中输入brew install flow来安装flow
 
-### 2.4 使用npm 安装 react-native-cli 命令行工具
+## 2.4 使用npm 安装 react-native-cli 命令行工具
 
 安装react-native-cli 命令行工具，在终端中输入： npm install -g react-native-cli
 
@@ -113,7 +113,7 @@ brew install watchman
 ~~~
 
 
-### 2.5 创建一个项目 
+## 2.5 创建一个项目 
 
 在终端中cd到想创建工程的目录，然后输入 react-native init weidian 命令，其中weidian 是应用的名称。例如：
 
@@ -172,7 +172,7 @@ npm info underscore //（如果上面配置正确这个命令会有字符串resp
 registry = https://registry.npm.taobao.org
 ~~~
 
-### 2.6 简单修改界面
+## 2.6 简单修改界面
 
 修改index.ios.js可以简单修改界面，下面是index.ios.js的内容：
 
