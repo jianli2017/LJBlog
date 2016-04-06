@@ -845,7 +845,7 @@ JS调用RCTBridge的enqueueJSCall方法，传入代码和参数，例如JSTimers
   [_invocation getArgument:&value atIndex:index];
 ~~~
 
-# 五、 ReactJS 组件的生命周期 
+# 五、ReactJS
 
 React Native 继承于（来源于ReactJS），所以ReactJS 的核心思想，在React Native中也体现出来了。React 主要的有点有两个：
 
