@@ -10,16 +10,16 @@ comments: true
 
 React Native 的详细内容可以参考[中文官方文档](http://reactnative.cn)。 React Native 简介可以参考 [《把现代web科技带给移动开发者》](http://bbs.reactnative.cn/topic/14/react-native-把现代web科技带给移动开发者)、 [《唐巧：谈谈React Native》](http://www.csdn.net/article/1970-01-01/2823790) 、[《一个资深iOS开发者对于React Native的看法》](http://www.linuxidc.com/Linux/2015-09/123239.htm) 、[《如何评价 React Native？》](http://www.zhihu.com/question/27852694),下面是自己参考《把现代web科技带给移动开发者》自己的一点总结：
 
-## 1.1 开发原生的APP 比较困难
+### 1.1 开发原生的APP 比较困难
 
 开发成本高，耗时，每次发版受apple的限制。
 
-## 1.2 开发原生开发非常必要 
+### 1.2 开发原生开发非常必要 
 
 1. 原生APP 的用户体验比web、Hybird APP 的用户体验好 
 2. 在web上，我们也没有一个足够完善的线程模型，很难利用多线程并行执行工作
 
-## 1.3 将两个世界合二为一？
+### 1.3 将两个世界合二为一？
 
  用脚本封装原生，即用JavaScript去调用原生API，优点：
 
@@ -27,14 +27,14 @@ React Native 的详细内容可以参考[中文官方文档](http://reactnative.
 2. 同时还能享受快速迭代和使用我们现有JavaScript上基础设施的好处
 3. 因为基于JavaScript构建，我们应当能使得这样技术栈跨平台。
 
-## 1.4 用脚本封装原生是一件需要技巧的事情
+### 1.4 用脚本封装原生是一件需要技巧的事情
 
 1. 同步执行JS阻塞UI。  
 如果我们只是同步的在原生环境和解释环境之间调用，我们的UI线程很可能会被JavaScript执行阻塞住。
 2. 异步执行JS会资源竞争、加锁开销大。  
  要提升界面的响应效率，我们知道我们必须把JavaScript放到主线程之外执行，但这么做其实很困难。最直接的困难就是资源访问竞争。如果我们的JavaScript访问什么正好在被别的线程用的东西（譬如一个渲染的View的尺寸），系统就只能加锁来确保方案安全，而这又会导致UI线程的卡顿。还有一个问题在于每次原生和JavaScript虚拟机之间互相访问，在访问过程中都会带来极大的开销。如果我们要经常跨线程访问，我们不得不一次又一次的经历这种开销。
 
-## 1.5 引入React Native
+### 1.5 引入React Native
 
 react native 来源于React，React组件本来就被设计为一个纯粹的、无副作用的函数，函数返回每一个时刻当时的View状态，这样我们无需读取底层View的状态就可以为它写入新的状态。能解决上面提出的问题。
 
@@ -44,7 +44,7 @@ react native 来源于React，React组件本来就被设计为一个纯粹的、
 3. 写界面的时候，不需要重新编译，直接刷新界面就可以了，这点感觉会大幅提高开发效率。
 
 
-## 1.6 使用React Native 需要了解的知识
+### 1.6 使用React Native 需要了解的知识
 
 1. 前端开发工程师必须掌握的三个技能：
 
