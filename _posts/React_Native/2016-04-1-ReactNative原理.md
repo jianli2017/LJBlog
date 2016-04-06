@@ -232,7 +232,7 @@ AppRegistry.registerComponent('weidian', () => weidian);
 为了能让js调用原生的方法或者认识原生的方法，原生模块需要遵守一定的协议。
 
 
-## 三、 植入原生的应用
+##三、 植入原生的应用
 
 
 可以通过cocoaPod安装 React Native，只需要在Podfile中添加一下内容即可
