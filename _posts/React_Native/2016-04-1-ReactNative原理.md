@@ -873,7 +873,7 @@ componentWillUnmount  销毁对象是调用
 
 即在条用React.createClass的时候这个阶段只会触发getDefaultProps方法，该方法返回了一个对象，并缓存下来，然后与父组件指定的props对象合并，最后赋值给this.props作为组件的默认属性，props是一个对象，是组件用来接收外面传来的参数的。组件内部是不允许修改自己的props属性的。
 
-## 5.1.2  实例化阶段  
+### 5.1.2  实例化阶段  
 
 就是组件类被调用的时候，执行顺序是 
 geiInitialState,返回值赋给了this.state属性
@@ -885,7 +885,7 @@ state是组件的属性，他的每次改变都会引发组件的跟新，每次
 
 虚拟DOM 是将真实的DOM结构映射成一个JSON数据结构。
 
-### 5.1.2  更新阶段  
+### 5.1.3  更新阶段  
 
 componentWillReceiveProps（object nextProps） 当组件接收到新的Props时，会触发改函数，在该函数中，通常会调用this.setState方法完成对state的修改。
 
@@ -897,13 +897,13 @@ render 根据一系列的diff算法，生成需要更新的虚拟DOM数据
 
 componentDidUpdate 常在该方法中做一些DOM操作。
 
-### 5.1.3  销毁阶段 
+### 5.1.4  销毁阶段 
 
 自组件调用父组件是通过props实现的。
 
 父组件调用子组件， 子组件被设置为ref之后，父组件就可以通过this.ref.xxx 来获取子组件了，其中xxx为子组件的ref值
 
-### 5.2 虚拟DOM 
+## 5.2 虚拟DOM 
 
 当组件的state属性发生变化时，会自动执行组件的render方法来实现组件的更新，虚拟DOM就是将组件的DOM结构映射到这个虚拟DOM对象上，并且实现了一套diff算法，当组件需要更新的时候，会通过Diff算法找到变更的内容，然后将变化修改到实际的DOM节点上，所以组件的更新不是真的渲染整个DOM树，只是更新需要修改的DOM节点上 
 
