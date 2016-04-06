@@ -61,7 +61,7 @@ react native 来源于React，React组件本来就被设计为一个纯粹的、
 4.JSX ，这个一直没有找到好点的资料，可以参考[JSX在React-Native中的应用](http://www.tuicool.com/articles/byiay2N) 、或者[深入浅出React系列文章](http://www.infoq.com/cn/react1/)
 
 
-##  二、搭建开发环境
+## 二、搭建开发环境
 
 reactive Native 的中文[网址](http://reactnative.cn),基于IOS的react Native需要的工具包括：
 
