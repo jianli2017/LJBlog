@@ -261,7 +261,7 @@ pod 'React', :path => './node_modules/react-native', :subspecs => [
 
 React Native 的基本原理是使用js脚本封装原生的模块，可以访问原生平台的所用特性。具体封装原生模块的原理如下：
 
-![标准盒子模型]({{site.url}}/images/react Native 原理/Native 初始化.png)
+![初始化原理]({{site.url}}/images/react Native 原理/Native 初始化.png)
 
 ### 4.2 原生模块的约定
 
@@ -566,8 +566,179 @@ NSArray<Class> *_moduleClassesByID;
 
 初始化桥 主要完成初始化原生模块、 原生模块的配置信息、 设置JS执行器，并初始化（RCTJSCExecutor） ，最后将配置信息设置到 JS执行器中。
 
+#### 4.4.1 如果引入React Native ,需要先使用你的index.ios.bundle的URI来初始化RCTRootView
+
+~~~
+    jsCodeLocation = [NSURL URLWithString:@"http://localhost:8081/index.ios.bundle?platform=ios&dev=true"];
+    //   jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+    
+    RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
+                                                        moduleName:@"PanApp"
+                                                 initialProperties:nil
+                                                     launchOptions:nil];
+~~~
+
+#### 4.4.2 RCTRootView 的初始化会触发 RCTBridge 的初始化 
+
+~~~
+- (instancetype)initWithBundleURL:(NSURL *)bundleURL
+                       moduleName:(NSString *)moduleName
+                initialProperties:(NSDictionary *)initialProperties
+                    launchOptions:(NSDictionary *)launchOptions
+{
+  RCTBridge *bridge = [[RCTBridge alloc] initWithBundleURL:bundleURL
+                                            moduleProvider:nil
+                                             launchOptions:launchOptions];
+
+  return [self initWithBridge:bridge moduleName:moduleName initialProperties:initialProperties];
+}
+~~~
+
+#### 4.4.3 RCTBridge的初始化会 触发实际干活的batchedBridge 的初始化 
+
+~~~
+- (instancetype)initWithBundleURL:(NSURL *)bundleURL
+                   moduleProvider:(RCTBridgeModuleProviderBlock)block
+                    launchOptions:(NSDictionary *)launchOptions
+{
+  if ((self = [super init])) {
+    RCTPerformanceLoggerStart(RCTPLTTI);
+
+    _bundleURL = bundleURL;
+    _moduleProvider = block;
+    _launchOptions = [launchOptions copy];
+    [self setUp];
+  }
+  return self;
+}
+
+- (void)setUp
+{
+	...
+  // Sanitize the bundle URL
+  _bundleURL = [RCTConvert NSURL:_bundleURL.absoluteString];
+
+  [self createBatchedBridge];
+}
+
+- (void)createBatchedBridge
+{
+  self.batchedBridge = [[RCTBatchedBridge alloc] initWithParentBridge:self];
+}
+~~~
+
+#### 4.4.4 batchedBridge的初始化 
+
+batchedBridge 的初始化，会初始化原生模块、 原生模块的配置信息、 设置JS执行器，并初始化（RCTJSCExecutor） ，最后将配置信息设置到 JS执行器中。
+
+~~~
+- (void)start
+{
+  ...
+  ///1 . 加载JS 代码 
+  __weak RCTBatchedBridge *weakSelf = self;
+  __block NSData *sourceCode;
+  [self loadSource:^(NSError *error, NSData *source) {
+    }
+    sourceCode = source;
+  }];
+
+  ///2   初始化本地模块，本地模块指的是遵循了桥协议的模块  RCTBridgeModule  
+  [self initModulesWithDispatchGroup:initModulesAndLoadSource];
+
+ 
+  /// 3 js 执行器相关的
+  NSString *config;
+  [weakSelf setUpExecutor];
+  
+  config = [weakSelf moduleConfig];
+  RCTPerformanceLoggerEnd(RCTPLNativeModulePrepareConfig);
+  
+  [weakSelf injectJSONConfiguration:config onComplete:^(NSError *error) {
+        RCTPerformanceLoggerEnd(RCTPLNativeModuleInjectConfig);
+        if (error) {
+          
+        }
+  /// 4 执行JS代码 
+  [strongSelf executeSourceCode:sourceCode];
+}
+~~~
+
+初始化原生模块，主要的工作就是初始化所有的原生模块 ，保存到_moduleDataByID、_moduleDataByName、_moduleClassesByID中
+
+~~~
+- (void)initModulesWithDispatchGroup:(dispatch_group_t)dispatchGroup
+{
+  NSMutableArray<Class> *moduleClassesByID = [NSMutableArray new];
+  NSMutableArray<RCTModuleData *> *moduleDataByID = [NSMutableArray new];
+  NSMutableDictionary<NSString *, RCTModuleData *> *moduleDataByName = [NSMutableDictionary new];
+  /// 1 安装自动导出的模块
+  for (Class moduleClass in RCTGetModuleClasses()) {
+    NSString *moduleName = RCTBridgeModuleNameForClass(moduleClass);
+    moduleData = [[RCTModuleData alloc] initWithModuleClass:moduleClass
+                                                     bridge:self];
+    moduleDataByName[moduleName] = moduleData;
+    [moduleClassesByID addObject:moduleClass];
+    [moduleDataByID addObject:moduleData];
+  }
+
+  ///2. 存储
+  _moduleDataByID = [moduleDataByID copy];
+  _moduleDataByName = [moduleDataByName copy];
+  _moduleClassesByID = [moduleClassesByID copy];
+
+  //3. 在实例初始化前 设置js 执行器
+  _javaScriptExecutor = [self moduleForClass:self.executorClass];
+
+  ///4. 实例化本地模块，并设置 实例的桥 （bridge）
+  for (RCTModuleData *moduleData in _moduleDataByID) {
+
+      (void)[moduleData instance];
+      [moduleData gatherConstants];
+  }
+}
+~~~
+
+获取原生模块的配置信息
+
+~~~
+- (NSString *)moduleConfig
+{
+  NSMutableArray<NSArray *> *config = [NSMutableArray new];
+  for (RCTModuleData *moduleData in _moduleDataByID) {
+    if (self.executorClass == [RCTJSCExecutor class]) {
+      [config addObject:@[moduleData.name]];
+    } else {
+      [config addObject:RCTNullIfNil(moduleData.config)];
+    }
+  }
+
+  return RCTJSONStringify(@{
+    @"remoteModuleConfig": config,
+  }, NULL);
+}
+~~~
 
 
+将配置文件注入到JS执行器中
+
+~~~
+- (void)injectJSONConfiguration:(NSString *)configJSON
+                     onComplete:(void (^)(NSError *))onComplete
+{
+  if (!_valid) {
+    return;
+  }
+
+  [_javaScriptExecutor injectJSONText:configJSON
+                  asGlobalObjectNamed:@"__fbBatchedBridgeConfig"
+                             callback:onComplete];
+}
+~~~
+
+#### 4.4.5 JS 调用原生方法 
+
+![JS调用 原生方法]({{site.url}}/images/react Native 原理/JS 调用Native.png)
 
 
 
