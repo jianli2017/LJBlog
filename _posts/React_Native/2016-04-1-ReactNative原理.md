@@ -234,7 +234,20 @@ AppRegistry.registerComponent('weidian', () => weidian);
 ## 3. 植入原生的应用
 
 
+可以通过cocoaPod安装 React Native，只需要在Podfile中添加一下内容即可
 
+~~~
+# 取决于你的工程如何组织，你的node_modules文件夹可能会在别的地方。
+# 请将:path后面的内容修改为正确的路径。
+pod 'React', :path => './node_modules/react-native', :subspecs => [
+  'Core',
+  'RCTImage',
+  'RCTNetwork',
+  'RCTText',
+  'RCTWebSocket',
+  # 添加其他你想在工程中使用的依赖。
+]
+~~~
 
 
 ## 3. 微店的例子
@@ -243,6 +256,17 @@ AppRegistry.registerComponent('weidian', () => weidian);
 
 
 ## 4. react Native 通信原理
+
+### 4.1 初始化的原理
+
+React Native 的基本原理是使用js脚本封装原生的模块，可以访问原生平台的所用特性。具体封装原生模块的原理如下：
+
+![标准盒子模型]({{site.url}}/images/react Native 原理/Native 初始化.png)
+
+
+
+
+
 
 
 # 原生模块的规范约定
