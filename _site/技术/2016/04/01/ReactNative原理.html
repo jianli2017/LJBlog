@@ -121,7 +121,7 @@
 
 <p>4.JSX ，这个一直没有找到好点的资料，可以参考<a href="http://www.tuicool.com/articles/byiay2N">JSX在React-Native中的应用</a> 、或者<a href="http://www.infoq.com/cn/react1/">深入浅出React系列文章</a></p>
 
-<h2 id="section-4">二、搭建开发环境</h2>
+<h1 id="section-4">二、搭建开发环境</h1>
 
 <p>reactive Native 的中文<a href="http://reactnative.cn">网址</a>,基于IOS的react Native需要的工具包括：</p>
 
@@ -135,7 +135,7 @@
 
 <p>Node.js是javascript的运行环境，JavaScript作为前端语言，在浏览器中解释执行，而Node.js 是后端JavaScript运行环境，可以在mac、window、linux上执行JavaScript代码。</p>
 
-<h2 id="rubyhome-brew">2.2 使用ruby安装home brew</h2>
+<h3 id="rubyhome-brew">2.2 使用ruby安装home brew</h3>
 
 <p>ruby -e “$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)”</p>
 
@@ -305,17 +305,17 @@ pod 'React', :path =&gt; './node_modules/react-native', :subspecs =&gt; [
 </code></pre>
 </div>
 
-<h2 id="react-native--1">四、 react Native 通信原理</h2>
+<h1 id="react-native--1">四、 react Native 通信原理</h1>
 
 <p>React Native 的通信原理可以参照<a href="http://www.open-open.com/lib/view/open1451460443901.html">使用 JS 构建跨平台的原生应用：React Native iOS 通信机制初探</a>,这篇文章的作者应该是做前端的，分析了部分JS通信过程中的JS部分。下面我是分析的Native部分（IOS部分）。</p>
 
-<h3 id="section-8">4.1 初始化的原理</h3>
+<h2 id="section-8">4.1 初始化的原理</h2>
 
 <p>React Native 的基本原理是使用js脚本封装原生的模块，可以访问原生平台的所用特性。具体封装原生模块的原理如下：</p>
 
 <p><img src="/LJBlog/images/react Native 原理/Native 初始化.png" alt="初始化原理" /></p>
 
-<h3 id="section-9">4.2 原生模块的约定</h3>
+<h2 id="section-9">4.2 原生模块的约定</h2>
 
 <p>原生模块需要RCTBridgeModule协议，或者说遵循了RCTBridgeModule协议的模块称为原生模块，遵循RCTBridgeModule协议只需要在类中包含RCT_EXPORT_MODULE()宏。</p>
 
@@ -500,7 +500,7 @@ RCT_EXPORT_METHOD(updateStatusBarAnimation:(UIStatusBarAnimation)animation
 </code></pre>
 </div>
 
-<h3 id="rctmoduledata">4.3 管理原生模块类 RCTModuleData</h3>
+<h2 id="rctmoduledata">4.3 管理原生模块类 RCTModuleData</h2>
 
 <p>RCTModuleData 管理原生模块的类，RCTBridge持有该类的实例 。RCTBridge初始化该类的时候，会将所有的原生模块都初始化为一个RCTModuleData的实例，每个实例包括原生模块的导出方法、导出常量、配置信息、原生模块的实例，最后将所有的RCTModuleData 实例保存到RCTBridge的下面三个成员变量中。JS调用原生方法的时候，就会从这三个实例中查找对应的模块、方法，然后invoke 方法。</p>
 
@@ -614,11 +614,11 @@ NSArray&lt;Class&gt; *_moduleClassesByID;
 </code></pre>
 </div>
 
-<h3 id="rctbride">4.4 初始化桥 （RCTBride）</h3>
+<h2 id="rctbride">4.4 初始化桥 （RCTBride）</h2>
 
 <p>初始化桥 主要完成初始化原生模块、 原生模块的配置信息、 设置JS执行器，并初始化（RCTJSCExecutor） ，最后将配置信息设置到 JS执行器中。</p>
 
-<h4 id="react-native-indexiosbundleurirctrootview">4.4.1 如果引入React Native ,需要先使用你的index.ios.bundle的URI来初始化RCTRootView</h4>
+<h3 id="react-native-indexiosbundleurirctrootview">4.4.1 如果引入React Native ,需要先使用你的index.ios.bundle的URI来初始化RCTRootView</h3>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>    jsCodeLocation = [NSURL URLWithString:@"http://localhost:8081/index.ios.bundle?platform=ios&amp;dev=true"];
     //   jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
@@ -630,7 +630,7 @@ NSArray&lt;Class&gt; *_moduleClassesByID;
 </code></pre>
 </div>
 
-<h4 id="rctrootview--rctbridge-">4.4.2 RCTRootView 的初始化会触发 RCTBridge 的初始化</h4>
+<h3 id="rctrootview--rctbridge-">4.4.2 RCTRootView 的初始化会触发 RCTBridge 的初始化</h3>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>- (instancetype)initWithBundleURL:(NSURL *)bundleURL
                        moduleName:(NSString *)moduleName
@@ -646,7 +646,7 @@ NSArray&lt;Class&gt; *_moduleClassesByID;
 </code></pre>
 </div>
 
-<h4 id="rctbridge-batchedbridge-">4.4.3 RCTBridge的初始化会 触发实际干活的batchedBridge 的初始化</h4>
+<h3 id="rctbridge-batchedbridge-">4.4.3 RCTBridge的初始化会 触发实际干活的batchedBridge 的初始化</h3>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>- (instancetype)initWithBundleURL:(NSURL *)bundleURL
                    moduleProvider:(RCTBridgeModuleProviderBlock)block
@@ -679,7 +679,7 @@ NSArray&lt;Class&gt; *_moduleClassesByID;
 </code></pre>
 </div>
 
-<h4 id="batchedbridge">4.4.4 batchedBridge的初始化</h4>
+<h3 id="batchedbridge">4.4.4 batchedBridge的初始化</h3>
 
 <p>batchedBridge 的初始化，会初始化原生模块、 原生模块的配置信息、 设置JS执行器，并初始化（RCTJSCExecutor） ，最后将配置信息设置到 JS执行器中。</p>
 
@@ -787,7 +787,7 @@ NSArray&lt;Class&gt; *_moduleClassesByID;
 </code></pre>
 </div>
 
-<h4 id="js-">4.4.5 JS 调用原生方法</h4>
+<h3 id="js-">4.4.5 JS 调用原生方法</h3>
 
 <p><img src="/LJBlog/images/react Native 原理/JS 调用Native.png" alt="JS调用 原生方法" /></p>
 
@@ -899,7 +899,7 @@ NSArray&lt;Class&gt; *_moduleClassesByID;
 </code></pre>
 </div>
 
-<h2 id="reactjs-">五、 ReactJS 组件的生命周期</h2>
+<h1 id="reactjs-">五、 ReactJS 组件的生命周期</h1>
 
 <p>React Native 继承于（来源于ReactJS），所以ReactJS 的核心思想，在React Native中也体现出来了。React 主要的有点有两个：</p>
 
@@ -910,7 +910,7 @@ NSArray&lt;Class&gt; *_moduleClassesByID;
 
 <p>ReactJS 和核心思想是组件化，即按照功能封装一个一个组件，各个组件维护自己的状态和UI，当状态发生变化时，会自动重新渲染整个组件，多个组件一起协作共同构成了ReactJS应用。</p>
 
-<h3 id="section-18">5.1  组件的生命周期</h3>
+<h2 id="section-18">5.1  组件的生命周期</h2>
 
 <p>getDefaultProps 创建阶段<br />
 getInitialState 实例化阶段  <br />
@@ -929,7 +929,7 @@ componentWillUnmount  销毁对象是调用</p>
 
 <p>即在条用React.createClass的时候这个阶段只会触发getDefaultProps方法，该方法返回了一个对象，并缓存下来，然后与父组件指定的props对象合并，最后赋值给this.props作为组件的默认属性，props是一个对象，是组件用来接收外面传来的参数的。组件内部是不允许修改自己的props属性的。</p>
 
-<h3 id="section-20">5.1.2  实例化阶段</h3>
+<h2 id="section-20">5.1.2  实例化阶段</h2>
 
 <p>就是组件类被调用的时候，执行顺序是 
 geiInitialState,返回值赋给了this.state属性
@@ -963,7 +963,7 @@ componentDidMount</p>
 
 <p>当组件的state属性发生变化时，会自动执行组件的render方法来实现组件的更新，虚拟DOM就是将组件的DOM结构映射到这个虚拟DOM对象上，并且实现了一套diff算法，当组件需要更新的时候，会通过Diff算法找到变更的内容，然后将变化修改到实际的DOM节点上，所以组件的更新不是真的渲染整个DOM树，只是更新需要修改的DOM节点上</p>
 
-<h2 id="section-23">六. 微店的例子</h2>
+<h1 id="section-23">六. 微店的例子</h1>
 
 <p>具体的看代码</p>
 

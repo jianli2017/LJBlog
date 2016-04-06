@@ -61,7 +61,7 @@ react native 来源于React，React组件本来就被设计为一个纯粹的、
 4.JSX ，这个一直没有找到好点的资料，可以参考[JSX在React-Native中的应用](http://www.tuicool.com/articles/byiay2N) 、或者[深入浅出React系列文章](http://www.infoq.com/cn/react1/)
 
 
-## 二、搭建开发环境
+# 二、搭建开发环境
 
 reactive Native 的中文[网址](http://reactnative.cn),基于IOS的react Native需要的工具包括：
 
@@ -75,7 +75,7 @@ reactive Native 的中文[网址](http://reactnative.cn),基于IOS的react Nativ
 
 Node.js是javascript的运行环境，JavaScript作为前端语言，在浏览器中解释执行，而Node.js 是后端JavaScript运行环境，可以在mac、window、linux上执行JavaScript代码。
 
-## 2.2 使用ruby安装home brew
+### 2.2 使用ruby安装home brew
 
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
@@ -250,17 +250,17 @@ pod 'React', :path => './node_modules/react-native', :subspecs => [
 ]
 ~~~
 
-## 四、 react Native 通信原理
+# 四、 react Native 通信原理
 
 React Native 的通信原理可以参照[使用 JS 构建跨平台的原生应用：React Native iOS 通信机制初探](http://www.open-open.com/lib/view/open1451460443901.html),这篇文章的作者应该是做前端的，分析了部分JS通信过程中的JS部分。下面我是分析的Native部分（IOS部分）。
 
-### 4.1 初始化的原理
+## 4.1 初始化的原理
 
 React Native 的基本原理是使用js脚本封装原生的模块，可以访问原生平台的所用特性。具体封装原生模块的原理如下：
 
 ![初始化原理]({{site.url}}/images/react Native 原理/Native 初始化.png)
 
-### 4.2 原生模块的约定
+## 4.2 原生模块的约定
 
 原生模块需要RCTBridgeModule协议，或者说遵循了RCTBridgeModule协议的模块称为原生模块，遵循RCTBridgeModule协议只需要在类中包含RCT_EXPORT_MODULE()宏。
 
@@ -445,7 +445,7 @@ RCT_EXPORT_METHOD(doSomethingExpensive:(NSString *)param callback:(RCTResponseSe
 }
 ~~~
 
-### 4.3 管理原生模块类 RCTModuleData
+## 4.3 管理原生模块类 RCTModuleData
 
 RCTModuleData 管理原生模块的类，RCTBridge持有该类的实例 。RCTBridge初始化该类的时候，会将所有的原生模块都初始化为一个RCTModuleData的实例，每个实例包括原生模块的导出方法、导出常量、配置信息、原生模块的实例，最后将所有的RCTModuleData 实例保存到RCTBridge的下面三个成员变量中。JS调用原生方法的时候，就会从这三个实例中查找对应的模块、方法，然后invoke 方法。
 
@@ -559,11 +559,11 @@ NSArray<Class> *_moduleClassesByID;
 }
 ~~~
 
-### 4.4 初始化桥 （RCTBride）
+## 4.4 初始化桥 （RCTBride）
 
 初始化桥 主要完成初始化原生模块、 原生模块的配置信息、 设置JS执行器，并初始化（RCTJSCExecutor） ，最后将配置信息设置到 JS执行器中。
 
-#### 4.4.1 如果引入React Native ,需要先使用你的index.ios.bundle的URI来初始化RCTRootView
+### 4.4.1 如果引入React Native ,需要先使用你的index.ios.bundle的URI来初始化RCTRootView
 
 ~~~
     jsCodeLocation = [NSURL URLWithString:@"http://localhost:8081/index.ios.bundle?platform=ios&dev=true"];
@@ -575,7 +575,7 @@ NSArray<Class> *_moduleClassesByID;
                                                      launchOptions:nil];
 ~~~
 
-#### 4.4.2 RCTRootView 的初始化会触发 RCTBridge 的初始化 
+### 4.4.2 RCTRootView 的初始化会触发 RCTBridge 的初始化 
 
 ~~~
 - (instancetype)initWithBundleURL:(NSURL *)bundleURL
@@ -591,7 +591,7 @@ NSArray<Class> *_moduleClassesByID;
 }
 ~~~
 
-#### 4.4.3 RCTBridge的初始化会 触发实际干活的batchedBridge 的初始化 
+### 4.4.3 RCTBridge的初始化会 触发实际干活的batchedBridge 的初始化 
 
 ~~~
 - (instancetype)initWithBundleURL:(NSURL *)bundleURL
@@ -624,7 +624,7 @@ NSArray<Class> *_moduleClassesByID;
 }
 ~~~
 
-#### 4.4.4 batchedBridge的初始化 
+### 4.4.4 batchedBridge的初始化 
 
 batchedBridge 的初始化，会初始化原生模块、 原生模块的配置信息、 设置JS执行器，并初始化（RCTJSCExecutor） ，最后将配置信息设置到 JS执行器中。
 
@@ -733,7 +733,7 @@ batchedBridge 的初始化，会初始化原生模块、 原生模块的配置�
 }
 ~~~
 
-#### 4.4.5 JS 调用原生方法 
+### 4.4.5 JS 调用原生方法 
 
 ![JS调用 原生方法]({{site.url}}/images/react Native 原理/JS 调用Native.png)
 
@@ -845,7 +845,7 @@ JS调用RCTBridge的enqueueJSCall方法，传入代码和参数，例如JSTimers
   [_invocation getArgument:&value atIndex:index];
 ~~~
 
-## 五、 ReactJS 组件的生命周期 
+# 五、 ReactJS 组件的生命周期 
 
 React Native 继承于（来源于ReactJS），所以ReactJS 的核心思想，在React Native中也体现出来了。React 主要的有点有两个：
 
@@ -854,7 +854,7 @@ React Native 继承于（来源于ReactJS），所以ReactJS 的核心思想，�
 
 ReactJS 和核心思想是组件化，即按照功能封装一个一个组件，各个组件维护自己的状态和UI，当状态发生变化时，会自动重新渲染整个组件，多个组件一起协作共同构成了ReactJS应用。
 
-### 5.1  组件的生命周期 
+## 5.1  组件的生命周期 
  
 getDefaultProps 创建阶段  
 getInitialState 实例化阶段    
@@ -873,7 +873,7 @@ componentWillUnmount  销毁对象是调用
 
 即在条用React.createClass的时候这个阶段只会触发getDefaultProps方法，该方法返回了一个对象，并缓存下来，然后与父组件指定的props对象合并，最后赋值给this.props作为组件的默认属性，props是一个对象，是组件用来接收外面传来的参数的。组件内部是不允许修改自己的props属性的。
 
-### 5.1.2  实例化阶段  
+## 5.1.2  实例化阶段  
 
 就是组件类被调用的时候，执行顺序是 
 geiInitialState,返回值赋给了this.state属性
@@ -908,6 +908,6 @@ componentDidUpdate 常在该方法中做一些DOM操作。
 当组件的state属性发生变化时，会自动执行组件的render方法来实现组件的更新，虚拟DOM就是将组件的DOM结构映射到这个虚拟DOM对象上，并且实现了一套diff算法，当组件需要更新的时候，会通过Diff算法找到变更的内容，然后将变化修改到实际的DOM节点上，所以组件的更新不是真的渲染整个DOM树，只是更新需要修改的DOM节点上 
 
 
-## 六. 微店的例子
+# 六. 微店的例子
 
 具体的看代码
