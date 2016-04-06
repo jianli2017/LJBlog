@@ -39,6 +39,11 @@ react native 来源于React，React组件本来就被设计为一个纯粹的、
 1. React Native使你能够在Javascript和React的基础上获得完全一致的开发体验，构建世界一流的原生APP。
 
 2. React Native着力于提高多平台开发的开发效率 —— 仅需学习一次，编写任何平台。(Learn once, write anywhere)
+3. 写界面的时候，不需要重新编译，直接刷新界面就可以了，这点感觉会大幅提高开发效率。
+
+
+
+
 
 
 ## 1.6 使用React Native 需要了解的知识
