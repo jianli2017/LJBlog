@@ -740,6 +740,115 @@ batchedBridge 的初始化，会初始化原生模块、 原生模块的配置�
 
 ![JS调用 原生方法]({{site.url}}/images/react Native 原理/JS 调用Native.png)
 
+JS调用RCTBridge的enqueueJSCall方法，传入代码和参数，例如JSTimersExecution.callTimers
+
+~~~
+- (void)enqueueJSCall:(NSString *)moduleDotMethod args:(NSArray *)args
+{
+  [self.batchedBridge enqueueJSCall:moduleDotMethod args:args];
+}
+~~~
+
+上面触发了实际干活的桥（batchedBridge） 的enqueueJSCall方法，该方法 在JS执行线程执行JS代码。
+
+~~~
+- (void)enqueueJSCall:(NSString *)moduleDotMethod args:(NSArray *)args
+{
+  NSArray<NSString *> *ids = [moduleDotMethod componentsSeparatedByString:@"."];
+
+  NSString *module = ids[0];
+  NSString *method = ids[1];
+
+  RCTProfileBeginFlowEvent();
+  __weak RCTBatchedBridge *weakSelf = self;
+  [_javaScriptExecutor executeBlockOnJavaScriptQueue:^{
+
+  [strongSelf _actuallyInvokeAndProcessModule:module method:method arguments:args ?: @[]];
+  }];
+}
+~~~
+
+ JS执行器执行JS代码，js执行器会根据配置文件返回模块ID，方法ID。格式是json格式，JS执行成功会回调handleBuffer方法
+
+~~~
+- (void)_actuallyInvokeAndProcessModule:(NSString *)module
+                                 method:(NSString *)method
+                              arguments:(NSArray *)args
+{
+  RCTJavaScriptCallback processResponse = ^(id json, NSError *error) {
+///根据返回的json，执行本地方法
+    [self handleBuffer:json batchEnded:YES];
+  };
+
+/// 执行js 代码，有JavaScript core 执行，返回json类型的 原生模块ID、方法ID
+  [_javaScriptExecutor callFunctionOnModule:module
+                                     method:method
+                                  arguments:args
+                                   callback:processResponse];
+}
+
+- (void)handleBuffer:(id)buffer batchEnded:(BOOL)batchEnded
+{
+  [self handleBuffer:buffer];
+}
+~~~
+
+根据模块ID、方法ID、参数执行 原生方法。
+
+~~~
+- (void)handleBuffer:(NSArray *)buffer
+{
+
+///JS类型转native类型
+ NSArray *requestsArray = [RCTConvert NSArray:buffer];
+/// 原生模块类名
+  NSArray<NSNumber *> *moduleIDs = [RCTConvert NSNumberArray:requestsArray[RCTBridgeFieldRequestModuleIDs]];
+///方法名
+  NSArray<NSNumber *> *methodIDs = [RCTConvert NSNumberArray:requestsArray[RCTBridgeFieldMethodIDs]];
+///参数
+  NSArray<NSArray *> *paramsArrays = [RCTConvert NSArrayArray:requestsArray[RCTBridgeFieldParams]];
+
+[self _handleRequestNumber:index
+                            moduleID:[moduleIDs[index] integerValue]
+                            methodID:[methodIDs[index] integerValue]
+                              params:paramsArrays[index]];
+}
+
+- (BOOL)_handleRequestNumber:(NSUInteger)i
+                    moduleID:(NSUInteger)moduleID
+                    methodID:(NSUInteger)methodID
+                      params:(NSArray *)params
+{
+	/// 根据模块ID、 方法ID 获取原生模块的的模块名、方法名
+  RCTModuleData *moduleData = _moduleDataByID[moduleID];
+  id<RCTBridgeMethod> method = moduleData.methods[methodID];
+
+ ///分发消息
+  @try {
+    [method invokeWithBridge:self module:moduleData.instance arguments:params];
+  }
+  return YES;
+}
+~~~
+
+分发消息 ，分发消息使用了[invocation] (http://blog.csdn.net/yhawaii/article/details/8306637)
+
+~~~
+- (void)invokeWithBridge:(RCTBridge *)bridge
+                  module:(id)module
+               arguments:(NSArray *)arguments
+{
+  ///处理方法签名
+  [self processMethodSignature];
+
+  /// 消息分发
+  [_invocation invokeWithTarget:module];
+
+  /// 
+  [_invocation getArgument:&value atIndex:index];
+~~~
+
+
 
 
 
