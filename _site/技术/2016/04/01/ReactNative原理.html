@@ -288,7 +288,7 @@ AppRegistry.registerComponent('weidian', () =&gt; weidian);
 
 <p>为了能让js调用原生的方法或者认识原生的方法，原生模块需要遵守一定的协议。</p>
 
-<h2 id="section-7">3. 植入原生的应用</h2>
+<h2 id="section-7">三、 植入原生的应用</h2>
 
 <p>可以通过cocoaPod安装 React Native，只需要在Podfile中添加一下内容即可</p>
 
@@ -305,7 +305,7 @@ pod 'React', :path =&gt; './node_modules/react-native', :subspecs =&gt; [
 </code></pre>
 </div>
 
-<h2 id="react-native--1">4. react Native 通信原理</h2>
+<h2 id="react-native--1">四、 react Native 通信原理</h2>
 
 <p>React Native 的通信原理可以参照<a href="http://www.open-open.com/lib/view/open1451460443901.html">使用 JS 构建跨平台的原生应用：React Native iOS 通信机制初探</a>,这篇文章的作者应该是做前端的，分析了部分JS通信过程中的JS部分。下面我是分析的Native部分（IOS部分）。</p>
 
@@ -899,7 +899,7 @@ NSArray&lt;Class&gt; *_moduleClassesByID;
 </code></pre>
 </div>
 
-<h2 id="reactjs-">5 ReactJS 组件的生命周期</h2>
+<h2 id="reactjs-">五、 ReactJS 组件的生命周期</h2>
 
 <p>React Native 继承于（来源于ReactJS），所以ReactJS 的核心思想，在React Native中也体现出来了。React 主要的有点有两个：</p>
 
@@ -963,7 +963,7 @@ componentDidMount</p>
 
 <p>当组件的state属性发生变化时，会自动执行组件的render方法来实现组件的更新，虚拟DOM就是将组件的DOM结构映射到这个虚拟DOM对象上，并且实现了一套diff算法，当组件需要更新的时候，会通过Diff算法找到变更的内容，然后将变化修改到实际的DOM节点上，所以组件的更新不是真的渲染整个DOM树，只是更新需要修改的DOM节点上</p>
 
-<h2 id="section-23">6. 微店的例子</h2>
+<h2 id="section-23">六. 微店的例子</h2>
 
 <p>具体的看代码</p>
 

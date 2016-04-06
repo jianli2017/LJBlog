@@ -232,7 +232,7 @@ AppRegistry.registerComponent('weidian', () => weidian);
 为了能让js调用原生的方法或者认识原生的方法，原生模块需要遵守一定的协议。
 
 
-## 3. 植入原生的应用
+## 三、 植入原生的应用
 
 
 可以通过cocoaPod安装 React Native，只需要在Podfile中添加一下内容即可
@@ -250,7 +250,7 @@ pod 'React', :path => './node_modules/react-native', :subspecs => [
 ]
 ~~~
 
-## 4. react Native 通信原理
+## 四、 react Native 通信原理
 
 React Native 的通信原理可以参照[使用 JS 构建跨平台的原生应用：React Native iOS 通信机制初探](http://www.open-open.com/lib/view/open1451460443901.html),这篇文章的作者应该是做前端的，分析了部分JS通信过程中的JS部分。下面我是分析的Native部分（IOS部分）。
 
@@ -845,7 +845,7 @@ JS调用RCTBridge的enqueueJSCall方法，传入代码和参数，例如JSTimers
   [_invocation getArgument:&value atIndex:index];
 ~~~
 
-## 5 ReactJS 组件的生命周期 
+## 五、 ReactJS 组件的生命周期 
 
 React Native 继承于（来源于ReactJS），所以ReactJS 的核心思想，在React Native中也体现出来了。React 主要的有点有两个：
 
@@ -908,6 +908,6 @@ componentDidUpdate 常在该方法中做一些DOM操作。
 当组件的state属性发生变化时，会自动执行组件的render方法来实现组件的更新，虚拟DOM就是将组件的DOM结构映射到这个虚拟DOM对象上，并且实现了一套diff算法，当组件需要更新的时候，会通过Diff算法找到变更的内容，然后将变化修改到实际的DOM节点上，所以组件的更新不是真的渲染整个DOM树，只是更新需要修改的DOM节点上 
 
 
-## 6. 微店的例子
+## 六. 微店的例子
 
 具体的看代码
