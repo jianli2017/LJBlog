@@ -8,7 +8,7 @@ comments: true
 
 ## 一、 简介
 
-reactnative 引入的原理可以参考 [把现代web科技带给移动开发者](http://bbs.reactnative.cn/topic/14/react-native-把现代web科技带给移动开发者),下面是自己的一点总结：
+React Native 的详细内容可以参考[中文官方文档](http://reactnative.cn)。 React Native 简介可以参考 [把现代web科技带给移动开发者](http://bbs.reactnative.cn/topic/14/react-native-把现代web科技带给移动开发者)、 [唐巧：谈谈React Native](http://www.csdn.net/article/1970-01-01/2823790) 、[一个资深iOS开发者对于React Native的看法](http://www.linuxidc.com/Linux/2015-09/123239.htm) 、[如何评价 React Native？](http://www.zhihu.com/question/27852694),下面是自己餐桌《把现代web科技带给移动开发者》自己的一点总结：
 
 ## 1.1 开发原生的APP 比较困难
 
@@ -249,13 +249,9 @@ pod 'React', :path => './node_modules/react-native', :subspecs => [
 ]
 ~~~
 
-
-## 3. 微店的例子
-
-具体的看代码
-
-
 ## 4. react Native 通信原理
+
+React Native 的通信原理可以参照[使用 JS 构建跨平台的原生应用：React Native iOS 通信机制初探](http://www.open-open.com/lib/view/open1451460443901.html),这篇文章的作者应该是做前端的，分析了部分JS通信过程中的JS部分。下面我是分析的Native部分（IOS部分）。
 
 ### 4.1 初始化的原理
 
@@ -848,8 +844,69 @@ JS调用RCTBridge的enqueueJSCall方法，传入代码和参数，例如JSTimers
   [_invocation getArgument:&value atIndex:index];
 ~~~
 
+## 5 ReactJS 组件的生命周期 
+
+React Native 继承于（来源于ReactJS），所以ReactJS 的核心思想，在React Native中也体现出来了。React 主要的有点有两个：
+
+1. 组件化
+2. 虚拟DOM
+
+ReactJS 和核心思想是组件化，即按照功能封装一个一个组件，各个组件维护自己的状态和UI，当状态发生变化时，会自动重新渲染整个组件，多个组件一起协作共同构成了ReactJS应用。
+
+### 5.1  组件的生命周期 
+ 
+getDefaultProps 创建阶段  
+getInitialState 实例化阶段    
+componentWillMount  在render 之前调用   
+render 渲染并返回一个虚拟的DOM  
+componentDidMount  在render 之后调用   
+componentWillRecieveProps 在this.props被修改或者父组件调用setProps方法之后   
+shouldComponentUpdate  是否需要更新   
+componentWillUpdate  将要更新  
+componentDidUpdate  更新完毕   
+componentWillUnmount  销毁对象是调用  
+
+主要包括四个阶段 创建阶段、实例化阶段、更新阶段、 销毁阶段  
+
+### 5.1.1  创建阶段  
+
+即在条用React.createClass的时候这个阶段只会触发getDefaultProps方法，该方法返回了一个对象，并缓存下来，然后与父组件指定的props对象合并，最后赋值给this.props作为组件的默认属性，props是一个对象，是组件用来接收外面传来的参数的。组件内部是不允许修改自己的props属性的。
+
+### 5.1.2  实例化阶段  
+
+就是组件类被调用的时候，执行顺序是 
+geiInitialState,返回值赋给了this.state属性
+componentWillMount根据业务逻辑对state进行相应的操作
+render 根据state的值，生成页面需要的DOM结构，并返回该结构
+componentDidMount
+
+state是组件的属性，他的每次改变都会引发组件的跟新，每次组件的更新都是通过修改state属性的值。ReactJS内部会监听state属性的变化，一旦发生变化，就会主动触发组件的render方法来更新DOM的结构。
+
+虚拟DOM 是将真实的DOM结构映射成一个JSON数据结构。
+
+### 5.1.2  更新阶段  
+
+componentWillReceiveProps（object nextProps） 当组件接收到新的Props时，会触发改函数，在该函数中，通常会调用this.setState方法完成对state的修改。
+
+shouldComponentUpdate（nextProps， nextState），该方法会拦截新的props 和state
+
+componentWillUpdate（nextProps，nextState） 
+
+render 根据一系列的diff算法，生成需要更新的虚拟DOM数据
+
+componentDidUpdate 常在该方法中做一些DOM操作。
+
+### 5.1.3  销毁阶段 
+
+自组件调用父组件是通过props实现的。
+
+父组件调用子组件， 子组件被设置为ref之后，父组件就可以通过this.ref.xxx 来获取子组件了，其中xxx为子组件的ref值
+
+### 5.2 虚拟DOM 
+
+当组件的state属性发生变化时，会自动执行组件的render方法来实现组件的更新，虚拟DOM就是将组件的DOM结构映射到这个虚拟DOM对象上，并且实现了一套diff算法，当组件需要更新的时候，会通过Diff算法找到变更的内容，然后将变化修改到实际的DOM节点上，所以组件的更新不是真的渲染整个DOM树，只是更新需要修改的DOM节点上 
 
 
+## 6. 微店的例子
 
-
-http://www.open-open.com/lib/view/open1451460443901.html
+具体的看代码
