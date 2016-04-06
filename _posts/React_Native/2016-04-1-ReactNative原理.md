@@ -263,8 +263,298 @@ React Native 的基本原理是使用js脚本封装原生的模块，可以访�
 
 ![标准盒子模型]({{site.url}}/images/react Native 原理/Native 初始化.png)
 
+### 4.2 原生模块的约定
 
+原生模块需要RCTBridgeModule协议，或者说遵循了RCTBridgeModule协议的模块称为原生模块，遵循RCTBridgeModule协议只需要在类中包含RCT_EXPORT_MODULE()宏。
 
+~~~
+@implementation CalendarManager
+
+RCT_EXPORT_MODULE();
+
+@end
+~~~
+
+RCT_EXPORT_MODULE的作用是将原生模块导入到配置文件中，使JS 可以调用到，这个红的原理如下
+
+~~~
+#define RCT_EXPORT_MODULE(js_name) \
+RCT_EXTERN void RCTRegisterModule(Class); \
++ (NSString *)moduleName { return @#js_name; } \
++ (void)load { RCTRegisterModule(self); }
+~~~
+
+下面是RCTRegisterModule的实现
+
+~~~
+static NSMutableArray<Class> *RCTModuleClasses;
+void RCTRegisterModule(Class moduleClass)
+{
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    RCTModuleClasses = [NSMutableArray new];
+  });
+
+  RCTAssert([moduleClass conformsToProtocol:@protocol(RCTBridgeModule)],
+            @"%@ does not conform to the RCTBridgeModule protocol",
+            moduleClass);
+
+  // Register module
+  [RCTModuleClasses addObject:moduleClass];
+
+  objc_setAssociatedObject(moduleClass, &RCTBridgeModuleClassIsRegistered,
+                           @NO, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+~~~
+
+即在load的时候将原生模块添加到RCTModuleClasses数组中，jsBridge初始话的时候，读取RCTModuleClasses内容，自动构造配置文件，设置到JS执行器中。
+
+#### 4.2.1导出方法
+
+导出方法 指的是导出方法给JavaScript调用，否则React Native不会导出任何方法。通过RCT_EXPORT_METHOD()宏来实现：
+
+~~~
+RCT_EXPORT_METHOD(addEvent:(NSString *)name location:(NSString *)location)
+{
+  RCTLogInfo(@"Pretending to create an event %@ at %@", name, location);
+}
+~~~
+
+在JavaScript中条用这个方法：
+
+~~~
+var CalendarManager = require('react-native').NativeModules.CalendarManager;
+CalendarManager.addEvent('Birthday Party', '4 Privet Drive, Surrey');
+~~~
+
+导出方法原理如下：
+
+~~~
+#define RCT_EXPORT_METHOD(method) \
+  RCT_REMAP_METHOD(, method)
+  
+  #define RCT_REMAP_METHOD(js_name, method) \
+  RCT_EXTERN_REMAP_METHOD(js_name, method) \
+  - (void)method
+
+  #define RCT_EXTERN_REMAP_METHOD(js_name, method) \
+  + (NSArray<NSString *> *)RCT_CONCAT(__rct_export__, \
+    RCT_CONCAT(js_name, RCT_CONCAT(__LINE__, __COUNTER__))) { \
+    return @[@#js_name, @#method]; \
+  }
+  
+  #define RCT_CONCAT2(A, B) A ## B
+#define RCT_CONCAT(A, B) RCT_CONCAT2(A, B)
+
+~~~
+
+其实相当于声明了两个方法，一个类方法，供自动生成配置文件使用，一个是实例方法，即导出的方法
+
+~~~
++(NSArray<NSString *> *) __rct_export__ js_name __LINE__ __COUNTER__
+{
+     return @[@#js_name, @#method];
+}
+-(void)addEvent:(NSString *)name location:(NSString *)location;
+~~~
+
+#### 4.2.2导出常量
+
+原生模块可以导出一些常量，这些常量在JavaScript端随时都可以访问。用这种方法来传递一些静态数据，可以避免通过bridge进行一次来回交互。
+
+~~~
+- (NSDictionary *)constantsToExport
+{
+  return @{ @"firstDayOfTheWeek": @"Monday" };
+}
+~~~
+
+Javascript端可以随时同步地访问这个数据：
+
+~~~
+console.log(CalendarManager.firstDayOfTheWeek);
+~~~
+
+#### 4.2.3导出枚举
+
+用NS_ENUM定义的枚举类型必须要先扩展对应的RCTConvert方法才可以作为函数参数传递。
+
+~~~
+typedef NS_ENUM(NSInteger, UIStatusBarAnimation) {
+    UIStatusBarAnimationNone,
+    UIStatusBarAnimationFade,
+    UIStatusBarAnimationSlide,
+};
+~~~
+
+你需要这样来扩展RCTConvert类：
+
+~~~
+@implementation RCTConvert (StatusBarAnimation)
+  RCT_ENUM_CONVERTER(UIStatusBarAnimation, (@{ @"statusBarAnimationNone" : @(UIStatusBarAnimationNone),
+                                               @"statusBarAnimationFade" : @(UIStatusBarAnimationFade),
+                                               @"statusBarAnimationSlide" : @(UIStatusBarAnimationSlide)},
+                      UIStatusBarAnimationNone, integerValue)
+@end
+~~~
+
+接着你可以这样定义方法并且导出enum值作为常量：
+
+~~~
+- (NSDictionary *)constantsToExport
+{
+  return @{ @"statusBarAnimationNone" : @(UIStatusBarAnimationNone),
+            @"statusBarAnimationFade" : @(UIStatusBarAnimationFade),
+            @"statusBarAnimationSlide" : @(UIStatusBarAnimationSlide) }
+};
+
+RCT_EXPORT_METHOD(updateStatusBarAnimation:(UIStatusBarAnimation)animation
+                                completion:(RCTResponseSenderBlock)callback)
+~~~
+
+js 调用原生方法的时候，可以使用这些常量的原理是，初始化的时候将这些常量添加到配置信息中，然后设置到JS执行器中，执行JS的时候，JS通过配置信息，取到key value的JSON，通过TCTConvert转化为本地的值。
+
+#### 4.2.4 多线程
+
+React Native在一个独立的串行GCD队列中调用原生模块的方法，通过实现方法- (dispatch_queue_t)methodQueue，原生模块可以指定自己想在哪个队列中被执行。具体来说，如果模块需要调用一些必须在主线程才能使用的API，那应当这样指定：
+
+~~~
+- (dispatch_queue_t)methodQueue
+{
+  return dispatch_get_main_queue();
+}
+~~~
+
+类似的，如果一个操作需要花费很长时间，原生模块不应该阻塞住，而是应当声明一个用于执行操作的独立队列。举个例子，RCTAsyncLocalStorage模块创建了自己的一个queue，这样它在做一些较慢的磁盘操作的时候就不会阻塞住React本身的消息队列：
+
+~~~
+- (dispatch_queue_t)methodQueue
+{
+  return dispatch_queue_create("com.facebook.React.AsyncLocalStorageQueue", DISPATCH_QUEUE_SERIAL);
+}
+~~~
+
+指定的methodQueue会被你模块里的所有方法共享。如果你的方法中“只有一个”是耗时较长的（或者是由于某种原因必须在不同的队列中运行的），你可以在函数体内用dispatch_async方法来在另一个队列执行，而不影响其他方法：
+
+~~~
+RCT_EXPORT_METHOD(doSomethingExpensive:(NSString *)param callback:(RCTResponseSenderBlock)callback)
+{
+  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    // 在这里执行长时间的操作
+    ...
+    // 你可以在任何线程/队列中执行回调函数
+    callback(@[...]);
+  });
+}
+~~~
+
+### 4.3 管理原生模块类 RCTModuleData
+
+RCTModuleData 管理原生模块的类，RCTBridge持有该类。
+
+#### 4.3.1 方法列表 
+
+方法列表method 返回原生模块的所有导出方法
+
+- (NSArray<id<RCTBridgeMethod>> *)methods
+{
+    ///获取类的 类方法
+    unsigned int methodCount;
+    Method *methods = class_copyMethodList(object_getClass(_moduleClass), &methodCount);
+
+    ///如果有 方法名中包含__rct_export__ ，则保存 导出方法
+    for (unsigned int i = 0; i < methodCount; i++) {
+      Method method = methods[i];
+      SEL selector = method_getName(method);
+      if ([NSStringFromSelector(selector) hasPrefix:@"__rct_export__"]) {
+        IMP imp = method_getImplementation(method);
+        NSArray<NSString *> *entries =
+          ((NSArray<NSString *> *(*)(id, SEL))imp)(_moduleClass, selector);
+        id<RCTBridgeMethod> moduleMethod =
+          [[RCTModuleMethod alloc] initWithMethodSignature:entries[1]
+                                              JSMethodName:entries[0]
+                                               moduleClass:_moduleClass];
+
+        [moduleMethods addObject:moduleMethod];
+      }
+    }
+    free(methods);
+    _methods = [moduleMethods copy];
+  return _methods;
+}
+
+#### 4.3.2 常量列表
+
+常量列表是调用原生模块的 constantsToExport 方法获取常量列表
+
+~~~
+- (void)gatherConstants
+{
+  if (_hasConstantsToExport && !_constantsToExport) {
+    (void)[self instance];
+    RCTExecuteOnMainThread(^{
+      _constantsToExport = [_instance constantsToExport] ?: @{};
+    }, YES);
+  }
+}
+~~~
+
+#### 4.3.3 原生模块的实例
+
+包括实例化原生模块和 获取原生模块的实例
+
+~~~
+- (id<RCTBridgeModule>)instance
+{
+  [self setUpInstanceAndBridge];
+  return _instance;
+}
+
+- (void)setUpInstanceAndBridge
+{
+	/// 实例化原生模块
+	_instance = [_moduleClass new];
+	
+	///设置原生模块的桥
+	[self setBridgeForInstance];
+}
+~~~
+
+#### 4.3.4 原生模块的配置信息
+
+原生模块的配置信息包括 导出方法和导出常量
+
+- (NSArray *)config
+{
+	/// 收集常量
+  [self gatherConstants];
+  
+  ///收集方法
+  NSMutableArray<NSString *> *methods = self.methods.count ? [NSMutableArray new] : nil;
+  NSMutableArray<NSNumber *> *asyncMethods = nil;
+  for (id<RCTBridgeMethod> method in self.methods) 
+  {
+    [methods addObject:method.JSMethodName];
+  }
+
+///组装配置信息
+  NSMutableArray *config = [NSMutableArray new];
+  [config addObject:self.name];
+  if (constants.count) {
+    [config addObject:constants];
+  }
+  if (methods) {
+    [config addObject:methods];
+    if (asyncMethods) {
+      [config addObject:asyncMethods];
+    }
+  }
+  return config;
+}
+
+### 4.4 初始化桥 
+
+初始化桥 主要完成初始化原生模块、 原生模块的配置信息、 设置JS执行器，并初始化（RCTJSCExecutor） ，将配置信息设置到 JS执行器中。
 
 
 
