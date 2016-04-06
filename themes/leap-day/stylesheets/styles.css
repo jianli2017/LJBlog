@@ -829,10 +829,10 @@ small {
 }
 
 nav {
-  width: 300px;
+  width: 230px;
   position: fixed;
   top: 220px;
-  left: 10%;
+  left: 50%;
   margin-left: -580px;
   text-align: right;
 }
