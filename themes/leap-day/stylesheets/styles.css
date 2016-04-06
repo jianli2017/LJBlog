@@ -832,7 +832,7 @@ nav {
   width: 300px;
   position: fixed;
   top: 220px;
-  left: 50%;
+  left: 10%;
   margin-left: -580px;
   text-align: right;
 }
