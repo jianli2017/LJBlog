@@ -506,39 +506,46 @@ RCT_EXPORT_METHOD(updateStatusBarAnimation:(UIStatusBarAnimation)animation
 
 <h3 id="rctmoduledata">4.3 管理原生模块类 RCTModuleData</h3>
 
-<p>RCTModuleData 管理原生模块的类，RCTBridge持有该类。</p>
+<p>RCTModuleData 管理原生模块的类，RCTBridge持有该类的实例 。RCTBridge初始化该类的时候，会将所有的原生模块都初始化为一个RCTModuleData的实例，每个实例包括原生模块的导出方法、导出常量、配置信息、原生模块的实例，最后将所有的RCTModuleData 实例保存到RCTBridge的下面三个成员变量中。JS调用原生方法的时候，就会从这三个实例中查找对应的模块、方法，然后invoke 方法。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>NSMutableDictionary&lt;NSString *, RCTModuleData *&gt; *_moduleDataByName;
+NSArray&lt;RCTModuleData *&gt; *_moduleDataByID;
+NSArray&lt;Class&gt; *_moduleClassesByID;
+</code></pre>
+</div>
 
 <h4 id="section-15">4.3.1 方法列表</h4>
 
 <p>方法列表method 返回原生模块的所有导出方法</p>
 
-<ul>
-  <li>
-    <p>(NSArray&lt;id<rctbridgemethod>&gt; *)methods
+<div class="highlighter-rouge"><pre class="highlight"><code>- (NSArray&lt;id&lt;RCTBridgeMethod&gt;&gt; *)methods
 {
-  ///获取类的 类方法
-  unsigned int methodCount;
-  Method *methods = class_copyMethodList(object_getClass(_moduleClass), &amp;methodCount);</rctbridgemethod></p>
+    ///获取类的 类方法
+    unsigned int methodCount;
+    Method *methods = class_copyMethodList(object_getClass(_moduleClass), &amp;methodCount);
 
-    <p>///如果有 方法名中包含__rct_export__ ，则保存 导出方法
-  for (unsigned int i = 0; i &lt; methodCount; i++) {
-    Method method = methods[i];
-    SEL selector = method_getName(method);
-    if ([NSStringFromSelector(selector) hasPrefix:@”<strong>rct_export</strong>”]) {
-      IMP imp = method_getImplementation(method);
-      NSArray&lt;NSString <em>&gt; *entries =
-        ((NSArray&lt;NSString *&gt; *(</em>)(id, SEL))imp)(_moduleClass, selector);
-      id<rctbridgemethod> moduleMethod =
-        [[RCTModuleMethod alloc] initWithMethodSignature:entries[1]
-                                            JSMethodName:entries[0]
-                                             moduleClass:_moduleClass];</rctbridgemethod></p>
+    ///如果有 方法名中包含__rct_export__ ，则保存 导出方法
+    for (unsigned int i = 0; i &lt; methodCount; i++) {
+      Method method = methods[i];
+      SEL selector = method_getName(method);
+      if ([NSStringFromSelector(selector) hasPrefix:@"__rct_export__"]) {
+        IMP imp = method_getImplementation(method);
+        NSArray&lt;NSString *&gt; *entries =
+          ((NSArray&lt;NSString *&gt; *(*)(id, SEL))imp)(_moduleClass, selector);
+        id&lt;RCTBridgeMethod&gt; moduleMethod =
+          [[RCTModuleMethod alloc] initWithMethodSignature:entries[1]
+                                              JSMethodName:entries[0]
+                                               moduleClass:_moduleClass];
 
-    <div class="highlighter-rouge"><pre class="highlight"><code>  [moduleMethods addObject:moduleMethod];
-}   }   free(methods);   _methods = [moduleMethods copy]; return _methods; }
+        [moduleMethods addObject:moduleMethod];
+      }
+    }
+    free(methods);
+    _methods = [moduleMethods copy];
+  return _methods;
+}
 </code></pre>
-    </div>
-  </li>
-</ul>
+</div>
 
 <h4 id="section-16">4.3.2 常量列表</h4>
 
@@ -581,24 +588,20 @@ RCT_EXPORT_METHOD(updateStatusBarAnimation:(UIStatusBarAnimation)animation
 
 <p>原生模块的配置信息包括 导出方法和导出常量</p>
 
-<ul>
-  <li>
-    <p>(NSArray *)config
+<div class="highlighter-rouge"><pre class="highlight"><code>- (NSArray *)config
 {
-  /// 收集常量
-[self gatherConstants];</p>
+	/// 收集常量
+  [self gatherConstants];
+  
+  ///收集方法
+  NSMutableArray&lt;NSString *&gt; *methods = self.methods.count ? [NSMutableArray new] : nil;
+  NSMutableArray&lt;NSNumber *&gt; *asyncMethods = nil;
+  for (id&lt;RCTBridgeMethod&gt; method in self.methods) 
+  {
+    [methods addObject:method.JSMethodName];
+  }
 
-    <p>///收集方法
-NSMutableArray&lt;NSString *&gt; *methods = self.methods.count ? [NSMutableArray new] : nil;
-NSMutableArray&lt;NSNumber *&gt; *asyncMethods = nil;
-for (id<rctbridgemethod> method in self.methods) 
-{
-  [methods addObject:method.JSMethodName];
-}</rctbridgemethod></p>
-  </li>
-</ul>
-
-<p>///组装配置信息
+   ///组装配置信息
   NSMutableArray *config = [NSMutableArray new];
   [config addObject:self.name];
   if (constants.count) {
@@ -611,76 +614,13 @@ for (id<rctbridgemethod> method in self.methods)
     }
   }
   return config;
-}</p>
-
-<h3 id="section-19">4.4 初始化桥</h3>
-
-<p>初始化桥 主要完成初始化原生模块、 原生模块的配置信息、 设置JS执行器，并初始化（RCTJSCExecutor） ，将配置信息设置到 JS执行器中。</p>
-
-<h1 id="section-20">原生模块的规范约定</h1>
-
-<p>RCTBridgeModule 桥协议</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>#define RCT_EXPORT_MODULE(js_name) \
-RCT_EXTERN void RCTRegisterModule(Class); \
-+ (NSString *)moduleName { return @#js_name; } \
-+ (void)load { RCTRegisterModule(self); }
+}
 </code></pre>
 </div>
 
-<p>可选的协议</p>
+<h3 id="rctbride">4.4 初始化桥 （RCTBride）</h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>#define RCT_EXPORT_METHOD(method) \
-  RCT_REMAP_METHOD(, method)
-</code></pre>
-</div>
-
-<p>　　　　   UIView *subVIew = [[UIView alloc] initWithFrame:CGRectMake(100, 300, 50, 50)];
-subVIew.backgroundColor = [UIColor grayColor];
-[self.view addSubview:subVIew];
-CAShapeLayer *shaper = [CAShapeLayer layer];
-//    UIBezierPath *base = [UIBezierPath bezierPathWithArcCenter:CGPointMake(25, 25)
-//                                                                  radius:10
-//                                                              startAngle:0
-//                                                                endAngle:2 * M_PI
-//                                                               clockwise:YES];
-//    shaper.path = base.CGPath;</p>
-
-<p>shaper.strokeColor   = [UIColor greenColor].CGColor;   // 边缘线的颜色
-shaper.lineWidth = 2.0;
-shaper.fillRule = kCAFillRuleEvenOdd;
-shaper.fillColor     = [UIColor redColor].CGColor;   // 闭环填充的颜色
-shaper.lineCap       = kCALineCapSquare;               // 边缘线的类型
-[subVIew.layer addSublayer:shaper];</p>
-
-<p>CGMutablePathRef muPath = CGPathCreateMutable();</p>
-
-<p>CGPathAddRect(muPath, nil, CGRectMake(5, 5, 40, 40));</p>
-
-<p>CGPathAddRoundedRect(muPath, nil, CGRectMake((50-10)/2,(50-10)/2, 10, 10), 5, 5);</p>
-
-<p>UIBezierPath *pazPath = [UIBezierPath bezierPathWithCGPath:muPath];
-//    [pazPath closePath];
-shaper.path = pazPath.CGPath;</p>
-
-<p>CGMutablePathRef muPathEnd = CGPathCreateMutable();</p>
-
-<p>CGPathAddRect(muPathEnd, nil, CGRectMake(5, 5, 40, 40));</p>
-
-<p>CGPathAddRoundedRect(muPathEnd, nil, CGRectMake((50-40)/2,(50-40)/2, 40, 40), 20, 20);</p>
-
-<p>UIBezierPath *pazPathEnd = [UIBezierPath bezierPathWithCGPath:muPathEnd];</p>
-
-<p>CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@”path”];
-animation.removedOnCompletion = NO;
-animation.repeatCount = 100;
-animation.autoreverses = YES;
-animation.fillMode = kCAFillModeForwards;
-animation.duration = 2.0;
-animation.fromValue = (__bridge id _Nullable)(muPath);
-animation.toValue = (__bridge id _Nullable)(muPathEnd);</p>
-
-<p>[shaper addAnimation:animation forKey:@”aa”];</p>
+<p>初始化桥 主要完成初始化原生模块、 原生模块的配置信息、 设置JS执行器，并初始化（RCTJSCExecutor） ，最后将配置信息设置到 JS执行器中。</p>
 
 <p>http://www.open-open.com/lib/view/open1451460443901.html</p>
 

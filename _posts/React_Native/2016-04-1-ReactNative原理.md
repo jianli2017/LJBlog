@@ -450,12 +450,19 @@ RCT_EXPORT_METHOD(doSomethingExpensive:(NSString *)param callback:(RCTResponseSe
 
 ### 4.3 管理原生模块类 RCTModuleData
 
-RCTModuleData 管理原生模块的类，RCTBridge持有该类。
+RCTModuleData 管理原生模块的类，RCTBridge持有该类的实例 。RCTBridge初始化该类的时候，会将所有的原生模块都初始化为一个RCTModuleData的实例，每个实例包括原生模块的导出方法、导出常量、配置信息、原生模块的实例，最后将所有的RCTModuleData 实例保存到RCTBridge的下面三个成员变量中。JS调用原生方法的时候，就会从这三个实例中查找对应的模块、方法，然后invoke 方法。
+
+~~~
+NSMutableDictionary<NSString *, RCTModuleData *> *_moduleDataByName;
+NSArray<RCTModuleData *> *_moduleDataByID;
+NSArray<Class> *_moduleClassesByID;
+~~~
 
 #### 4.3.1 方法列表 
 
 方法列表method 返回原生模块的所有导出方法
 
+~~~
 - (NSArray<id<RCTBridgeMethod>> *)methods
 {
     ///获取类的 类方法
@@ -482,6 +489,7 @@ RCTModuleData 管理原生模块的类，RCTBridge持有该类。
     _methods = [moduleMethods copy];
   return _methods;
 }
+~~~
 
 #### 4.3.2 常量列表
 
@@ -524,6 +532,7 @@ RCTModuleData 管理原生模块的类，RCTBridge持有该类。
 
 原生模块的配置信息包括 导出方法和导出常量
 
+~~~
 - (NSArray *)config
 {
 	/// 收集常量
@@ -537,7 +546,7 @@ RCTModuleData 管理原生模块的类，RCTBridge持有该类。
     [methods addObject:method.JSMethodName];
   }
 
-///组装配置信息
+   ///组装配置信息
   NSMutableArray *config = [NSMutableArray new];
   [config addObject:self.name];
   if (constants.count) {
@@ -551,83 +560,15 @@ RCTModuleData 管理原生模块的类，RCTBridge持有该类。
   }
   return config;
 }
-
-### 4.4 初始化桥 
-
-初始化桥 主要完成初始化原生模块、 原生模块的配置信息、 设置JS执行器，并初始化（RCTJSCExecutor） ，将配置信息设置到 JS执行器中。
-
-
-
-
-# 原生模块的规范约定
-
-RCTBridgeModule 桥协议
-
-~~~
-#define RCT_EXPORT_MODULE(js_name) \
-RCT_EXTERN void RCTRegisterModule(Class); \
-+ (NSString *)moduleName { return @#js_name; } \
-+ (void)load { RCTRegisterModule(self); }
 ~~~
 
-可选的协议
+### 4.4 初始化桥 （RCTBride）
 
-~~~
-#define RCT_EXPORT_METHOD(method) \
-  RCT_REMAP_METHOD(, method)
-~~~
-
-　　　　   UIView *subVIew = [[UIView alloc] initWithFrame:CGRectMake(100, 300, 50, 50)];
-subVIew.backgroundColor = [UIColor grayColor];
-[self.view addSubview:subVIew];
-CAShapeLayer *shaper = [CAShapeLayer layer];
-//    UIBezierPath *base = [UIBezierPath bezierPathWithArcCenter:CGPointMake(25, 25)
-//                                                                  radius:10
-//                                                              startAngle:0
-//                                                                endAngle:2 * M_PI
-//                                                               clockwise:YES];
-//    shaper.path = base.CGPath;
-
-shaper.strokeColor   = [UIColor greenColor].CGColor;   // 边缘线的颜色
-shaper.lineWidth = 2.0;
-shaper.fillRule = kCAFillRuleEvenOdd;
-shaper.fillColor     = [UIColor redColor].CGColor;   // 闭环填充的颜色
-shaper.lineCap       = kCALineCapSquare;               // 边缘线的类型
-[subVIew.layer addSublayer:shaper];
-
-CGMutablePathRef muPath = CGPathCreateMutable();
-
-CGPathAddRect(muPath, nil, CGRectMake(5, 5, 40, 40));
-
-CGPathAddRoundedRect(muPath, nil, CGRectMake((50-10)/2,(50-10)/2, 10, 10), 5, 5);
-
-
-UIBezierPath *pazPath = [UIBezierPath bezierPathWithCGPath:muPath];
-//    [pazPath closePath];
-shaper.path = pazPath.CGPath;
+初始化桥 主要完成初始化原生模块、 原生模块的配置信息、 设置JS执行器，并初始化（RCTJSCExecutor） ，最后将配置信息设置到 JS执行器中。
 
 
 
-CGMutablePathRef muPathEnd = CGPathCreateMutable();
 
-CGPathAddRect(muPathEnd, nil, CGRectMake(5, 5, 40, 40));
-
-CGPathAddRoundedRect(muPathEnd, nil, CGRectMake((50-40)/2,(50-40)/2, 40, 40), 20, 20);
-
-
-UIBezierPath *pazPathEnd = [UIBezierPath bezierPathWithCGPath:muPathEnd];
-
-
-CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"path"];
-animation.removedOnCompletion = NO;
-animation.repeatCount = 100;
-animation.autoreverses = YES;
-animation.fillMode = kCAFillModeForwards;
-animation.duration = 2.0;
-animation.fromValue = (__bridge id _Nullable)(muPath);
-animation.toValue = (__bridge id _Nullable)(muPathEnd);
-
-[shaper addAnimation:animation forKey:@"aa"];
 
 
 
