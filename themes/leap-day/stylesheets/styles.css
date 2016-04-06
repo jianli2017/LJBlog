@@ -834,17 +834,17 @@ nav {
   top: 100px;
   left: 50%;
   margin-left: -580px;
-  text-align: right;
+  text-align: left;
 }
 nav ul {
   list-style: none;
   list-style-image: none;
   font-size: 14px;
-  line-height: 1px;
+  line-height: 10px;
 }
 nav ul li {
   padding: 5px 0px;
-  line-height: 2px;
+  line-height: 1em;
 }
 nav ul li.tag-h1 {
   font-size: 1em;
