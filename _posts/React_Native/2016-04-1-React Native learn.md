@@ -260,7 +260,6 @@ AppRegistry.registerComponent('weidian', () => weidian);
 
 # 三、 植入原生的应用
 
-
 ## 3.1 使用Pod植入原生应用
 
 可以通过cocoaPod安装 React Native，只需要在Podfile中添加一下内容即可
