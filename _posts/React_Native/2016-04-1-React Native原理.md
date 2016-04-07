@@ -46,19 +46,13 @@ react native 来源于React，React组件本来就被设计为一个纯粹的、
 
 ## 1.6 使用React Native 需要了解的知识
 
-1. 前端开发工程师必须掌握的三个技能：
-
-* 描述网页内容的HTML     
-
-* 描述网页样式的CSS ，[html 和css 的学习地址](http://www.imooc.com/learn/9)
-
-* 描述网页行为的JavaScript, [java 学习地址](http://www.w3school.com.cn/js/)
-
-2. JavaScript的语法规范 [ES5和ES6写法对照表](http://bbs.reactnative.cn/topic/15/react-react-native-的es5-es6写法对照表)
-
-3.  ReactNative在CSS基础上使用的布局模型：[伸缩盒子模型flexBox](http://jianli2017.github.io/LJBlog/技术/2016/02/10/ReactNavie-flexBox模型.html)
-
-4.JSX ，这个一直没有找到好点的资料，可以参考[JSX在React-Native中的应用](http://www.tuicool.com/articles/byiay2N) 、或者[深入浅出React系列文章](http://www.infoq.com/cn/react1/)
+1. 前端开发工程师必须掌握的三个技能：   
+* 描述网页内容的HTML      
+* 描述网页样式的CSS ，[html 和css 的学习地址](http://www.imooc.com/learn/9) 
+* 描述网页行为的JavaScript, [java 学习地址](http://www.w3school.com.cn/js/)   
+2. JavaScript的语法规范 [ES5和ES6写法对照表](http://bbs.reactnative.cn/topic/15/react-react-native-的es5-es6写法对照表)   
+3.  ReactNative在CSS基础上使用的布局模型：[伸缩盒子模型flexBox](http://jianli2017.github.io/LJBlog/技术/2016/02/10/ReactNavie-flexBox模型.html)   
+4.JSX ，这个一直没有找到好点的资料，可以参考[JSX在React-Native中的应用](http://www.tuicool.com/articles/byiay2N) 、或者[深入浅出React系列文章](http://www.infoq.com/cn/react1/)  
 
 
 # 二、搭建开发环境
