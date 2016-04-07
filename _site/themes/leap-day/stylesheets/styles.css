@@ -839,6 +839,8 @@ nav {
   overflow: auto;
 }
 nav ul {
+  width: 230px;
+  height: 300px;
   list-style: none;
   list-style-image: none;
   font-size: 14px;
