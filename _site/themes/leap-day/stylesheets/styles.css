@@ -843,6 +843,7 @@ nav ul {
   list-style-image: none;
   font-size: 14px;
   line-height: 10px;
+  overflow: auto;
 }
 nav ul li {
   padding: 5px 0px;
