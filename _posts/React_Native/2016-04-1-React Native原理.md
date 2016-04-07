@@ -36,7 +36,7 @@ React Native 的详细内容可以参考[中文官方文档](http://reactnative.
 
 ## 1.5 引入React Native
 
-react native 来源于React，React组件本来就被设计为一个纯粹的、无副作用的函数，函数返回每一个时刻当时的View状态，这样我们无需读取底层View的状态就可以为它写入新的状态。能解决上面提出的问题。
+react native 基于React 开发，React 的官方介绍是a JavaScript library for building user interface ，可见，她强调的是用户界面。React组件本来就被设计为一个纯粹的、无副作用的函数，函数返回每一个时刻当时的View状态，这样我们无需读取底层View的状态就可以为它写入新的状态。能解决上面提出的问题。 
 
 1. React Native使你能够在Javascript和React的基础上获得完全一致的开发体验，构建世界一流的原生APP。
 
