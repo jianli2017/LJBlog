@@ -70,12 +70,12 @@ React Native 的官网介绍如下面如下：
 3. 对于原生模块开发人员学习曲线难道大，需要学习前端的多有知识 
 4. 性能问题：可以参照[性能](http://reactnative.cn/docs/0.23/performance.html#content)， RN相对于原生应用，多了一个JS解析原生API的线程，性能肯定没有原生的好。但比web、混合APP的好多了。
 
-### 1.2.3 RN的案例
+## 1.3 RN的案例
 
 RN的中文官网上有许多现在使用RN开发的成功案例的app，可以到[这里](http://reactnative.cn/cases.html)下载体验。 体验下RN的强大之处。
 
 
-## 1.3 使用React Native 需要了解的知识
+## 1.4 使用RN需要了解的知识
 
 1. 前端开发工程师必须掌握的三个技能：   
 * 描述网页内容的HTML      
