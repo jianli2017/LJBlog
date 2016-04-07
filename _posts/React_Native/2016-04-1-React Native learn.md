@@ -10,16 +10,18 @@ comments: true
 
 React Native 的详细内容可以参考[中文官方文档](http://reactnative.cn)。 React Native 简介可以参考 [《把现代web科技带给移动开发者》](http://bbs.reactnative.cn/topic/14/react-native-把现代web科技带给移动开发者)、 [《唐巧：谈谈React Native》](http://www.csdn.net/article/1970-01-01/2823790) 、[《一个资深iOS开发者对于React Native的看法》](http://www.linuxidc.com/Linux/2015-09/123239.htm) 、[《如何评价 React Native？》](http://www.zhihu.com/question/27852694),下面是自己参考《把现代web科技带给移动开发者》的一点总结：
 
-## 1.1 开发原生的APP 比较困难
+## 1.1 RN的起源
+
+### 1.1.1 开发原生的APP 比较困难
 
 开发成本高，耗时，每次发版受apple的限制。
 
-## 1.2 开发原生开发非常必要 
+### 1.1.2 开发原生开发非常必要 
 
 1. 原生APP 的用户体验比web、Hybird APP 的用户体验好 
 2. 在web上，我们也没有一个足够完善的线程模型，很难利用多线程并行执行工作
 
-## 1.3 将两个世界合二为一？
+### 1.1.3 将两个世界合二为一？
 
  用脚本封装原生，即用JavaScript去调用原生API，优点：
 
@@ -27,31 +29,36 @@ React Native 的详细内容可以参考[中文官方文档](http://reactnative.
 2. 同时还能享受快速迭代和使用我们现有JavaScript上基础设施的好处
 3. 因为基于JavaScript构建，我们应当能使得这样技术栈跨平台。
 
-## 1.4 用脚本封装原生是一件需要技巧的事情
+### 1.1.4 用脚本封装原生是一件需要技巧的事情
 
 1. 同步执行JS会阻塞UI。  
 如果我们只是同步的在原生环境和解释环境之间调用，我们的UI线程很可能会被JavaScript执行阻塞住。
 2. 异步执行JS会资源竞争、加锁开销大。  
  要提升界面的响应效率，我们知道我们必须把JavaScript放到主线程之外执行，但这么做其实很困难。最直接的困难就是资源访问竞争。如果我们的JavaScript访问什么正好在被别的线程用的东西（譬如一个渲染的View的尺寸），系统就只能加锁来确保方案安全，而这又会导致UI线程的卡顿。还有一个问题在于每次原生和JavaScript虚拟机之间互相访问，在访问过程中都会带来极大的开销。如果我们要经常跨线程访问，我们不得不一次又一次的经历这种开销。
 
-## 1.5 引入React Native
+## 1.5 RN简介
 
-react native 基于React 开发，React 的官方介绍是a JavaScript library for building user interface ，可见，她强调的是用户界面。他的主要特性是虚拟DOM、和数据流（data flow）。React组件本来就被设计为一个纯粹的、无副作用的函数，函数返回每一个时刻当时的View状态，这样我们无需读取底层View的状态就可以为它写入新的状态。据说能解决上面提出的问题。 
-
-React Native 的官网介绍如下面的1、2点 ：
-
-1. React Native使你能够在Javascript和React的基础上获得完全一致的开发体验，构建世界一流的原生APP。  
-2. React Native着力于提高多平台开发的开发效率 —— 仅需学习一次，编写任何平台。(Learn once, write anywhere)  
+RN 基于React 开发，React 的官方介绍是a JavaScript library for building user interface ，可见，她强调的是用户界面。他的主要特性是虚拟DOM、和数据流（data flow）。React组件本来就被设计为一个纯粹的、无副作用的函数，函数返回每一个时刻当时的View状态，这样我们无需读取底层View的状态就可以为它写入新的状态。据说能解决上面提出的问题。 
 
 下图是RN 的设计理念：
 
 ![初始化原理]({{site.url}}/images/react Native 原理/RN 设置思路.png)
 
+主要理念是用JS封装原生的API，包括IOS和android，封装的接口是一样的。这样同一套JS代码 可是开发出不同平台的原生APP。 而APP真正的实现缺使用的是各自平台的API。所以APP得用户体验和原生APP的基本一样。
+
+React Native 的官网介绍如下面如下：
+
+1. React Native使你能够在Javascript和React的基础上获得完全一致的开发体验，构建世界一流的原生APP。  
+2. React Native着力于提高多平台开发的开发效率 —— 仅需学习一次，编写任何平台。(Learn once, write anywhere)  
+
+
 ### 1.5.1 优点
 
 1. 跨平台：一处学习，可以编写出世界一流的 原生用户体验的 ios 和android APP   
 2. 快速迭代： 不会受到apple的发版限制，有问题了可以在服务器端修改。可以随时发版，不用等等apple的审核  
-3. 写界面的时候，不需要重新编译，修改了JS代码，直接刷新界面就可以了，这点感觉会大幅提高开发效率。 （需要终端运行npm，Chrome用来debug，sublime来编辑代码，最终还需要Xcode来运行这个项目并打开模拟器）
+3. 修复BUG： 原生APP如果有bug，那么发出去的包，是永远没有办法修复的。用户如果一直不升级新的包，那么用户使用的永远使用的是有bug的版本，如果用RN开发的话，可以直接修改服务器的JS代码修复bug。
+4. 开发效率高。写界面的时候，不需要重新编译，修改了JS代码，直接刷新界面就可以了，这点感觉会大幅提高开发效率。 （需要终端运行npm，Chrome用来debug，sublime来编辑代码，最终还需要Xcode来运行这个项目并打开模拟器）
+5. 开发成本低：完全不懂IOS和android的前端开发者，据说都可以开发出不错的原生APP。
 
 
 ### 1.5.2 缺点
@@ -61,7 +68,11 @@ React Native 的官网介绍如下面的1、2点 ：
 1. 大型的项目，一般不可能重新使用RN写，所以需要复用以前的代码，循序部分使用RN，这样，项目中封装的原生模块肯定没有对应的RN API，需要自己按照RN定义的原生模块的协议 封装下，供JS调用。
 2.滞后性： RN 是用JS分支的原生API ，如果苹果有新的API RN肯定不能及时的更新。若想立马使用的话，需要自己修改源码。
 3. 对于原生模块开发人员学习曲线难道大，需要学习前端的多有知识 
-4. 性能问题：可以参照[性能](http://reactnative.cn/docs/0.23/performance.html#content)  RN相对于原生应用，多了一个JS解析原生API的线程，性能肯定没有原生的好。但比web、混合APP的好多了。
+4. 性能问题：可以参照[性能](http://reactnative.cn/docs/0.23/performance.html#content)， RN相对于原生应用，多了一个JS解析原生API的线程，性能肯定没有原生的好。但比web、混合APP的好多了。
+
+### 1.5.3 RN的案例
+
+RN的中文官网上有许多现在使用RN开发的成功案例的app，可以到[这里](http://reactnative.cn/cases.html)下载体验。
 
 
 ## 1.6 使用React Native 需要了解的知识
