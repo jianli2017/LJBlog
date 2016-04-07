@@ -305,6 +305,8 @@ AppRegistry.registerComponent('weidian', () =&gt; weidian);
 
 <h2 id="pod">3.1 使用Pod植入原生应用</h2>
 
+<h3 id="pod-reactnative">3.1.1 使用Pod 安装ReactNative</h3>
+
 <p>可以通过cocoaPod安装 React Native，只需要在Podfile中添加一下内容即可</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code># 取决于你的工程如何组织，你的node_modules文件夹可能会在别的地方。
@@ -320,7 +322,36 @@ pod 'React', :path =&gt; './node_modules/react-native', :subspecs =&gt; [
 </code></pre>
 </div>
 
-<h2 id="section-10">3.2 实施方案</h2>
+<h3 id="section-10">3.1.1 开启开发服务器</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>cd /Users/gome/Desktop/native_shareBox/SerVerPod/node_modules/react-native/
+npm run start -- --root /Users/gome/Desktop/native_shareBox/GMShareBox3.0/ReactComponent/
+</code></pre>
+</div>
+
+<p>这条命令会启动一个React Native开发服务器，用于构建我们的bundle文件。</p>
+
+<h3 id="section-11">3.1.1 白名单</h3>
+
+<p>在iOS 9以上的系统中，除非明确指明，否则应用无法通过http协议连接到localhost主机。可以参考这篇帖子了解一些解决方案。</p>
+
+<p>我们建议你在Info.plist文件中将localhost列为App Transport Security的例外：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;key&gt;NSAppTransportSecurity&lt;/key&gt;
+&lt;dict&gt;
+    &lt;key&gt;NSExceptionDomains&lt;/key&gt;
+    &lt;dict&gt;
+        &lt;key&gt;localhost&lt;/key&gt;
+        &lt;dict&gt;
+            &lt;key&gt;NSTemporaryExceptionAllowsInsecureHTTPLoads&lt;/key&gt;
+            &lt;true/&gt;
+        &lt;/dict&gt;
+    &lt;/dict&gt;
+&lt;/dict&gt;
+</code></pre>
+</div>
+
+<h2 id="section-12">3.2 实施方案</h2>
 
 <p>可以先在微店上面实施，微店用到的原生模块比较少，包括网络请求、几个封装的标准UI，。先将原生模块安装RN的规则封装出来，然后使用RN写微店的首页、登录注册模块。</p>
 
@@ -330,13 +361,13 @@ pod 'React', :path =&gt; './node_modules/react-native', :subspecs =&gt; [
 
 <p>React Native 的通信原理可以参照<a href="http://www.open-open.com/lib/view/open1451460443901.html">使用 JS 构建跨平台的原生应用：React Native iOS 通信机制初探</a>,这篇文章的作者应该是做前端的，分析了部分JS通信过程中的JS部分。下面我是分析的Native部分（IOS部分）。</p>
 
-<h2 id="section-11">4.1 初始化的原理</h2>
+<h2 id="section-13">4.1 初始化的原理</h2>
 
 <p>React Native 的基本原理是使用js脚本封装原生的模块，可以访问原生平台的所用特性。具体封装原生模块的原理如下：</p>
 
 <p><img src="/LJBlog/images/react Native 原理/Native 初始化.png" alt="初始化原理" /></p>
 
-<h2 id="section-12">4.2 原生模块的约定</h2>
+<h2 id="section-14">4.2 原生模块的约定</h2>
 
 <p>原生模块需要RCTBridgeModule协议，或者说遵循了RCTBridgeModule协议的模块称为原生模块，遵循RCTBridgeModule协议只需要在类中包含RCT_EXPORT_MODULE()宏。</p>
 
@@ -348,7 +379,7 @@ pod 'React', :path =&gt; './node_modules/react-native', :subspecs =&gt; [
 </code></pre>
 </div>
 
-<p>RCT_EXPORT_MODULE的作用是将原生模块导入到配置文件中，使JS 可以调用到，这个红的原理如下</p>
+<p>RCT_EXPORT_MODULE的作用是将原生模块导入到配置文件中，使JS 可以调用到，这个宏的原理如下</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>#define RCT_EXPORT_MODULE(js_name) \
 RCT_EXTERN void RCTRegisterModule(Class); \
@@ -382,7 +413,7 @@ RCT_EXTERN void RCTRegisterModule(Class); \
 
 <p>即在load的时候将原生模块添加到RCTModuleClasses数组中，jsBridge初始话的时候，读取RCTModuleClasses内容，自动构造配置文件，设置到JS执行器中。</p>
 
-<h4 id="section-13">4.2.1导出方法</h4>
+<h4 id="section-15">4.2.1导出方法</h4>
 
 <p>导出方法 指的是导出方法给JavaScript调用，否则React Native不会导出任何方法。通过RCT_EXPORT_METHOD()宏来实现：</p>
 
@@ -431,7 +462,7 @@ CalendarManager.addEvent('Birthday Party', '4 Privet Drive, Surrey');
 </code></pre>
 </div>
 
-<h4 id="section-14">4.2.2导出常量</h4>
+<h4 id="section-16">4.2.2导出常量</h4>
 
 <p>原生模块可以导出一些常量，这些常量在JavaScript端随时都可以访问。用这种方法来传递一些静态数据，可以避免通过bridge进行一次来回交互。</p>
 
@@ -448,7 +479,7 @@ CalendarManager.addEvent('Birthday Party', '4 Privet Drive, Surrey');
 </code></pre>
 </div>
 
-<h4 id="section-15">4.2.3导出枚举</h4>
+<h4 id="section-17">4.2.3导出枚举</h4>
 
 <p>用NS_ENUM定义的枚举类型必须要先扩展对应的RCTConvert方法才可以作为函数参数传递。</p>
 
@@ -487,7 +518,7 @@ RCT_EXPORT_METHOD(updateStatusBarAnimation:(UIStatusBarAnimation)animation
 
 <p>js 调用原生方法的时候，可以使用这些常量的原理是，初始化的时候将这些常量添加到配置信息中，然后设置到JS执行器中，执行JS的时候，JS通过配置信息，取到key value的JSON，通过TCTConvert转化为本地的值。</p>
 
-<h4 id="section-16">4.2.4 多线程</h4>
+<h4 id="section-18">4.2.4 多线程</h4>
 
 <p>React Native在一个独立的串行GCD队列中调用原生模块的方法，通过实现方法- (dispatch_queue_t)methodQueue，原生模块可以指定自己想在哪个队列中被执行。具体来说，如果模块需要调用一些必须在主线程才能使用的API，那应当这样指定：</p>
 
@@ -531,7 +562,7 @@ NSArray&lt;Class&gt; *_moduleClassesByID;
 </code></pre>
 </div>
 
-<h4 id="section-17">4.3.1 方法列表</h4>
+<h4 id="section-19">4.3.1 方法列表</h4>
 
 <p>方法列表method 返回原生模块的所有导出方法</p>
 
@@ -564,7 +595,7 @@ NSArray&lt;Class&gt; *_moduleClassesByID;
 </code></pre>
 </div>
 
-<h4 id="section-18">4.3.2 常量列表</h4>
+<h4 id="section-20">4.3.2 常量列表</h4>
 
 <p>常量列表是调用原生模块的 constantsToExport 方法获取常量列表</p>
 
@@ -580,7 +611,7 @@ NSArray&lt;Class&gt; *_moduleClassesByID;
 </code></pre>
 </div>
 
-<h4 id="section-19">4.3.3 原生模块的实例</h4>
+<h4 id="section-21">4.3.3 原生模块的实例</h4>
 
 <p>包括实例化原生模块和 获取原生模块的实例</p>
 
@@ -601,7 +632,7 @@ NSArray&lt;Class&gt; *_moduleClassesByID;
 </code></pre>
 </div>
 
-<h4 id="section-20">4.3.4 原生模块的配置信息</h4>
+<h4 id="section-22">4.3.4 原生模块的配置信息</h4>
 
 <p>原生模块的配置信息包括 导出方法和导出常量</p>
 
@@ -931,7 +962,7 @@ NSArray&lt;Class&gt; *_moduleClassesByID;
 
 <p>ReactJS 和核心思想是组件化，即按照功能封装一个一个组件，各个组件维护自己的状态和UI，当状态发生变化时，会自动重新渲染整个组件，多个组件一起协作共同构成了ReactJS应用。</p>
 
-<h2 id="section-21">5.1  组件的生命周期</h2>
+<h2 id="section-23">5.1  组件的生命周期</h2>
 
 <p>getDefaultProps 创建阶段<br />
 getInitialState 实例化阶段  <br />
@@ -946,11 +977,11 @@ componentWillUnmount  销毁对象是调用</p>
 
 <p>主要包括四个阶段 创建阶段、实例化阶段、更新阶段、 销毁阶段</p>
 
-<h3 id="section-22">5.1.1  创建阶段</h3>
+<h3 id="section-24">5.1.1  创建阶段</h3>
 
 <p>即在条用React.createClass的时候这个阶段只会触发getDefaultProps方法，该方法返回了一个对象，并缓存下来，然后与父组件指定的props对象合并，最后赋值给this.props作为组件的默认属性，props是一个对象，是组件用来接收外面传来的参数的。组件内部是不允许修改自己的props属性的。</p>
 
-<h3 id="section-23">5.1.2  实例化阶段</h3>
+<h3 id="section-25">5.1.2  实例化阶段</h3>
 
 <p>就是组件类被调用的时候，执行顺序是 
 geiInitialState,返回值赋给了this.state属性
@@ -962,7 +993,7 @@ componentDidMount</p>
 
 <p>虚拟DOM 是将真实的DOM结构映射成一个JSON数据结构。</p>
 
-<h3 id="section-24">5.1.3  更新阶段</h3>
+<h3 id="section-26">5.1.3  更新阶段</h3>
 
 <p>componentWillReceiveProps（object nextProps） 当组件接收到新的Props时，会触发改函数，在该函数中，通常会调用this.setState方法完成对state的修改。</p>
 
@@ -974,7 +1005,7 @@ componentDidMount</p>
 
 <p>componentDidUpdate 常在该方法中做一些DOM操作。</p>
 
-<h3 id="section-25">5.1.4  销毁阶段</h3>
+<h3 id="section-27">5.1.4  销毁阶段</h3>
 
 <p>自组件调用父组件是通过props实现的。</p>
 
@@ -984,7 +1015,7 @@ componentDidMount</p>
 
 <p>当组件的state属性发生变化时，会自动执行组件的render方法来实现组件的更新，虚拟DOM就是将组件的DOM结构映射到这个虚拟DOM对象上，并且实现了一套diff算法，当组件需要更新的时候，会通过Diff算法找到变更的内容，然后将变化修改到实际的DOM节点上，所以组件的更新不是真的渲染整个DOM树，只是更新需要修改的DOM节点上</p>
 
-<h1 id="section-26">六. 微店的例子</h1>
+<h1 id="section-28">六. 微店的例子</h1>
 
 <p>具体的看代码</p>
 

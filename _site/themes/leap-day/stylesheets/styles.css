@@ -830,7 +830,6 @@ small {
 
 nav {
   width: 230px;
-  height: 300px;
   position: fixed;
   top: 190px;
   left: 50%;
@@ -839,13 +838,10 @@ nav {
   overflow: auto;
 }
 nav ul {
-  width: 230px;
-  height: 300px;
   list-style: none;
   list-style-image: none;
   font-size: 14px;
   line-height: 10px;
-  overflow: auto;
 }
 nav ul li {
   padding: 5px 0px;

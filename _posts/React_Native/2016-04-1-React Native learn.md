@@ -262,6 +262,8 @@ AppRegistry.registerComponent('weidian', () => weidian);
 
 ## 3.1 使用Pod植入原生应用
 
+### 3.1.1 使用Pod 安装ReactNative
+
 可以通过cocoaPod安装 React Native，只需要在Podfile中添加一下内容即可
 
 ~~~
@@ -275,6 +277,35 @@ pod 'React', :path => './node_modules/react-native', :subspecs => [
   'RCTWebSocket',
   # 添加其他你想在工程中使用的依赖。
 ]
+~~~
+
+### 3.1.1 开启开发服务器
+
+~~~
+cd /Users/gome/Desktop/native_shareBox/SerVerPod/node_modules/react-native/
+npm run start -- --root /Users/gome/Desktop/native_shareBox/GMShareBox3.0/ReactComponent/
+~~~
+
+这条命令会启动一个React Native开发服务器，用于构建我们的bundle文件。
+
+### 3.1.1 白名单
+
+在iOS 9以上的系统中，除非明确指明，否则应用无法通过http协议连接到localhost主机。可以参考这篇帖子了解一些解决方案。
+
+我们建议你在Info.plist文件中将localhost列为App Transport Security的例外：
+
+~~~
+<key>NSAppTransportSecurity</key>
+<dict>
+    <key>NSExceptionDomains</key>
+    <dict>
+        <key>localhost</key>
+        <dict>
+            <key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+            <true/>
+        </dict>
+    </dict>
+</dict>
 ~~~
 
 ## 3.2 实施方案
@@ -307,7 +338,7 @@ RCT_EXPORT_MODULE();
 @end
 ~~~
 
-RCT_EXPORT_MODULE的作用是将原生模块导入到配置文件中，使JS 可以调用到，这个红的原理如下
+RCT_EXPORT_MODULE的作用是将原生模块导入到配置文件中，使JS 可以调用到，这个宏的原理如下
 
 ~~~
 #define RCT_EXPORT_MODULE(js_name) \
