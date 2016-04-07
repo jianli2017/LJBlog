@@ -36,12 +36,13 @@ React Native 的详细内容可以参考[中文官方文档](http://reactnative.
 
 ## 1.5 引入React Native
 
-react native 基于React 开发，React 的官方介绍是a JavaScript library for building user interface ，可见，她强调的是用户界面。React组件本来就被设计为一个纯粹的、无副作用的函数，函数返回每一个时刻当时的View状态，这样我们无需读取底层View的状态就可以为它写入新的状态。能解决上面提出的问题。 
+react native 基于React 开发，React 的官方介绍是a JavaScript library for building user interface ，可见，她强调的是用户界面。他的主要特性是虚拟DOM、和数据流（data flow）。React组件本来就被设计为一个纯粹的、无副作用的函数，函数返回每一个时刻当时的View状态，这样我们无需读取底层View的状态就可以为它写入新的状态。据说能解决上面提出的问题。 
 
-1. React Native使你能够在Javascript和React的基础上获得完全一致的开发体验，构建世界一流的原生APP。
+React Native 的官网介绍如下面的1、2点 ：
 
-2. React Native着力于提高多平台开发的开发效率 —— 仅需学习一次，编写任何平台。(Learn once, write anywhere)
-3. 写界面的时候，不需要重新编译，直接刷新界面就可以了，这点感觉会大幅提高开发效率。
+1. React Native使你能够在Javascript和React的基础上获得完全一致的开发体验，构建世界一流的原生APP。  
+2. React Native着力于提高多平台开发的开发效率 —— 仅需学习一次，编写任何平台。(Learn once, write anywhere)  
+3. 写界面的时候，不需要重新编译，直接刷新界面就可以了，这点感觉会大幅提高开发效率。  
 
 
 ## 1.6 使用React Native 需要了解的知识
@@ -227,6 +228,7 @@ AppRegistry.registerComponent('weidian', () => weidian);
 
 
 # 三、 植入原生的应用
+
 
 ## 3.1 使用Pod植入原生应用
 
@@ -904,5 +906,6 @@ componentDidUpdate 常在该方法中做一些DOM操作。
 
 
 # 六. 微店的例子
+
 
 具体的看代码
