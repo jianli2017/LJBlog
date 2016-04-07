@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  native原理
-category: 技术
+title:  React Native原理
+category: ReactNative
 comments: true
 ---
 
