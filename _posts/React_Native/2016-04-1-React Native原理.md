@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  React Native原理
+title:  React Native learn
 category: ReactNative
 comments: true
 ---
