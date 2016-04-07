@@ -277,6 +277,14 @@ pod 'React', :path => './node_modules/react-native', :subspecs => [
 ]
 ~~~
 
+## 3.2 实施方案
+
+可以现在微店上面实施，微店用到的原生模块比较少，包括网络请求、几个封装的标准UI，。先将原生模块安装RN的规则封装出来，然后使用RN写微店的首页、登录注册模块。
+
+这个试点可以让我们熟悉RN的开发流程、体验RN的好处、积累经验。然后应用到其他的大型项目中的某个非重要模块，逐步替换 。
+
+
+
 # 四、 react Native 通信原理
 
 React Native 的通信原理可以参照[使用 JS 构建跨平台的原生应用：React Native iOS 通信机制初探](http://www.open-open.com/lib/view/open1451460443901.html),这篇文章的作者应该是做前端的，分析了部分JS通信过程中的JS部分。下面我是分析的Native部分（IOS部分）。
