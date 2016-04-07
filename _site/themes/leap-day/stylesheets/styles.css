@@ -835,6 +835,7 @@ nav {
   left: 50%;
   margin-left: -580px;
   text-align: left;
+  overflow: auto;
 }
 nav ul {
   list-style: none;
