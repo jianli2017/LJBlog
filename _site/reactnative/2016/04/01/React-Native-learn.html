@@ -69,7 +69,7 @@
 <h2 id="section-3">1.4 用脚本封装原生是一件需要技巧的事情</h2>
 
 <ol>
-  <li>同步执行JS阻塞UI。<br />
+  <li>同步执行JS会阻塞UI。<br />
 如果我们只是同步的在原生环境和解释环境之间调用，我们的UI线程很可能会被JavaScript执行阻塞住。</li>
   <li>异步执行JS会资源竞争、加锁开销大。<br />
  要提升界面的响应效率，我们知道我们必须把JavaScript放到主线程之外执行，但这么做其实很困难。最直接的困难就是资源访问竞争。如果我们的JavaScript访问什么正好在被别的线程用的东西（譬如一个渲染的View的尺寸），系统就只能加锁来确保方案安全，而这又会导致UI线程的卡顿。还有一个问题在于每次原生和JavaScript虚拟机之间互相访问，在访问过程中都会带来极大的开销。如果我们要经常跨线程访问，我们不得不一次又一次的经历这种开销。</li>
@@ -84,7 +84,29 @@
 <ol>
   <li>React Native使你能够在Javascript和React的基础上获得完全一致的开发体验，构建世界一流的原生APP。</li>
   <li>React Native着力于提高多平台开发的开发效率 —— 仅需学习一次，编写任何平台。(Learn once, write anywhere)</li>
-  <li>写界面的时候，不需要重新编译，直接刷新界面就可以了，这点感觉会大幅提高开发效率。</li>
+</ol>
+
+<p>下图是RN 的设计理念：</p>
+
+<p><img src="/LJBlog/images/react Native 原理/RN 设置思路.png" alt="初始化原理" /></p>
+
+<h3 id="section-4">1.5.1 优点</h3>
+
+<ol>
+  <li>跨平台：一处学习，可以编写出世界一流的 原生用户体验的 ios 和android APP</li>
+  <li>快速迭代： 不会受到apple的发版限制，有问题了可以在服务器端修改。可以随时发版，不用等等apple的审核</li>
+  <li>写界面的时候，不需要重新编译，修改了JS代码，直接刷新界面就可以了，这点感觉会大幅提高开发效率。 （需要终端运行npm，Chrome用来debug，sublime来编辑代码，最终还需要Xcode来运行这个项目并打开模拟器）</li>
+</ol>
+
+<h3 id="section-5">1.5.2 缺点</h3>
+
+<p>下面的缺点是我自己想的，可能不准确，只代表个人的意见</p>
+
+<ol>
+  <li>大型的项目，一般不可能重新使用RN写，所以需要复用以前的代码，循序部分使用RN，这样，项目中封装的原生模块肯定没有对应的RN API，需要自己按照RN定义的原生模块的协议 封装下，供JS调用。
+2.滞后性： RN 是用JS分支的原生API ，如果苹果有新的API RN肯定不能及时的更新。若想立马使用的话，需要自己修改源码。</li>
+  <li>对于原生模块开发人员学习曲线难道大，需要学习前端的多有知识</li>
+  <li>性能问题：可以参照<a href="http://reactnative.cn/docs/0.23/performance.html#content">性能</a>  RN相对于原生应用，多了一个JS解析原生API的线程，性能肯定没有原生的好。但比web、混合APP的好多了。</li>
 </ol>
 
 <h2 id="react-native-">1.6 使用React Native 需要了解的知识</h2>
@@ -102,7 +124,7 @@
 4.JSX ，这个一直没有找到好点的资料，可以参考<a href="http://www.tuicool.com/articles/byiay2N">JSX在React-Native中的应用</a> 、或者<a href="http://www.infoq.com/cn/react1/">深入浅出React系列文章</a></li>
 </ol>
 
-<h1 id="section-4">二、搭建开发环境</h1>
+<h1 id="section-6">二、搭建开发环境</h1>
 
 <p>reactive Native 的中文<a href="http://reactnative.cn">网址</a>,基于IOS的react Native需要的工具包括：</p>
 
@@ -153,7 +175,7 @@
 </code></pre>
 </div>
 
-<h2 id="section-5">2.5 创建一个项目</h2>
+<h2 id="section-7">2.5 创建一个项目</h2>
 
 <p>在终端中cd到想创建工程的目录，然后输入 react-native init weidian 命令，其中weidian 是应用的名称。例如：</p>
 
@@ -212,7 +234,7 @@ npm info underscore //（如果上面配置正确这个命令会有字符串resp
 </code></pre>
 </div>
 
-<h2 id="section-6">2.6 简单修改界面</h2>
+<h2 id="section-8">2.6 简单修改界面</h2>
 
 <p>修改index.ios.js可以简单修改界面，下面是index.ios.js的内容：</p>
 
@@ -269,7 +291,7 @@ AppRegistry.registerComponent('weidian', () =&gt; weidian);
 
 <p>为了能让js调用原生的方法或者认识原生的方法，原生模块需要遵守一定的协议。</p>
 
-<h1 id="section-7">三、 植入原生的应用</h1>
+<h1 id="section-9">三、 植入原生的应用</h1>
 
 <h2 id="pod">3.1 使用Pod植入原生应用</h2>
 
@@ -292,13 +314,13 @@ pod 'React', :path =&gt; './node_modules/react-native', :subspecs =&gt; [
 
 <p>React Native 的通信原理可以参照<a href="http://www.open-open.com/lib/view/open1451460443901.html">使用 JS 构建跨平台的原生应用：React Native iOS 通信机制初探</a>,这篇文章的作者应该是做前端的，分析了部分JS通信过程中的JS部分。下面我是分析的Native部分（IOS部分）。</p>
 
-<h2 id="section-8">4.1 初始化的原理</h2>
+<h2 id="section-10">4.1 初始化的原理</h2>
 
 <p>React Native 的基本原理是使用js脚本封装原生的模块，可以访问原生平台的所用特性。具体封装原生模块的原理如下：</p>
 
 <p><img src="/LJBlog/images/react Native 原理/Native 初始化.png" alt="初始化原理" /></p>
 
-<h2 id="section-9">4.2 原生模块的约定</h2>
+<h2 id="section-11">4.2 原生模块的约定</h2>
 
 <p>原生模块需要RCTBridgeModule协议，或者说遵循了RCTBridgeModule协议的模块称为原生模块，遵循RCTBridgeModule协议只需要在类中包含RCT_EXPORT_MODULE()宏。</p>
 
@@ -344,7 +366,7 @@ RCT_EXTERN void RCTRegisterModule(Class); \
 
 <p>即在load的时候将原生模块添加到RCTModuleClasses数组中，jsBridge初始话的时候，读取RCTModuleClasses内容，自动构造配置文件，设置到JS执行器中。</p>
 
-<h4 id="section-10">4.2.1导出方法</h4>
+<h4 id="section-12">4.2.1导出方法</h4>
 
 <p>导出方法 指的是导出方法给JavaScript调用，否则React Native不会导出任何方法。通过RCT_EXPORT_METHOD()宏来实现：</p>
 
@@ -393,7 +415,7 @@ CalendarManager.addEvent('Birthday Party', '4 Privet Drive, Surrey');
 </code></pre>
 </div>
 
-<h4 id="section-11">4.2.2导出常量</h4>
+<h4 id="section-13">4.2.2导出常量</h4>
 
 <p>原生模块可以导出一些常量，这些常量在JavaScript端随时都可以访问。用这种方法来传递一些静态数据，可以避免通过bridge进行一次来回交互。</p>
 
@@ -410,7 +432,7 @@ CalendarManager.addEvent('Birthday Party', '4 Privet Drive, Surrey');
 </code></pre>
 </div>
 
-<h4 id="section-12">4.2.3导出枚举</h4>
+<h4 id="section-14">4.2.3导出枚举</h4>
 
 <p>用NS_ENUM定义的枚举类型必须要先扩展对应的RCTConvert方法才可以作为函数参数传递。</p>
 
@@ -449,7 +471,7 @@ RCT_EXPORT_METHOD(updateStatusBarAnimation:(UIStatusBarAnimation)animation
 
 <p>js 调用原生方法的时候，可以使用这些常量的原理是，初始化的时候将这些常量添加到配置信息中，然后设置到JS执行器中，执行JS的时候，JS通过配置信息，取到key value的JSON，通过TCTConvert转化为本地的值。</p>
 
-<h4 id="section-13">4.2.4 多线程</h4>
+<h4 id="section-15">4.2.4 多线程</h4>
 
 <p>React Native在一个独立的串行GCD队列中调用原生模块的方法，通过实现方法- (dispatch_queue_t)methodQueue，原生模块可以指定自己想在哪个队列中被执行。具体来说，如果模块需要调用一些必须在主线程才能使用的API，那应当这样指定：</p>
 
@@ -493,7 +515,7 @@ NSArray&lt;Class&gt; *_moduleClassesByID;
 </code></pre>
 </div>
 
-<h4 id="section-14">4.3.1 方法列表</h4>
+<h4 id="section-16">4.3.1 方法列表</h4>
 
 <p>方法列表method 返回原生模块的所有导出方法</p>
 
@@ -526,7 +548,7 @@ NSArray&lt;Class&gt; *_moduleClassesByID;
 </code></pre>
 </div>
 
-<h4 id="section-15">4.3.2 常量列表</h4>
+<h4 id="section-17">4.3.2 常量列表</h4>
 
 <p>常量列表是调用原生模块的 constantsToExport 方法获取常量列表</p>
 
@@ -542,7 +564,7 @@ NSArray&lt;Class&gt; *_moduleClassesByID;
 </code></pre>
 </div>
 
-<h4 id="section-16">4.3.3 原生模块的实例</h4>
+<h4 id="section-18">4.3.3 原生模块的实例</h4>
 
 <p>包括实例化原生模块和 获取原生模块的实例</p>
 
@@ -563,7 +585,7 @@ NSArray&lt;Class&gt; *_moduleClassesByID;
 </code></pre>
 </div>
 
-<h4 id="section-17">4.3.4 原生模块的配置信息</h4>
+<h4 id="section-19">4.3.4 原生模块的配置信息</h4>
 
 <p>原生模块的配置信息包括 导出方法和导出常量</p>
 
@@ -893,7 +915,7 @@ NSArray&lt;Class&gt; *_moduleClassesByID;
 
 <p>ReactJS 和核心思想是组件化，即按照功能封装一个一个组件，各个组件维护自己的状态和UI，当状态发生变化时，会自动重新渲染整个组件，多个组件一起协作共同构成了ReactJS应用。</p>
 
-<h2 id="section-18">5.1  组件的生命周期</h2>
+<h2 id="section-20">5.1  组件的生命周期</h2>
 
 <p>getDefaultProps 创建阶段<br />
 getInitialState 实例化阶段  <br />
@@ -908,11 +930,11 @@ componentWillUnmount  销毁对象是调用</p>
 
 <p>主要包括四个阶段 创建阶段、实例化阶段、更新阶段、 销毁阶段</p>
 
-<h3 id="section-19">5.1.1  创建阶段</h3>
+<h3 id="section-21">5.1.1  创建阶段</h3>
 
 <p>即在条用React.createClass的时候这个阶段只会触发getDefaultProps方法，该方法返回了一个对象，并缓存下来，然后与父组件指定的props对象合并，最后赋值给this.props作为组件的默认属性，props是一个对象，是组件用来接收外面传来的参数的。组件内部是不允许修改自己的props属性的。</p>
 
-<h3 id="section-20">5.1.2  实例化阶段</h3>
+<h3 id="section-22">5.1.2  实例化阶段</h3>
 
 <p>就是组件类被调用的时候，执行顺序是 
 geiInitialState,返回值赋给了this.state属性
@@ -924,7 +946,7 @@ componentDidMount</p>
 
 <p>虚拟DOM 是将真实的DOM结构映射成一个JSON数据结构。</p>
 
-<h3 id="section-21">5.1.3  更新阶段</h3>
+<h3 id="section-23">5.1.3  更新阶段</h3>
 
 <p>componentWillReceiveProps（object nextProps） 当组件接收到新的Props时，会触发改函数，在该函数中，通常会调用this.setState方法完成对state的修改。</p>
 
@@ -936,7 +958,7 @@ componentDidMount</p>
 
 <p>componentDidUpdate 常在该方法中做一些DOM操作。</p>
 
-<h3 id="section-22">5.1.4  销毁阶段</h3>
+<h3 id="section-24">5.1.4  销毁阶段</h3>
 
 <p>自组件调用父组件是通过props实现的。</p>
 
@@ -946,7 +968,7 @@ componentDidMount</p>
 
 <p>当组件的state属性发生变化时，会自动执行组件的render方法来实现组件的更新，虚拟DOM就是将组件的DOM结构映射到这个虚拟DOM对象上，并且实现了一套diff算法，当组件需要更新的时候，会通过Diff算法找到变更的内容，然后将变化修改到实际的DOM节点上，所以组件的更新不是真的渲染整个DOM树，只是更新需要修改的DOM节点上</p>
 
-<h1 id="section-23">六. 微店的例子</h1>
+<h1 id="section-25">六. 微店的例子</h1>
 
 <p>具体的看代码</p>
 
