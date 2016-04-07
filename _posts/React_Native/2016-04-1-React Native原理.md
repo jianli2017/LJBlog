@@ -8,7 +8,7 @@ comments: true
 
 # 一、 简介
 
-React Native 的详细内容可以参考[中文官方文档](http://reactnative.cn)。 React Native 简介可以参考 [《把现代web科技带给移动开发者》](http://bbs.reactnative.cn/topic/14/react-native-把现代web科技带给移动开发者)、 [《唐巧：谈谈React Native》](http://www.csdn.net/article/1970-01-01/2823790) 、[《一个资深iOS开发者对于React Native的看法》](http://www.linuxidc.com/Linux/2015-09/123239.htm) 、[《如何评价 React Native？》](http://www.zhihu.com/question/27852694),下面是自己参考《把现代web科技带给移动开发者》自己的一点总结：
+React Native 的详细内容可以参考[中文官方文档](http://reactnative.cn)。 React Native 简介可以参考 [《把现代web科技带给移动开发者》](http://bbs.reactnative.cn/topic/14/react-native-把现代web科技带给移动开发者)、 [《唐巧：谈谈React Native》](http://www.csdn.net/article/1970-01-01/2823790) 、[《一个资深iOS开发者对于React Native的看法》](http://www.linuxidc.com/Linux/2015-09/123239.htm) 、[《如何评价 React Native？》](http://www.zhihu.com/question/27852694),下面是自己参考《把现代web科技带给移动开发者》的一点总结：
 
 ## 1.1 开发原生的APP 比较困难
 
