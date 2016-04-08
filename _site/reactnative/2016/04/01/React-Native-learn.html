@@ -136,10 +136,9 @@
 
 <h1 id="section-6">二、搭建开发环境</h1>
 
-<p>reactive Native 的中文<a href="http://reactnative.cn">网址</a>,基于IOS的react Native需要的工具包括：</p>
-
-<p>1.xocde<br />
-2.Node.js 4.0<br />
+<p>reactive Native 的中文<a href="http://reactnative.cn">网址</a>,基于IOS的react Native需要的工具包括：<br />
+1.xocde<br />
+2.Node.js 5.7 
 3.使用HomeBrew安装wathman 和flow</p>
 
 <h2 id="nodejs">2.1 安装Node.js</h2>
@@ -154,8 +153,11 @@
 
 <h2 id="home-brew-watchman--flow">2.3 使用home brew安装 watchman 和 flow</h2>
 
-<p>brew install watchman <br />
-如果你希望使用flow来为js代码加上类型检查，那么在命令行中输入brew install flow来安装flow</p>
+<p>watchman来监视文件并且记录文件的改动情况,当文件变更它可以触发一些操作,例如执行一些命令等等</p>
+
+<p>brew install watchman</p>
+
+<p>如果你希望使用flow来为js代码加上类型检查，那么在命令行中输入brew install flow来安装flow</p>
 
 <h2 id="npm--react-native-cli-">2.4 使用npm 安装 react-native-cli 命令行工具</h2>
 
@@ -1020,7 +1022,7 @@ componentWillUnmount  销毁对象阶段调用</p>
 
 <p>当组件需要从DOM中移除的阶段，会触发componentWillUnmount的调用</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>/*自组件调用父组件是通过props实现的。
+<div class="highlighter-rouge"><pre class="highlight"><code>/*子组件调用父组件是通过props实现的。
 
 父组件调用子组件， 子组件被设置为ref之后，父组件就可以通过this.ref.xxx 来获取子组件了，其中xxx为子组件的ref值*/
 </code></pre>
