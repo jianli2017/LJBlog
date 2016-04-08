@@ -6,20 +6,20 @@ comments: true
 ---
 
 
-##  一、盒子模型
+#  一、盒子模型
 
-### 1.1 标准盒子模型
+## 1.1 标准盒子模型
 
 标准的盒子模型如下图所示：
 
 ![标准盒子模型]({{site.url}}/images/reatNative FlexBox模型/17.png)
 
-### 1.2 伸缩盒子模型
+## 1.2 伸缩盒子模型
 
 任何一个元素都可以指定为flexbox 布局，设置为display:flex或display:inline-flex的元素称为伸缩容器，伸缩容器的子元素称为伸缩项目，下面是伸缩的模型：
 ![伸缩模型]({{site.url}}/images/reactnative/1.png)
 
-## 二、React Native中使用flexBox
+# 二、React Native中使用flexBox
 
 1. flexDirection（伸缩容器）
 
@@ -31,7 +31,7 @@ comments: true
 6. flex （伸缩项目）
 
 
-### 2.1 flexDirection 指定主轴方向
+## 2.1 flexDirection 指定主轴方向
 
 ~~~
 flexDirection:row|column
@@ -44,7 +44,7 @@ row、column的效果图如下：
 ![column]({{site.url}}/images/reatNative FlexBox模型/2.png)
 
 
-### 2.2 alignItems 该属性用来定义伸缩项目在伸缩容器的交叉轴上的对齐方式
+## 2.2 alignItems 该属性用来定义伸缩项目在伸缩容器的交叉轴上的对齐方式
 
 ~~~
 alignSelf:auto|flex-start|flex-end|center|stretch
@@ -60,7 +60,7 @@ flex-start、flex-end、center的效果图如下：
 
 
 
-### 2.3 flexWrap 指定伸缩容器的主轴方向空间不足的情况下，是否换行以及如何换行
+## 2.3 flexWrap 指定伸缩容器的主轴方向空间不足的情况下，是否换行以及如何换行
 
 ~~~
 flexWrap:wrap|nowrap
@@ -71,7 +71,7 @@ wrap、nowrap的效果图如下：
 
 ![flex-end]({{site.url}}/images/reatNative FlexBox模型/7.png)
 
-### 2.4 justifyContent指定伸缩项目沿主轴线的对齐方式
+## 2.4 justifyContent指定伸缩项目沿主轴线的对齐方式
 
 ~~~
 justifyContent:flex-start|flex-end|center|space-between|space-around
@@ -89,7 +89,7 @@ flex-start、flex-end、center、space-between、space-around的效果图如下�
 
 ![flex-center]({{site.url}}/images/reatNative FlexBox模型/12.png)
 
-### 2.5  alignSelf 设置单独的伸缩项目在交叉轴上的对齐方式，会覆写默认的对齐方式
+## 2.5  alignSelf 设置单独的伸缩项目在交叉轴上的对齐方式，会覆写默认的对齐方式
 
 ~~~
 alignSelf:auto|flex-start|flex-end|center|stretch
@@ -103,7 +103,7 @@ lex-start、flex-end、center 的效果图如下：
 
 ![flex-center]({{site.url}}/images/reatNative FlexBox模型/15.png)
 
-### 2.6 flex
+## 2.6 flex
 
 ~~~
 flex:number

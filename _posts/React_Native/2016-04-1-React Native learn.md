@@ -290,7 +290,7 @@ npm run start -- --root /Users/gome/Desktop/native_shareBox/GMShareBox3.0/ReactC
 
 ### 3.1.1 白名单
 
-在iOS 9以上的系统中，除非明确指明，否则应用无法通过http协议连接到localhost主机。可以参考这篇帖子了解一些解决方案。
+在iOS 9以上的系统中，除非明确指明，否则应用无法通过http协议连接到localhost主机。
 
 我们建议你在Info.plist文件中将localhost列为App Transport Security的例外：
 
@@ -913,12 +913,13 @@ JS调用RCTBridge的enqueueJSCall方法，传入代码和参数，例如JSTimers
 
 # 五、ReactJS
 
-React Native 继承于（来源于ReactJS），所以ReactJS 的核心思想，在React Native中也体现出来了。React 主要的有点有两个：
+React Native 基于（来源于ReactJS），所以ReactJS 的核心思想，在React Native中也体现出来了。React 主要的有点有：
 
 1. 组件化
 2. 虚拟DOM
+3. 数据流
 
-ReactJS 和核心思想是组件化，即按照功能封装一个一个组件，各个组件维护自己的状态和UI，当状态发生变化时，会自动重新渲染整个组件，多个组件一起协作共同构成了ReactJS应用。
+ReactJS 核心思想是组件化，即按照功能封装一个一个组件，各个组件维护自己的状态和UI，当状态发生变化时，会自动重新渲染整个组件，多个组件一起协作共同构成了ReactJS应用。
 
 ## 5.1  组件的生命周期 
  
@@ -931,21 +932,21 @@ componentWillRecieveProps 在this.props被修改或者父组件调用setProps方
 shouldComponentUpdate  是否需要更新   
 componentWillUpdate  将要更新  
 componentDidUpdate  更新完毕   
-componentWillUnmount  销毁对象是调用  
+componentWillUnmount  销毁对象阶段调用  
 
 主要包括四个阶段 创建阶段、实例化阶段、更新阶段、 销毁阶段  
 
 ### 5.1.1  创建阶段  
 
-即在条用React.createClass的时候这个阶段只会触发getDefaultProps方法，该方法返回了一个对象，并缓存下来，然后与父组件指定的props对象合并，最后赋值给this.props作为组件的默认属性，props是一个对象，是组件用来接收外面传来的参数的。组件内部是不允许修改自己的props属性的。
+即在调用React.createClass的时候，这个阶段只会触发getDefaultProps方法，该方法返回了一个对象，并缓存下来，然后与父组件指定的props对象合并，最后赋值给this.props作为本组件的默认属性，props是一个对象，是组件用来接收外面传来的参数的。组件内部是不允许修改自己的props属性的。
 
 ### 5.1.2  实例化阶段  
 
-就是组件类被调用的时候，执行顺序是 
-geiInitialState,返回值赋给了this.state属性
-componentWillMount根据业务逻辑对state进行相应的操作
-render 根据state的值，生成页面需要的DOM结构，并返回该结构
-componentDidMount
+* 就是组件被调用的时候，执行顺序是 
+* geiInitialState,返回值赋给了this.state属性  
+* componentWillMount根据业务逻辑对state进行相应的操作   
+* render 根据state的值，生成页面需要的DOM结构，并返回该结构
+* componentDidMount
 
 state是组件的属性，他的每次改变都会引发组件的跟新，每次组件的更新都是通过修改state属性的值。ReactJS内部会监听state属性的变化，一旦发生变化，就会主动触发组件的render方法来更新DOM的结构。
 
@@ -953,21 +954,25 @@ state是组件的属性，他的每次改变都会引发组件的跟新，每次
 
 ### 5.1.3  更新阶段  
 
-componentWillReceiveProps（object nextProps） 当组件接收到新的Props时，会触发改函数，在该函数中，通常会调用this.setState方法完成对state的修改。
+* componentWillReceiveProps（object nextProps） 当组件接收到新的Props时，会触发该函数，在本函数中，通常会调用this.setState方法完成对state的修改。
 
-shouldComponentUpdate（nextProps， nextState），该方法会拦截新的props 和state
+* shouldComponentUpdate（nextProps， nextState），该方法会拦截新的props 和state
 
-componentWillUpdate（nextProps，nextState） 
+* componentWillUpdate（nextProps，nextState） 
 
-render 根据一系列的diff算法，生成需要更新的虚拟DOM数据
+* render 根据一系列的diff算法，生成需要更新的虚拟DOM数据
 
-componentDidUpdate 常在该方法中做一些DOM操作。
+* componentDidUpdate 常在该方法中做一些DOM操作。
 
 ### 5.1.4  销毁阶段 
 
-自组件调用父组件是通过props实现的。
+当组件需要从DOM中移除的阶段，会触发componentWillUnmount的调用
 
-父组件调用子组件， 子组件被设置为ref之后，父组件就可以通过this.ref.xxx 来获取子组件了，其中xxx为子组件的ref值
+~~~
+/*自组件调用父组件是通过props实现的。
+
+父组件调用子组件， 子组件被设置为ref之后，父组件就可以通过this.ref.xxx 来获取子组件了，其中xxx为子组件的ref值*/
+~~~
 
 ## 5.2 虚拟DOM 
 
