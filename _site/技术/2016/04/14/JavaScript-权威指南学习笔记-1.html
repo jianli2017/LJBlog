@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>程序员人生</title>
+    <link rel="stylesheet" href="/LJBlog/themes/leap-day/stylesheets/styles.css">
+    <link rel="stylesheet" href="/LJBlog/themes/leap-day/stylesheets/pygment_trac.css">
+    <script src="http://lib.sinaapp.com/js/jquery/1.7/jquery.min.js"></script>
+    <script src="/LJBlog/themes/leap-day/javascripts/main.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+
+      <header>
+        <h1><a href="/LJBlog/">程序员人生</a></h1>
+        <p>人生到处知何似，应似飞鸿踏雪泥</p>
+      </header>
+
+      <div id="banner">
+        <span id="logo"></span>
+
+        <a href="https://github.com/jianli2017//LJBlog/tree/gh-pages" class="button fork"><strong>Fork On GitHub</strong></a>
+       <!--  <div class="downloads">
+          <span>Downloads:</span>
+          <ul>
+            <li><a href="https://github.com/dewski/json_builder/zipball/master" class="button">ZIP</a></li>
+            <li><a href="https://github.com/dewski/json_builder/tarball/master" class="button">TAR</a></li>
+          </ul>
+        </div> -->
+
+      </div><!-- end banner -->
+
+    <div class="wrapper">
+      <nav>
+        <ul></ul>
+      </nav>
+      <section>
+
+    <h1 id="javascript">JavaScript概述</h1>
+
+<p>　　　　
+本书的示例代码在：http://oreilly.com/catalog/9780596805531</p>
+
+<p>前端三种技能：<br />
+* 描述网页内容的HTML
+* 描述网页样式的CSS
+* 描述网页行为的JAVAScript</p>
+
+<p>ECMAScript是JavaScript的规范</p>
+
+<p>Firebug 运行一小段代码</p>
+
+<h2 id="javascript-">1. JavaScript 语言核心</h2>
+
+<p>通过var关键字声明变量</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>var x;
+x = 0;
+</code></pre>
+</div>
+
+<p>对象是名值对的集合</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>var book = {
+topic:"javaScript",
+fat:true
+}
+</code></pre>
+</div>
+
+<p>可以通过. 或者[]来访问对象的属性</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>book.topic
+book["fat"]
+book.author = "flanagan"  //通过赋值创建一个新属性
+</code></pre>
+</div>
+
+<p>数组：JavaScript同样支持数组（以数字为索引的列表）</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>var primes = [2,3,5,7];
+primes[0]
+primes.length
+primes[4] = 9 //通过赋值来添加新的元素
+</code></pre>
+</div>
+
+<p>表达式仅仅计算出一个值，但并不作任何操作，不改变程序的运行状态。</p>
+
+<p>语句改变程序的运行状态</p>
+
+<p>函数是带有参数的JavaScript代码段，可以多次调用。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>fuction plus(x)
+{
+	return x+ 1;
+}
+plus(y)
+
+var square = fuction(x){ return x*x;} /// 函数是一种值，可以赋值给变量
+</code></pre>
+</div>
+
+<p>当函数赋值给对象的属性，我们称为方法。this关键字是对定义方法的对象的引用。构造函数以大写字母开头，使用new 关键字和构造函数创建一个实例</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>fuction Point(x,y)
+{
+this.x= x;
+this.y = y;
+}
+
+var p = new Point(1,1);
+</code></pre>
+</div>
+
+<p>通过给构造函数的prototype对象赋值来给Point对象定义方法</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Point.prototype.r = fuction(){
+ return Math.sqrt(
+ this.x *this.x + this.y*this.y);
+}
+p.r();
+</code></pre>
+</div>
+
+<h2 id="javascript-1">2. 客户端JavaScript</h2>
+
+<p>JavaScript代码可以通过<script> 标签切入到HTML文件中</script></p>
+
+
+      </section>
+     <!-- <footer>
+        <p>Project maintained by <a href="https://github.com/jianli2017">jianli2017</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/mattgraham">mattgraham</a></small></p>
+      </footer> -->
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+  </body>
+</html>
+
