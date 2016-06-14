@@ -41,7 +41,7 @@
       </nav>
       <section>
 
-    <p>本文主要通过分析KSCrash框架，了解IOS程序奔溃后，如何获取奔溃时的符号化的调用堆栈，方便开发人员及时的解决程序中的bug。</p>
+    <p>本文主要通过分析[KSCrash](https://github.com/kstenerud/KSCrash）框架，了解IOS程序奔溃后，如何获取奔溃时的符号化的调用堆栈，方便开发人员及时的解决程序中的bug。</p>
 
 <p>程序奔溃后，获取调用堆栈的过程，是程序正常执行的逆向分析过程，所以本文首先通过了解程序执行的正向过程。了解了程序编译执行的正向过程，对于逆向分析非常有帮助。</p>
 
@@ -240,32 +240,43 @@ Section
 
 <p>我们可以看到，一张栈帧结构中包含着Return Address，也就是当前活动记录执行结束后要返回的地址。</p>
 
-<p>可以看到，我们可以通过指令指针来获取当前指令地址，以及通过栈基址指针获取当前栈帧地址。</p>
+<p>那么我们只要获取到了当前指令地址rip，就可以获取到栈基址指针rbp、当前栈帧地址rsp。进一步回溯到各个调用的活动栈。</p>
 
-<p>那么问题来了，我们怎么获取到相关寄存器呢？</p>
+<p>那么问题来了，我们怎么获取到指令的地址呢？ 其实当前指令执行地址rip、栈基址指针rbp、当前栈帧地址rsp 都是在cup的寄存器中保存着。下面大概介绍下寄存器。</p>
 
-<p>5寄存器</p>
+<h2 id="section-4">5. 寄存器</h2>
 
-<p>_STRUCT_MCONTEXT64
-{</p>
+<p>想了解IOS 的arm64的框架的相关寄存器可以参考下面的资料：<a href="http://infocenter.arm.com/help/topic/com.arm.doc.ihi0055b/IHI0055B_aapcs64.pdf">Procedure Call Standard for the ARM 64-bit Architecture (AArch64)</a>。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>_STRUCT_X86_EXCEPTION_STATE64  __es; ///异常寄存器
-_STRUCT_X86_THREAD_STATE64  __ss;  ///线程状态寄存器
-_STRUCT_X86_FLOAT_STATE64  __fs;  ///浮点寄存器 };
+<p>下面是我从代码中整理出的arm64的寄存器的定义，从下面代码中也可以大概了解寄存器的基本情况。</p>
+
+<p>其中结构体STRUCT_MCONTEXT_L 定义了三大类寄存器，分别是：异常寄存器、线程状态寄存器、浮点寄存器。下面代码位于/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/usr/include/mach/i386/_structs.h文件中，其中我后面添加注释的是比较重要的寄存器。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>_STRUCT_MCONTEXT64
+{
+ 
+	_STRUCT_X86_EXCEPTION_STATE64  __es; ///异常寄存器
+	_STRUCT_X86_THREAD_STATE64  __ss;  ///线程状态寄存器
+	_STRUCT_X86_FLOAT_STATE64  __fs;  ///浮点寄存器
+};
 </code></pre>
 </div>
 
-<p>///异常寄存器
-_STRUCT_X86_EXCEPTION_STATE64
+<p>///异常寄存器</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>_STRUCT_X86_EXCEPTION_STATE64
 {
     __uint16_t	__trapno;
     __uint16_t	__cpu;
     __uint32_t	__err;
-    __uint64_t	__faultvaddr;
-};</p>
+    __uint64_t	__faultvaddr;   /// 这个就是奔溃的地址
+};
+</code></pre>
+</div>
 
-<p>///线程状态寄存器
-_STRUCT_X86_THREAD_STATE64
+<p>///线程状态寄存器</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>_STRUCT_X86_THREAD_STATE64
 {
 	__uint64_t	__rax;
 	__uint64_t	__rbx;
@@ -273,8 +284,8 @@ _STRUCT_X86_THREAD_STATE64
 	__uint64_t	__rdx;
 	__uint64_t	__rdi;
 	__uint64_t	__rsi;
-	__uint64_t	__rbp;  ksmach_framePointer
-	__uint64_t	__rsp;  stackPointer
+	__uint64_t	__rbp; /// 栈帧指针（栈基指针）
+	__uint64_t	__rsp; /// 当前栈地址
 	__uint64_t	__r8;
 	__uint64_t	__r9;
 	__uint64_t	__r10;
@@ -283,29 +294,99 @@ _STRUCT_X86_THREAD_STATE64
 	__uint64_t	__r13;
 	__uint64_t	__r14;
 	__uint64_t	__r15;
-	__uint64_t	__rip;   instructionAddress
+	__uint64_t	__rip;  /// 当前指令寄存器
 	__uint64_t	__rflags;
 	__uint64_t	__cs;
 	__uint64_t	__fs;
 	__uint64_t	__gs;
-};</p>
+};
+</code></pre>
+</div>
+
+<p>了解了arm64的寄存器，那么下面的问题来了，程序奔溃后，如何获取这些寄存器的内容呢？ 我们需要了解下xnu微内核，xnu微内核的进程内通信部分（IPC），暴露了一些接口，可以获取当前线程的寄存器，可以参考下面的文档，了解这些函数的接口定义：<a href="http://web.mit.edu/darwin/src/modules/xnu/osfmk/man/">Mach IPC Interface</a>。<a href="https://developer.apple.com/library/mac/documentation/Darwin/Conceptual/KernelProgramming/Mach/Mach.html">IPC 原理讲解</a>。</p>
+
+<h2 id="section-5">6. 线程执行状态</h2>
+
+<p>IPC 接口文档的线程接口部分（Thread Interface）的 thread_get_state函数可以获取线程的寄存器。他的定义如下</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>kern_return_t   thread_get_state
+                (thread_act_t                     target_thread,
+                 thread_state_flavor_t                   flavor,
+                 thread_state_t                       old_state,
+                 mach_msg_type_number_t         old_state_count);
+</code></pre>
+</div>
+
+<p>thread_get_state 函数返回target_thread的执行状态（包括机器的寄存器）。</p>
+
+<h2 id="section-6">7. 思路回溯</h2>
+
+<p>符号化奔溃时的调用堆栈，可以按照下面的思路进行：</p>
 
 <ol>
-  <li>线程执行状态</li>
+  <li>
+    <p>通过thread_get_state 获取当前线程的寄存器状态，主要是获取：栈基址指针rbp、当前栈帧地址rsp</p>
+  </li>
+  <li>
+    <p>根据第四部分讲解的函数调用堆栈原理，取出各个 调用栈。</p>
+  </li>
+  <li>
+    <p>根据第二部分讲解的Mach-O文件结构 中的符号表将各个调用栈符号化。</p>
+  </li>
 </ol>
 
-<p>那么就要有相关的结构体来为线程保存运行时的状态，经过一番查阅，得到如下信息：</p>
+<p>那么现在基本梳理清楚了思路，下面其实还有个问题，那就是我们如何知道程序奔溃呢？通过分析KS的代码，我们知道，我们可以在启动的时候注册奔溃的处理函数，程序奔溃时，会执行回调的处理函数。这样我们就知道了程序的奔溃。到现在为止，基本上梳理完了奔溃符号解析的过程。下面在了解下 到底什么导致程序的奔溃呢？。</p>
 
-<p>The function thread_get_state returns the execution state (e.g. the machine registers) of target_thread as specified by flavor.</p>
+<h2 id="mach--unix-">8 Mach 异常与 Unix 信号</h2>
 
-<p>所以代码执行的顺序是  编写代码 编译  结果是mach-o文件， 符号和地址的对象关系， 
-那么解析的时候，程序奔溃的时候，获取奔溃的地址，</p>
+<p>下面这部分内容是完全参考<a href="http://www.wtoutiao.com/p/h27ist.html">漫谈 iOS Crash 收集框架</a>的。这个文章写的特别好，可以多看几次。</p>
+
+<p>iOS 系统自带的 Apple’s Crash Reporter 记录在设备中的 Crash 日志，Exception Type 项通常会包含两个元素： Mach 异常 和 Unix 信号。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Exception Type:         EXC_BAD_ACCESS (SIGSEGV)    
+Exception Subtype:      KERN_INVALID_ADDRESS at 0x041a6f3
+</code></pre>
+</div>
+
+<p>Mach 异常是什么？它又是如何与 Unix 信号建立联系的？
+Mach 是一个 XNU 的微内核核心，Mach 异常是指最底层的内核级异常，被定义在 &lt;mach/exception_types.h&gt;下 。每个 thread，task，host 都有一个异常端口数组，Mach 的部分 API 暴露给了用户态，用户态的开发者可以直接通过 Mach API 设置 thread，task，host 的异常端口，来捕获 Mach 异常，抓取 Crash 事件。</p>
+
+<p>所有 Mach 异常都在 host 层被ux_exception转换为相应的 Unix 信号，并通过threadsignal将信号投递到出错的线程。iOS 中的 POSIX API 就是通过 Mach 之上的 BSD 层实现的。</p>
+
+<p>因此，EXC_BAD_ACCESS (SIGSEGV)表示的意思是：Mach 层的EXC_BAD_ACCESS异常，在 host 层被转换成 SIGSEGV 信号投递到出错的线程。既然最终以信号的方式投递到出错的线程，那么就可以通过注册 signalHandler 来捕获信号:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>signal(SIGSEGV,signalHandler);
+</code></pre>
+</div>
+
+<p>捕获 Mach 异常或者 Unix 信号都可以抓到 crash 事件，这两种方式哪个更好呢？优选 Mach 异常，因为 Mach 异常处理会先于 Unix 信号处理发生，如果 Mach 异常的 handler 让程序 exit 了，那么 Unix 信号就永远不会到达这个进程了。转换 Unix 信号是为了兼容更为流行的 POSIX 标准 (SUS 规范)，这样不必了解 Mach 内核也可以通过 Unix 信号的方式来兼容开发。</p>
 
 <h1 id="ks-">KS 奔溃流程分析</h1>
 
-<p><a href="http://web.mit.edu/darwin/src/modules/xnu/osfmk/man/">Mach IPC Interface IPC 的接口定义</a></p>
+<p>下面是KS的基本流程</p>
 
-<p><a href="https://developer.apple.com/library/mac/documentation/Darwin/Conceptual/KernelProgramming/Mach/Mach.html">IPC 原理讲解</a></p>
+<p><img src="/LJBlog/images/KSCrash/3.png" alt="Mach-O文件结构" /></p>
+
+<p>根据[KSCrash](https://github.com/kstenerud/KSCrash）的介绍，他可以捕获多种异常,包括：</p>
+
+<ul>
+  <li>Mach kernel exceptions</li>
+  <li>Fatal signals</li>
+  <li>C++ exceptions</li>
+  <li>Objective-C exceptions</li>
+  <li>Main thread deadlock (experimental)</li>
+  <li>Custom crashes (e.g. from scripting languages)</li>
+</ul>
+
+<p>下面主要介绍下 Mach kernel exceptions、Fatal signals、C++ exceptions异常的注册异常处理函数原理。</p>
+
+<p>1。 Mach kernel exceptions 注册异常处理函数</p>
+
+<p>下面是mach exceptions 的安装流程图</p>
+
+<p><img src="/LJBlog/images/KSCrash/mach 异常安装.png" alt="Mach-O文件结构" /></p>
+
+<p>基本流程是首先</p>
 
 <p>Interprocess Communication (IPC)</p>
 
