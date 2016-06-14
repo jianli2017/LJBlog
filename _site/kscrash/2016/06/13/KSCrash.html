@@ -104,7 +104,13 @@
 
 <p>下面有几个工具可以简单的查看文件的结构：</p>
 
-<p>文件类型展示工具-file ，The file-type displaying tool, 位于/usr/bin/file，显示文件的类型，对于多构架的文件，它显示每个构架下的镜像类型。</p>
+<ul>
+  <li>
+    <ol>
+      <li>文件类型展示工具-file ，The file-type displaying tool, 位于/usr/bin/file，显示文件的类型，对于多构架的文件，它显示每个构架下的镜像类型。</li>
+    </ol>
+  </li>
+</ul>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>file /Users/gome/Desktop/GomeEShop 
 
@@ -112,7 +118,13 @@
 </code></pre>
 </div>
 
-<p>对象文件展示工具-otool ，The object-file displaying tool，位于/usr/bin/otool，显示Mach-O 格式文件的sections、segments的内容。它包含各个构架下的符号</p>
+<ul>
+  <li>
+    <ol>
+      <li>对象文件展示工具-otool ，The object-file displaying tool，位于/usr/bin/otool，显示Mach-O 格式文件的sections、segments的内容。它包含各个构架下的符号</li>
+    </ol>
+  </li>
+</ul>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>bogon:~ LiJian$ otool -h /Users/gome/Desktop/GomeEShop 
 /Users/gome/Desktop/GomeEShop:
@@ -122,7 +134,7 @@ Mach header
 
 </code></pre>
 </div>
-<p>可以使用otool工具 查看文件的结构</p>
+<p>可以使用otool工具 查看符号化的文件头</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>bogon:~ LiJian$ otool -hv /Users/gome/Desktop/GomeEShop 
 /Users/gome/Desktop/GomeEShop:
@@ -132,6 +144,8 @@ MH_MAGIC_64   ARM64        ALL  0x00     EXECUTE    59       6648   NOUNDEFS DYL
 bogon:~ LiJian$ 
 </code></pre>
 </div>
+
+<p>可以使用otool 查看load commend。</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>bogon:~ LiJian$ otool -lv /Users/gome/Desktop/GomeEShop 
 /Users/gome/Desktop/GomeEShop:
@@ -164,7 +178,13 @@ Section
 </code></pre>
 </div>
 
-<p>符号展示工具-nm，The symbol table display tool,位于 /usr/bin/nm, allows you to view the contents of an object file’s symbol table.</p>
+<ul>
+  <li>
+    <ol>
+      <li>符号展示工具-nm，The symbol table display tool,位于 /usr/bin/nm, allows you to view the contents of an object file’s symbol table.</li>
+    </ol>
+  </li>
+</ul>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>bogon:~ LiJian$ nm /Users/gome/Desktop/GomeEShop 
 0000000100c087a4 t +[ADBAnalyticsTimedAction timedAction:data:startTime:adjustedStartTime:databaseID:]
