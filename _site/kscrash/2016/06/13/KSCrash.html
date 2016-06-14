@@ -402,6 +402,39 @@ Mach 是一个 XNU 的微内核核心，Mach 异常是指最底层的内核级�
 
 <h2 id="signals-exceptions-">2. signals exceptions 注册异常处理函数</h2>
 
+<p>下图是signals exceptions 异常处理函数的安装过程：</p>
+
+<p><img src="/LJBlog/images/KSCrash/sinal 异常安装.png" alt="Mach-O文件结构" /></p>
+
+<p>替换信号处理函数栈</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>int sigaltstack(const stack_t *ss, stack_t *oss);&lt;/signal.h&gt;
+</code></pre>
+</div>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>int sigaction(int signo,const struct sigaction *restrict act,
+              struct sigaction *restrict oact);
+给信号signum设置新的信号处理函数act， 同时保留该信号原有的信号处理函数oldact  
+</code></pre>
+</div>
+
+<p>安装的信号句柄是g_signalStack，信号的种类包括如下：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>SIGABRT,     /* abort() */
+SIGBUS,  /* bus error */
+SIGFPE,  /* floating point exception */
+SIGILL,  /* illegal instruction (not reset when caught) */
+SIGPIPE,  /* write on a pipe with no one to read it */
+SIGSEGV,  /* segmentation violation */
+SIGSYS,  /* bad argument to system call */
+SIGTRAP,  /* trace trap (not reset when caught) */
+</code></pre>
+</div>
+
+<h2 id="c-exceptions-">3. C++ exceptions 注册异常处理函数</h2>
+
+<p>这个比较简单，直接调用了std::set_terminate(CPPExceptionTerminate)函数，设置CPPExceptionTerminate为C++ exceptions 的异常处理函数。</p>
+
 <p>Interprocess Communication (IPC)</p>
 
 <p>Communication between tasks is an important element of the Mach philosophy. Mach supports a client/server system structure in which tasks (clients) access services by making requests of other tasks (servers) via messages sent over a communication channel.</p>
@@ -417,49 +450,6 @@ notifications
 lock sets
 remote procedure calls (RPCs)</p>
 
-<p>mach_task_self
-mach_port_t   mach_task_self (void)
-The mach_task_self function returns send rights to the task’s kernel port.返回（具有向任务内核发送权利的）端口</p>
-
-<p>kern_return_t   task_get_exception_ports
-                (task_t                                    task,
-                 exception_mask_t               exception_types,
-                 exception_mask_array_t     old_exception_masks,
-                 old_exception_masks        old_exception_count,
-                 exception_port_array_t     old_exception_ports,
-                 exception_behavior_array_t       old_behaviors,
-                 exception_flavor_array_t           old_flavors);</p>
-
-<p>替换信号处理函数栈</p>
-
-<p>int sigaltstack(const stack_t *ss, stack_t *oss);&lt;/signal.h&gt;
-g_signalStack</p>
-
-<p>SIGABRT,     /* abort() <em>/
-    SIGBUS,  /</em> bus error <em>/
-    SIGFPE,  /</em> floating point exception <em>/
-    SIGILL,  /</em> illegal instruction (not reset when caught) <em>/
-    SIGPIPE,  /</em> write on a pipe with no one to read it <em>/
-    SIGSEGV,  /</em> segmentation violation <em>/
-    SIGSYS,  /</em> bad argument to system call <em>/
-    SIGTRAP,  /</em> trace trap (not reset when caught) */</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>sigaction
-</code></pre>
-</div>
-
-<p>int sigaction(int signo,const struct sigaction *restrict act,
-              struct sigaction *restrict oact);
-给信号signum设置新的信号处理函数act， 同时保留该信号原有的信号处理函数oldact</p>
-
-<p>信号</p>
-
-<p>“可替换信号栈” 的位置及属性信息
-{
-	void            <em>ss_sp;	        /</em> signal stack base <em>/
-	__darwin_size_t ss_size;        /</em> signal stack length <em>/
-	int             ss_flags;       /</em> SA_DISABLE and/or SA_ONSTACK */
-};</p>
 
 
       </section>
