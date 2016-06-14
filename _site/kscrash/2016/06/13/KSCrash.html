@@ -95,21 +95,39 @@
 
 <p>header 后面紧跟着的内容是load commend。load commend指定了文件的布局。具体包括以下内容：</p>
 
-<p>• The initial layout of the file in virtual memory
-• The location of the symbol table (used for dynamic linking)
-• The initial execution state of the main thread of the program
-• The names of shared libraries that contain definitions for the main executable’s imported symbols</p>
+<p>• The initial layout of the file in virtual memory</p>
 
-<p>在load commend后面是Mach-O文件包含的各种segement数据。每个segement 包含0或多个section，每个segement中的section包含特定类型的代码和数据 。</p>
+<p>• The location of the symbol table (used for dynamic linking)</p>
+
+<p>• The initial execution state of the main thread of the program</p>
+
+<p>• The names of shared libraries that contain definitions for the main executable’s imported symbols</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>#define	LC_SEGMENT	0x1	/* segment of this file to be mapped */
+#define	LC_SYMTAB	0x2	/* link-edit stab symbol table info */
+#define	LC_SYMSEG	0x3	/* link-edit gdb symbol table info (obsolete) */
+#define	LC_THREAD	0x4	/* thread */
+#define	LC_UNIXTHREAD	0x5	/* unix thread (includes a stack) */
+#define	LC_LOADFVMLIB	0x6	/* load a specified fixed VM shared library */
+#define	LC_IDFVMLIB	0x7	/* fixed VM shared library identification */
+#define	LC_IDENT	0x8	/* object identification info (obsolete) */
+#define LC_FVMFILE	0x9	/* fixed VM file inclusion (internal use) */
+#define LC_PREPAGE      0xa     /* prepage command (internal use) */
+#define	LC_DYSYMTAB	0xb	/* dynamic link-edit symbol table info */
+#define	LC_LOAD_DYLIB	0xc	/* load a dynamically linked shared library */
+#define	LC_ID_DYLIB	0xd	/* dynamically linked shared lib ident */
+#define LC_LOAD_DYLINKER 0xe	/* load a dynamic linker */
+#define LC_ID_DYLINKER	0xf	/* dynamic linker identification */
+#define	LC_PREBOUND_DYLIB 0x10	/* modules prebound for a dynamically */
+</code></pre>
+</div>
+
+<p>在load commend后面是load commend中定义的各种segement数据。每个segement 包含0或多个section，每个segement中的section包含特定类型的代码和数据 。</p>
 
 <p>下面有几个工具可以简单的查看文件的结构：</p>
 
 <ul>
-  <li>
-    <ol>
-      <li>文件类型展示工具-file ，The file-type displaying tool, 位于/usr/bin/file，显示文件的类型，对于多构架的文件，它显示每个构架下的镜像类型。</li>
-    </ol>
-  </li>
+  <li>文件类型展示工具-file ，The file-type displaying tool, 位于/usr/bin/file，显示文件的类型，对于多构架的文件，它显示每个构架下的镜像类型。</li>
 </ul>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>file /Users/gome/Desktop/GomeEShop 
@@ -119,11 +137,7 @@
 </div>
 
 <ul>
-  <li>
-    <ol>
-      <li>对象文件展示工具-otool ，The object-file displaying tool，位于/usr/bin/otool，显示Mach-O 格式文件的sections、segments的内容。它包含各个构架下的符号</li>
-    </ol>
-  </li>
+  <li>对象文件展示工具-otool ，The object-file displaying tool，位于/usr/bin/otool，显示Mach-O 格式文件的sections、segments的内容。它包含各个构架下的符号</li>
 </ul>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>bogon:~ LiJian$ otool -h /Users/gome/Desktop/GomeEShop 
@@ -134,6 +148,7 @@ Mach header
 
 </code></pre>
 </div>
+
 <p>可以使用otool工具 查看符号化的文件头</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>bogon:~ LiJian$ otool -hv /Users/gome/Desktop/GomeEShop 
@@ -179,11 +194,7 @@ Section
 </div>
 
 <ul>
-  <li>
-    <ol>
-      <li>符号展示工具-nm，The symbol table display tool,位于 /usr/bin/nm, allows you to view the contents of an object file’s symbol table.</li>
-    </ol>
-  </li>
+  <li>符号展示工具-nm，The symbol table display tool,位于 /usr/bin/nm, allows you to view the contents of an object file’s symbol table.</li>
 </ul>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>bogon:~ LiJian$ nm /Users/gome/Desktop/GomeEShop 
@@ -209,15 +220,15 @@ Section
 </code></pre>
 </div>
 
-<ol>
-  <li>可执行文件的执行</li>
-</ol>
+<h2 id="section-2">3. 绑定和执行</h2>
 
-<p>内核首先加载程序文件，并且检查程序文件的起始部分的mach_header结构，内核验证是否合法的Macj-O文件，解析header中的load commands。然后内核加载在load commands 中指定的动态链接器到内存中，执行。在执行前 需要绑定符号，就是将符号引用转换为动态库中的实际地址。程序执行时候使用的都是地址。</p>
+<p>根据上面分析的可执行文件的结构，我们可以看到，可执行文件中已经包含了符号表 ，这个符号表是可执行代码的虚拟地址和符号的对应表。符号表是绑定过程中建立的，程序的绑定有很多种，我自己也不清楚，不过可以参看下面的文档：<a href="https://developer.apple.com/library/mac/documentation/DeveloperTools/Conceptual/MachOTopics/1-Articles/executing_files.html#//apple_ref/doc/uid/TP40001829-97047-TPXREF111">Mach-O Programming Topics - Binding Symbols</a></p>
 
-<ol>
-  <li>调用堆栈</li>
-</ol>
+<p>看到符号表，那么我们可以做这样的设想： 如果程序奔溃，只要我们获取到了奔溃调用堆栈的回溯地址，然后从这个符号表中查找对应的符号，就完成了调用堆栈的符号化工作？ 还有一个问题就是我们如何获取程序的调用堆栈呢？还有很多需要我们接着往下看。为了知道如何获取调用堆栈的回溯，我们大概了解下程序的执行过程：</p>
+
+<p>程序的执行过程：内核首先加载程序文件，并且检查程序文件的起始部分的mach_header结构，内核验证是否合法的Macj-O文件，解析header中的load commands。然后内核加载在load commands 中指定的动态链接器到内存中，执行。</p>
+
+<h2 id="section-3">4. 调用堆栈</h2>
 
 <p>一个线程的调用栈是什么样的呢？</p>
 
