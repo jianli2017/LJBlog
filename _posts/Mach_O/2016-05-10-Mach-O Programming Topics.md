@@ -1,0 +1,259 @@
+---
+layout: post
+title:  Mach-O Programming Topics 
+category: 技术
+comments: true
+---
+
+
+# 简介
+
+[Mach-O Programming Topics](https://developer.apple.com/library/mac/documentation/DeveloperTools/Conceptual/MachOTopics/1-Articles/executing_files.html#//apple_ref/doc/uid/TP40001829-97182-TPXREF112)　
+
+[OS X ABI Dynamic Loader Reference](https://developer.apple.com/library/mac/documentation/DeveloperTools/Reference/MachOReference/index.html#//apple_ref/doc/uid/TP40001398-CH1g-186537)
+
+OS X ABI Mach-O File Format Reference(https://developer.apple.com/library/mac/documentation/DeveloperTools/Conceptual/MachOTopics/1-Articles/executing_files.html#//apple_ref/doc/uid/TP40001829-97182-TPXREF112)
+
+OSX X 支持多种应用程序，每种应用有自己的运行规则、约定、文件格式。在OS X中， kernel extensions, command-line tools, applications, frameworks, and libraries (shared and static) 使用Mach-O(mach object) 文件
+
+OS X 运行时结构决定了对象文件在文件系统的布局、应用程序如何和内核交互。在OS X系统中对象文件（object file）的格式使用 Mach-O。
+
+Mach-O格式文件有如下几个数据部分：
+
+* header：指定了文件的构架，如PPC、PPC64、IA-32、x86-64。
+* Load commands：指定了文件的逻辑结构、在虚拟内存（virtual memory）中文件的布局
+* Raw segment data：包含在load commands中定义的段（segments）数据
+
+# building Mach-O file
+
+开发者通过将源码转化为对象文件（object file）可以创建程序。随后，可将对象文件打包为可执行代码或静态库。OSX提供的工具可以将源码转化为可以被使用者使用的应用或静态库。
+
+本文讨论了Mac Apps 如何被编译， 深入讨论了我们可以编译的程序的种类。描述了Mach-O文件编译在过程中涉及的工具、解释了可以编译出的 Mach-O文件的种类、并谈到了模块（modules），模块是的代码和数据最小链接单元、也描述了静态库，静态库是模块的一个集合。
+
+## 2.1 The Tools—Building and Running Mach-O Files（编译和运行 Mach-O文件的工具）
+
+在运行时，内核使用动态链接器（dynamic linker，a specially marked dynamic shared library located at /usr/lib/dyld）去执行加载和绑定程序的工作。内核加载程序、动态链接为一个进程、并执行。
+
+通过这篇文章，概况的说明下面的工具：
+
+* compiler：将高级语言写的code翻译为包含机器二进制code和数据的中间对象文件。除非特别说明，本文将机器的编码当做compiler。
+
+~~~
+（assembler汇编程序;  汇编语言;  装配工;  低级编码）
+（compiler 汇编者;  编辑者;  编纂者;  （电脑的）编译程序；编译）
+~~~
+
+* static linker：将中间的对象文件合并为最后的可执行程序
+
+Xcode Tool包含很多命令行程序，这些工具可以编辑、分析应用程序。包括compilers、 ld、static linker。当你使用Xcode、标准的命令行工具、第三方的工具去开发应用程序，理解各个工具的作用有助于理解Mach-O运行结构、促进和其他的OS X 开发者交流。标准的工具包括如下：
+
+~~~
+facilitate 帮助;  促进，助长;  使容易
+~~~ 
+
+* The compiler driver 位于/usr/bin/gcc，可以编译，汇编、链接
+* The C++ compiler driver 位于/usr/bin/c++
+* The assembler 位于 /usr/bin/as 将汇编语言转化为中间对象文件
+* The static linker 位于/usr/bin/ld ，用于合并Mach-O文件，可以使用static linker将程序链接为动态或静态的。静态的程序是完整的，他们不能调用其他的framework和库，只能系统条用他们。在OS X中，内核扩展是静态的，所有其他的程序都是动态的，即使是命令行程序，在内核外部调用内核是通过静态库，只有动态库可以访问静态库。
+* he library creation tool 位于/usr/bin/libtool，根据参数创建静态库或动态库，When building shared libraries, libtool calls the static linker (ld).
+
+分析Mach-O文件的工具如下：
+
+* lipo， 位于/usr/bin/lipo可以创建和分析包含多个框架镜像的二进制文件，例如在PowerPC、Intel-based机器上使用的通用二进制文件（universal binary）、PPC/PPC64 binary
+* 文件类型展示工具-file ，The file-type displaying tool, 位于/usr/bin/file，显示文件的类型，对于多构架的文件，它显示每个构架下的镜像类型。
+* 对象文件展示工具-otool ，The object-file displaying tool，位于/usr/bin/otool，显示Mach-O 格式文件的sections、segments的内容。它包含各个构架下的符号
+*页面分析工具-pagestuff， The page-analysis tool, 位于/usr/bin/pagestuff, 展示组成镜像的逻辑页的信息， 包括section的名称、符号，这个工具不能再多个构建的镜像上使用。
+* 符号展示工具-nm，The symbol table display tool,位于 /usr/bin/nm, allows you to view the contents of an object file’s symbol table.
+
+##2.2 The Products—Types of Mach-O Files You Can Build
+
+在OS X 中，典型的应用程序执行来源于不同文件类型的代码，包含可执行代码的文件如下：
+
+1. 临时中间文件，Intermediate object files ，这种类型的文件不是最后的程序，它只是更大的对象文件的基本编译块，通常，编译器为一个源码文件的代码、数据创建一个Intermediate object文件，然后，你可以使用static linker 去合并对象文件为dynamic linkers
+2. 动态分享库，Dynamic shared libraries，这种文件包含应用程序动态引用的可复用的代码的各个模块，同时，这种类型文件在程序启动的时候被dynamic linker加载。动态分享库一般用于保存应用程序可复用的大量代码。
+3. frameworks，它是包含动态分享库和相关的资源的目录，资源可包括图像文件、开发文档、开发接口。
+4. Umbrella frameworks，一种特殊的framework，包含更多的子framework，例如Cocoa umbrella framework包含Application Kit和Foundation  framework。
+5. 静态归档库，Static archive libraries，在编译的时候，static linker将静态归档库包含的重复使用的代码模块，添加到程序中。静态归档库包含只在个别应用中使用的少量代码。或者由于某种原因在动态分享库中不能包含的代码。
+6. Bundles，bundles是在程序执行的时候加载的可执行文件。
+7. Kernel extensions 内核扩展，
+
+除了内核扩展，所有的的对象文件都必须是动态的。
+
+默认情况下，static linker在/System/Library/Frameworks路径下查找frameworks and umbrella frameworks ，在/usr/lib查找静态归档库和动态分享库。在资源目录下查找Bundles。
+
+## 2.3 Modules—The Smallest Unit of Code
+
+你可以把OS X的分享库看做是modules的集合，一个module是机器码和数据的最小单元，其中数据可以被其他的单元独立的链接。通常，一个module就是一个对象文件，这个对象文件是通过一个源文件编译而得。假设现在有main.c、thing.c、foo.c，编译器将生成main.o、thing.o、foo.o。每个输出的对象文件就是一个module。当用静态链接器去合并三个对象文件为动态分享库的时候，每个对象文件仍然是一个独立的代码和数据单元。当链接为应用程序或bundles的时候，静态链接器总是合并三个对象文件为一个modules。
+
+当编译动态分享库时，通过静态链接器将多个modules减少为一个module，是一个好的主意，因为在模块间调用时有附加开销的。使用ld，利用下面的命令可以做这个优化
+
+~~~
+ld -r -o things.o thing1.o thing2.o thing3.o
+~~~
+
+# 3 Executing Mach-O Files
+
+程序必须执行进程并链接分享库中的符号，应用程序要使用库或模块，必须定义其他模块中的符号的引用，这些应用在运行时处理。在运行时，应用程序使用的模块的符号的名字 有共享的命名空间，像一个目录。为了应用或应用使用的动态库的可扩展性，应用或动态库开发者必须确保使用的名字不能与使用的模块的名字冲突。
+
+二级命名空间属性 ：在模块的符号名字中添加了模块名字 。这种方式保证了模块的符号名字于其他模块的符号名字不冲突。
+
+进程加载和链接一个程序，主要有相关的实体：OS X内核和dynamic linker.当你执行一个程序时，在程序的地址空间，内核为你的程序创建一个进程、加载程序、链接分享库（usually /usr/lib/dyld）。
+
+## 3.1 Launching an Application
+
+当你从Finder或Dock中启动一个程序是，或者当你使用cell启动程序时，系统最终为你调用两个函数：fork、execve。fork函数创建一个进程。execve函数加载和执行程序。有几个execve函数的变体函数，例如execl、execv、和exect，每个变体为程序提供了不同的参数。在OS X中，所有的变体最后都调用execve。
+
+当编写一个Mac app 的时候，你需要使用Launch Services framework启动其他的app。Launch Services知道app 的包信息。你可以使用它打开应用或文档。Finder和Dock使用Launch Service 保存文件类型和可以打开这种类型文件的应用的映射的数据库。Cocoa程序可以使用NSWorkspace打开应用或文档。NSWorkspace内部使用Launch Services。Launch Services 最终调用fork 和execve去完成创建和执行进程的工作。
+
+## 3.2 Forking and Executing the Process
+
+为了使用BCD系统函数创建进程，进程必须调用fork函数。fork函数创建一个进程的逻辑拷贝，然后给你的进程返回一个进程ID，原始进程和新进程在调用fork函数后继续执行。不同之处是fork向原进程返回进程ID，向新进程返回0。如果不能创建新进程，fork函数向原进程返回-1，并设置errno。
+
+A Mach-O 可执行文件包含一个Header，这个header包括一组Load Commands。对于使用分享库或framework的程序，其中的一个commands就是制定链接的位置，用于加载程序。如果使用Xcode， 使用动态链接器（位于/usr/lib/dyld） 加载程序。
+
+当你调用execve例程，内核首先加载程序文件，并且检查程序文件的起始部分的mach_header结构，内核验证是否合法的Macj-O文件，解析header中的load commands。然后内核加载在load commands 中指定的动态链接器到内存中，在程序文件中执行动态链接器。
+
+动态链接器加载程序依赖的所有分享库。并绑定足够的符号去开始程序。然后调用入口点函数，在编译期间，静态链接器从对象文件（ 位于/usr/lib/crt1.o）添加了标准的入口点函数。入口点函数为内核设置运行环境状态、调用C++对象的静态初始化函数、OC 运行时的初始化函数，然后调用main 函数。
+
+## 3.3 Finding Imported Symbols
+
+当动态链接器加载Mach-O文件时候，它关联文件的导入符号和分享库或framework中定义。这部分描述了绑定Mach-O文件的导入符号到其他Mach-O文件的定义的过程。并解释了查找符号的过程。
+
+### 3.3.1 Binding Symbols
+
+绑定 是解析模块引用其他模块中函数或数据的过程（the undefined external symbols, sometimes called imported symbols）。模块可能在一个Mach-O文件中，也可能在不同的Mach-O文件中，在两种情况下，语义是一样的。当应用首次加载对的时候，动态加载器加载分享库到程序的地址空间。当绑定被执行后，动态链接器将程序中的导入引用替换为分享库中的实际定义的地址。
+
+动态链接器可以在加载和执行的多个阶段绑定程序。取决于编译时的选项。
+
+* just-in-time binding  
+当程序首次使用引用的时候_动态链接器绑定引用。在程序加载的时候，动态链接器加载分享库，然而动态链接器在在引用使用前并不绑定程序引用到分享库中的符号。
+
+* load-time binding    
+在程序加载的时候，动态链接器立即绑定多有的导入符号。在标准工具中使用load-time 绑定，对ld使用-bind_at_load选项。表明动态链接器在文件加载的时候后必须立即绑定所有的外部符号，没有这个选项，ld将输出文件当做just-in-time 绑定。
+
+
+* prebinding  
+是load-time 绑定的一种，程序引用的分享库预绑定在特殊的地址，静态链接器设置未定义的符号的地址为默认地址。在运行时，动态链接器需要验证是否有地址在编译的以后改变，如果改变，动态链接器撤销预绑定的所有地址，然后使用just-in-time绑定方式处理符号。 
+
+* Weak references  
+。。。。
+
+If no other type of binding is specified for a given library, the static linker sets up the program’s undefined references to that library to use just-in-time binding
+
+
+### 3.3.2 Searching for Symbols
+
+A symbol is a generic representation of the location of a function, data variable, or constant in an executable file. References to functions and data in a program are references to symbols. To refer to a symbol when using the dynamic linking routines, you usually pass the name of the symbol, although some functions also accept a number representing the ordering of the symbol in the executable file. The name of a symbol representing a function that conforms to standard C calling conventions is the name of the function with an underscore prefix. Thus, the name of the symbol representing the function main would be _main.
+
+符号是函数、数据、常量可执行文件文件中的位置表现。 程序中函数和数据的引用是符号的引用。在动态链接器中引用一个符号，通常，传递符号的名字。尽管有的函数需要传递一个数字，这个数字代表符号在可执行文件中的序号。遵循标注C规范函数的符号名字是在函数名前添加下划线。例如函数名是main，那么符号为_main
+
+
+Programs created by the OS X v10.0 development tools add all symbols from all loaded shared libraries into a single global list. Any symbol that your program references can be located in any shared library, as long as that shared library is one of the program’s dependent libraries (or one of the dependent libraries of the dependent libraries).
+
+在OS X v10.0开发工具创建的程序中，向全局表中添加了分享库的所有的符号。程序中的任何符号都能在分享库中定位。只要分享库是程序的依赖库，包括依赖库的依赖库。
+
+OS X v10.1 introduced the two-level symbol namespace feature. The first level of the two-level namespace is the name of the library that contains the symbol, and the second is the name of the symbol. With the two-level namespace feature enabled, when the static linker records references to imported symbols, it records a reference to the name of the library that contains the symbol and the name of the symbol. Linking your programs with the two level namespace feature offers two benefits over the flat namespace:
+
+在OS X v10.1中引入了两级符号命名空间的特性。two-level命名空间的第一级 是包含符号的库的名字。第二级是符号的名字。在two-level命名空间有效的情况下，当静态分享库记录符号的引用，它记录录符号对应的动态库的名字，使用two-level命名空间链接相对于flat 命名空间 有下面两个好处：
+
+* Enhanced performance when searching for symbols. With the two-level namespace, the dynamic linker knows exactly where to start looking for the implementation of a symbol. With a flat namespace, the dynamic linker must search all the loaded libraries for the one that contains the symbol. 
+  
+  增强查找符号的性能。 动态链接器明确的知道从哪开始查找符号的实现。而使用flat 命名空间，动态链接器必须查找所有加载的库，查找包含符号的那个。
+ 
+*  Enhanced forward compatibility. In the flat namespace, two or more libraries cannot contain symbols with different implementations that share the same name because the dynamic linker cannot know which library contains the preferred implementation. This is not initially a problem, because the static linker catches any such problems when you first build the application. However, if the vendor of one of your dependent shared libraries later releases a new version of the library that contains a symbol with the same name as one in your program or in another dependent shared library, your program will fail to run.
+
+增强向前兼容性。在使用flat 命名空间的情况下， 两个或多个库中不能包含相同名字不同实现的符号，因为动态链接器不知道那个库中的实现是合适的。开始情况下，这个不是一个问题，因为静态链接器在首次编译的时候能够捕获这种问题，但是如果某个依赖的库的厂商后来替换了一个新版本的库，而新库包含了一个符号，这个符号和程序中或其他依赖库的符号一样，那么程序将不能运行。
+
+
+Your application must link directly to the shared library that contains the symbol (or, if the library is part of an umbrella framework, to the umbrella framework that contains it).  
+
+应用程序一定要链接包含符号的分享库 
+
+When obtaining symbols in a program built with the two-level namespace feature enabled, you must specify a reference to the shared library that contains the symbols.
+
+By default, the static linker in OS X v10.1 and later uses a two-level namespace for all Mach-O files.
+
+在默认情况下，从OS X v10.1即以后，Mach-O 使用two-level 命名空间。
+
+For programs that do not have a two-level namespace, you can tell the linker to define references to undefined symbols even if the linker cannot find the library that contains them. When you build an executable with such undefined symbols, you are making the assumption that one of the other files loaded as part of the executable file at runtime contains those symbols. Bundles and shared libraries sometimes use this option to reference symbols defined in the main executable. However, this causes you to lose the performance and compatibility benefits of two-level namespaces. It’s usually better to explicitly link against an executable that defines the references. However, if you must link with undefined references, you can do it by enabling the flat namespace feature and suppressing undefined reference warnings, using the options -flat_namespace and -undefined suppress as in the following command line:
+
+对于没有使用两级命名空间的程序，你可以告诉链接器为没有定义的符号定义引用，即使链接器不能找到包含该符号的库。当你编译一个含有为定义的符号的可执行文件的时候，你做这样的假设，可执行文件加载的其他文件包含这个符号。bundles和分享库使用这中方式去引用主执行文件中的符号。然而，这样丧失了two-level的兼容性和性能，通常显示的链接定义引用的文件。然而如果必须链接未定义的引用，你可以使用flat 命名空间，去消除没有引用的警告，在命令行中使用下面命令：
+
+~~~
+ld -o my_tool -flat_namespace -undefined suppress peace.o love.o
+~~~
+
+When building executables with a two-level namespace, you can allow the remaining undefined symbols to be looked up by the dynamic linker if the program is targeted for OS X v10.3 and later (the MACOSX_DEPLOYMENT_TARGET environment variable is set to 10.3 or higher). To take advantage of this feature, use the -undefined dynamic_lookup option.
+
+使用two-level 命名空间编译可执行程序的时候，在OS X v10.3 以后的系统，你可以让动态链接器查找剩下的未定义的符号。使用这个特性，使用-undefined dynamic_lookup选项。
+
+To build executables with a two-level namespace, the static linker must be able to find the source library for each symbol. This can present difficulties for authors of bundles and dynamic shared libraries that assume a flat, global symbol namespace. To build successfully with the two-level namespace, keep the following points in mind:
+
+使用two-level命名空间编译可执行文件，静态链接器必须能够找到符号的源库，使用two-level成功编译，注意两点：
+
+* Bundles that need to reference symbols defined in the program’s main executable must use the -bundle_loader static linker option. The static linker can then search the main executable for the undefined symbols.
+
+需要引用主执行程序中符号的bundles，必须使用-bundle_loader选项，这样静态链接器能够在主执行文件中查找未定义的符号。
+
+* Shared libraries that need to reference symbols defined in the program’s main executable must load the symbol dynamically using a function that does not require a library reference, such as dlsym or NSLookupSymbolInImage (OS X ABI Dynamic Loader Reference).  
+
+需要引用主执行程序中符号的分享库，必须动态的加载符号，使用的函数不依赖库引用，例如dlsym或NSLookupSymbolInImage，可以参考[OS X ABI Dynamic Loader Reference](https://developer.apple.com/library/mac/documentation/DeveloperTools/Reference/MachOReference/index.html#//apple_ref/doc/uid/TP40001398).
+
+## 3.4 Scope and Treatment of Symbol Definitions
+
+
+Symbols in an object file may exist at several levels of scope. This section describes each of the possible scopes that a symbol may be defined at, and provides samples of C code used to create each symbol type. These samples work with the standard developer tools; a third party tool set may have different conventions.
+
+在对象文件中的符号有多级作用范围，这节描述符号可能的范围。并提供例子创建不同的符号
+
+A defined external symbol is any symbol defined in the current object file, including functions and data. The following C code defines external symbols:
+
+defined external symbol 是定义在当前对象文件中的符号
+
+~~~
+int x = 0;
+double y = 99 __attribute__((visibility("default")));   // GCC 4.0 only
+~~~
+
+An undefined external symbol is any symbol defined in a file outside of the current file. The following C code defines two external symbols, a variable and a function:
+
+undefined external symbol是定义在当前对象文件外面的符号
+
+~~~
+extern int x;
+extern void SomeFunction(void);
+~~~
+
+A common symbol is a symbol that may appear in multiple intermediate object files. The static linker permits multiple common symbol definitions with the same name in input files, and copies the one with the largest size to the final product. If there is another symbol with the same name as a common symbol, the static linker ignores the common symbol instead.
+
+The standard C compiler generates a common symbol when it sees a tentative definition—a global variable that has no initializer and is not marked extern. The following line is an example of a tentative definition:
+
+common symbol 可能出现在多个临时对象文件中。
+
+~~~
+int x;
+~~~
+
+A multi-module shared library, which ld builds by default, cannot have common symbols. However, you can build a shared library as a single module with the -single_module flag. To eliminate common symbols in an existing shared library, you must either explicitly define the symbol (with an initialized value, for example) in one of the modules in the shared library, or pass the -fno-common flag to the compiler.
+
+A private defined symbol is a symbol that is not visible to other modules. The following C code defines a private symbol:
+
+~~~
+static int x;
+~~~
+
+# 4.Indirect Addressing
+
+Indirect addressing is the name of the code generation technique that allows symbols defined in one file to be referenced from another file, without requiring the referencing file to have explicit knowledge of the layout of the file that defines the symbol. Therefore, the defining file can be modified independently of the referencing file. Indirect addressing minimizes the number of locations that must be modified by the dynamic linker, which facilitates code sharing and improves performance.
+
+间接寻址是代码生成的技术的名字。这个技术允许一个文件中定义的符号在另一个文件中引用，不需要引用文件
+
+
+
+
+
+
+
+
+
+
