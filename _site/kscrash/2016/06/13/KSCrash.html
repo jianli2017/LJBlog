@@ -439,7 +439,15 @@ SIGTRAP,  /* trace trap (not reset when caught) */
 
 <p><img src="/LJBlog/images/KSCrash/符号过程.png" alt="Mach-O文件结构" /></p>
 
-<p>下面是一点没用的：</p>
+<p>首先使用task_threads 获取崩溃时候所有的调用线程。</p>
+
+<p>然后获取通过kscrw_i_getBacktrace 获取每个线程的调用堆栈的回溯，kscrw_i_getBacktrace 函数获取调用堆栈的原理就是根据寄存器中指定的栈基址指针rbp、当前栈帧地址rsp两个指针，一次复制出调用堆栈。</p>
+
+<p>接着，使用ksbt_symbolicate 符号化各个调用堆栈。符号化的过程就是根据地址，在符号表查找对应的符号。</p>
+
+<p>最后写入文件。</p>
+
+<p>下面是IPC 的一个介绍（没用，做个记录）：</p>
 
 <p>Interprocess Communication (IPC)</p>
 
@@ -455,7 +463,6 @@ semaphores
 notifications
 lock sets
 remote procedure calls (RPCs)</p>
-
 
 
       </section>
