@@ -63,19 +63,19 @@
 <p>一个Mach-O文件包括三个组成部分，分别如下：</p>
 
 <ul>
-  <li>header：指定了文件的构架，如PPC、PPC64、IA-32、x86-64。</li>
+  <li>header：指定了文件的基本信息。</li>
   <li>Load commands：指定了文件的逻辑结构、在虚拟内存（virtual memory）中文件的布局</li>
   <li>Raw segment data：包含在load commands中定义的段（segments）数据</li>
 </ul>
 
 <p><img src="/LJBlog/images/KSCrash/1.png" alt="Mach-O文件结构" /></p>
 
-<h4 id="header-">header 文件头</h4>
+<h3 id="header-">header 文件头</h3>
 
-<p>Mach-O文件的开头是文件头
-文件头结构在/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/usr/include/mach-o/loader.h文件中定义如下：</p>
+<p>Mach-O文件的开头部分是文件头。header在loader.h（位于/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/usr/include/mach-o/） 文件中定义为一个结构体，如下：</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>struct mach_header {
+<div class="highlighter-rouge"><pre class="highlight"><code>struct mach_header 
+{
 	uint32_t	magic;		/* mach magic number identifier */
 	cpu_type_t	cputype;	/* cpu specifier */
 	cpu_subtype_t	cpusubtype;	/* machine specifier */
@@ -87,20 +87,24 @@
 </code></pre>
 </div>
 
-<p>可以看出包括了 ：魔数、cup的类型、子类型、文件的类型、load commend个数、大小等数据。</p>
+<p>可以看出包括了 ：魔数、cup的类型、子类型、文件的类型、load commend个数、load commend大小等数据。</p>
+
+<h3 id="load-commend">load commend</h3>
 
 <p>header 后面紧跟着的内容是load commend。load commend指定了文件的布局。具体包括以下内容：</p>
 
-<p>• The initial layout of the file in virtual memory</p>
+<p>• The initial layout of the file in virtual memory 文件在虚拟内存中的初始布局</p>
 
-<p>• The location of the symbol table (used for dynamic linking)</p>
+<p>• The location of the symbol table (used for dynamic linking) 符号表的位置</p>
 
-<p>• The initial execution state of the main thread of the program</p>
+<p>• The initial execution state of the main thread of the program 程序的主线程的初始执行状态</p>
 
-<p>• The names of shared libraries that contain definitions for the main executable’s imported symbols</p>
+<p>• The names of shared libraries that contain definitions for the main executable’s imported symbols 主执行文件依赖的分享库</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>#define	LC_SEGMENT	0x1	/* segment of this file to be mapped */
-#define	LC_SYMTAB	0x2	/* link-edit stab symbol table info */
+<p>下面是 在loader.h 中找到的load commend的种类。其中本文用到的主要是代码段（LC_SEGMENT）、符号表（LC_SYMTAB）。每种类型的load commend 在程序中都有对应的数据结构，可以在loader.h文件中查看。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>#define	LC_SEGMENT	0x1	///代码段
+#define	LC_SYMTAB	0x2	  /// 符号表 
 #define	LC_SYMSEG	0x3	/* link-edit gdb symbol table info (obsolete) */
 #define	LC_THREAD	0x4	/* thread */
 #define	LC_UNIXTHREAD	0x5	/* unix thread (includes a stack) */
@@ -118,7 +122,9 @@
 </code></pre>
 </div>
 
-<p>在load commend后面是load commend中定义的各种segement数据。每个segement 包含0或多个section，每个segement中的section包含特定类型的代码和数据 。</p>
+<h3 id="section-2">代码数据部分：</h3>
+
+<p>在load commend后面是：load commend中定义的各种segement数据。每个segement 包含0或多个section，每个segement中的section包含特定类型的代码和数据 。</p>
 
 <p>下面有几个工具可以简单的查看文件的结构：</p>
 
@@ -216,7 +222,7 @@ Section
 </code></pre>
 </div>
 
-<h2 id="section-2">3. 绑定和执行</h2>
+<h2 id="section-3">3. 绑定和执行</h2>
 
 <p>根据上面分析的可执行文件的结构，我们可以看到，可执行文件中已经包含了符号表 ，这个符号表是可执行代码的虚拟地址和符号的对应表。符号表是绑定过程中建立的，程序的绑定有很多种，我自己也不清楚，不过可以参看下面的文档：<a href="https://developer.apple.com/library/mac/documentation/DeveloperTools/Conceptual/MachOTopics/1-Articles/executing_files.html#//apple_ref/doc/uid/TP40001829-97047-TPXREF111">Mach-O Programming Topics - Binding Symbols</a></p>
 
@@ -224,7 +230,7 @@ Section
 
 <p>程序的执行过程：内核首先加载程序文件，并且检查程序文件的起始部分的mach_header结构，内核验证是否合法的Macj-O文件，解析header中的load commands。然后内核加载在load commands 中指定的动态链接器到内存中，执行。</p>
 
-<h2 id="section-3">4. 调用堆栈</h2>
+<h2 id="section-4">4. 调用堆栈</h2>
 
 <p>一个线程的调用栈是什么样的呢？</p>
 
@@ -240,7 +246,7 @@ Section
 
 <p>那么问题来了，我们怎么获取到指令的地址呢？ 其实当前指令执行地址rip、栈基址指针rbp、当前栈帧地址rsp 都是在cup的寄存器中保存着。下面大概介绍下寄存器。</p>
 
-<h2 id="section-4">5. 寄存器</h2>
+<h2 id="section-5">5. 寄存器</h2>
 
 <p>想了解IOS 的arm64的框架的相关寄存器可以参考下面的资料：<a href="http://infocenter.arm.com/help/topic/com.arm.doc.ihi0055b/IHI0055B_aapcs64.pdf">Procedure Call Standard for the ARM 64-bit Architecture (AArch64)</a>。</p>
 
@@ -301,7 +307,7 @@ Section
 
 <p>了解了arm64的寄存器，那么下面的问题来了，程序奔溃后，如何获取这些寄存器的内容呢？ 我们需要了解下xnu微内核，xnu微内核的进程内通信部分（IPC），暴露了一些接口，可以获取当前线程的寄存器，可以参考下面的文档，了解这些函数的接口定义：<a href="http://web.mit.edu/darwin/src/modules/xnu/osfmk/man/">Mach IPC Interface</a>。<a href="https://developer.apple.com/library/mac/documentation/Darwin/Conceptual/KernelProgramming/Mach/Mach.html">IPC 原理讲解</a>。</p>
 
-<h2 id="section-5">6. 线程执行状态</h2>
+<h2 id="section-6">6. 线程执行状态</h2>
 
 <p>IPC 接口文档的线程接口部分（Thread Interface）的 thread_get_state函数可以获取线程的寄存器。他的定义如下</p>
 
@@ -315,7 +321,7 @@ Section
 
 <p>thread_get_state 函数返回target_thread的执行状态（包括机器的寄存器）。</p>
 
-<h2 id="section-6">7. 思路回溯</h2>
+<h2 id="section-7">7. 思路回溯</h2>
 
 <p>符号化奔溃时的调用堆栈，可以按照下面的思路进行：</p>
 
@@ -431,7 +437,7 @@ SIGTRAP,  /* trace trap (not reset when caught) */
 
 <p>这个比较简单，直接调用了std::set_terminate(CPPExceptionTerminate)函数，设置CPPExceptionTerminate为C++ exceptions 的异常处理函数。</p>
 
-<h2 id="section-7">4. 获取线程的调用堆栈、符号化调用堆栈</h2>
+<h2 id="section-8">4. 获取线程的调用堆栈、符号化调用堆栈</h2>
 
 <p><img src="/LJBlog/images/KSCrash/符号过程.png" alt="Mach-O文件结构" /></p>
 
