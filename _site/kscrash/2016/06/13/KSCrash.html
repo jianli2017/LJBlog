@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>程序员人生</title>
-    <link rel="stylesheet" href="aseurl/themes/leap-day/stylesheets/styles.css">
-    <link rel="stylesheet" href="aseurl/themes/leap-day/stylesheets/pygment_trac.css">
+    <link rel="stylesheet" href="/LJBlog/themes/leap-day/stylesheets/styles.css">
+    <link rel="stylesheet" href="/LJBlog/themes/leap-day/stylesheets/pygment_trac.css">
     <script src="http://lib.sinaapp.com/js/jquery/1.7/jquery.min.js"></script>
-    <script src="aseurl/themes/leap-day/javascripts/main.js"></script>
+    <script src="/LJBlog/themes/leap-day/javascripts/main.js"></script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
@@ -17,14 +17,14 @@
   <body>
 
       <header>
-        <h1><a href="aseurl/">程序员人生</a></h1>
+        <h1><a href="/LJBlog/">程序员人生</a></h1>
         <p>人生到处知何似，应似飞鸿踏雪泥</p>
       </header>
 
       <div id="banner">
         <span id="logo"></span>
 
-        <a href="https://github.com/jianli2017/aseurl/tree/gh-pages" class="button fork"><strong>Fork On GitHub</strong></a>
+        <a href="https://github.com/jianli2017//LJBlog/tree/gh-pages" class="button fork"><strong>Fork On GitHub</strong></a>
        <!--  <div class="downloads">
           <span>Downloads:</span>
           <ul>
@@ -41,13 +41,15 @@
       </nav>
       <section>
 
-    <p>本文主要通过分析<a href="https://github.com/kstenerud/KSCrash">KSCrash</a>框架，了解IOS程序奔溃后，如何获取奔溃时的符号化的调用堆栈，方便开发人员及时的解决程序中的bug。</p>
+    <h1 id="kscrash">一、什么是KSCrash</h1>
+
+<p><a href="https://github.com/kstenerud/KSCrash">KSCrash</a> 是一个开源的框架，可以在程序奔溃后，获取奔溃时的所有线程的符号化的调用堆栈的回溯。 传统的分析奔溃日志都是借组于编译生成dSYM文件。 KSCrash，可以在线通过可执行文件中的符号表分析出  符号化的调用堆栈的回溯。</p>
 
 <p>程序奔溃后，获取调用堆栈的过程，是程序正常执行的逆向分析过程，所以本文首先通过了解程序执行的正向过程。了解了编译执行程序的正向过程，对于逆向分析非常有帮助。</p>
 
-<h1 id="section">一、程序编译执行的正向过程</h1>
+<h1 id="section">二、程序编译执行的正向过程</h1>
 
-<p>本节描述的过程只是按照自己的理解编写的，具体安排的逻辑和内容的不一定合理。安排的具体思路基本依照编译执行程序的正向过程。其中穿插着一些KSCrash使用的知识。</p>
+<p>本节描述的过程只是按照自己的理解编写的，由于我道行尚浅，理解不深，所以具体安排的内容不一定合理。安排的具体思路基本依照编译执行程序的正向过程。其中穿插着一些KSCrash使用的知识。</p>
 
 <h2 id="section-1">1. 编译</h2>
 
@@ -363,7 +365,7 @@ Mach 是一个 XNU 的微内核核心，Mach 异常是指最底层的内核级�
 
 <p>捕获 Mach 异常或者 Unix 信号都可以抓到 crash 事件，这两种方式哪个更好呢？优选 Mach 异常，因为 Mach 异常处理会先于 Unix 信号处理发生，如果 Mach 异常的 handler 让程序 exit 了，那么 Unix 信号就永远不会到达这个进程了。转换 Unix 信号是为了兼容更为流行的 POSIX 标准 (SUS 规范)，这样不必了解 Mach 内核也可以通过 Unix 信号的方式来兼容开发。</p>
 
-<h1 id="ks-">二、KS 奔溃流程分析</h1>
+<h1 id="ks-">三、KS 奔溃流程分析</h1>
 
 <p>下面是KS的基本流程</p>
 
