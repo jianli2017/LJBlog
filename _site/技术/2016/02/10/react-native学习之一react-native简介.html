@@ -635,7 +635,7 @@ export default Enhance(MyComponent); // Enhanced component
 <p>任何一个元素都可以指定为flexbox 布局，设置为display:flex或display:inline-flex的元素称为伸缩容器，伸缩容器的子元素称为伸缩项目，下面是伸缩的模型：
 <img src="/LJBlog/images/reactnative/1.png" alt="伸缩模型" /></p>
 
-<h3 id="section-10">3.1 伸缩容器属性</h3>
+<p>###3.1 伸缩容器属性</p>
 
 <ol>
   <li>display</li>
@@ -689,7 +689,7 @@ export default Enhance(MyComponent); // Enhanced component
 </code></pre>
 </div>
 
-<h3 id="section-11">3.2 伸缩项目属性</h3>
+<p>###3.2 伸缩项目属性</p>
 
 <ol>
   <li>order</li>
@@ -909,7 +909,7 @@ componentDidMount</p>
 </code></pre>
 </div>
 
-<h2 id="section-12">4 样式</h2>
+<h2 id="section-10">4 样式</h2>
 
 <p>定义样式</p>
 
@@ -955,13 +955,13 @@ render() {
 
 <p>箭头函数的理解：是一个临时函数，返回一个函数引用</p>
 
-<h2 id="section-13">5. 图片</h2>
+<h2 id="section-11">5. 图片</h2>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>&lt;Image source={require('./my-icon.png')} /&gt;
 </code></pre>
 </div>
 
-<h3 id="section-14">6 原生模块</h3>
+<h3 id="section-12">6 原生模块</h3>
 
 <p>react native 设计为可以在他的基础上编写原生的代码，并且可以访问平台的所有能力</p>
 
@@ -1004,7 +1004,7 @@ CalendarManager.addEvent('Birthday Party', '4 Privet Drive, Surrey');
 
 <p>桥接到Javascript的方法返回值类型必须是void。React Native的桥接操作是异步的，所以要返回结果给Javascript，你必须通过回调或者触发事件来进行。</p>
 
-<h3 id="section-15">6.1 参数类型</h3>
+<h3 id="section-13">6.1 参数类型</h3>
 
 <p>RCT_EXPORT_METHOD 支持所有标准JSON类型，包括：</p>
 
@@ -1017,7 +1017,7 @@ function (RCTResponseSenderBlock)</p>
 
 <p>任何RCTConvert类支持的的类型也都可以使用<a href="https://github.com/facebook/react-native/blob/master/React/Base/RCTConvert.h">参见RCTConvert了解更多信息</a>。RCTConvert还提供了一系列辅助函数，用来接收一个JSON值并转换到原生Objective-C类型或类</p>
 
-<h3 id="section-16">6.2 回调函数</h3>
+<h3 id="section-14">6.2 回调函数</h3>
 
 <p>原生模块还支持一种特殊的参数，回调函数，她提供了一个函数作为返回值，传给JavaScript。</p>
 
@@ -1029,7 +1029,7 @@ function (RCTResponseSenderBlock)</p>
 </code></pre>
 </div>
 
-<h3 id="section-17">6.3 导出常量</h3>
+<h3 id="section-15">6.3 导出常量</h3>
 
 <p>原生模块可以导出一些常量，这些常量在JavaScript端随时都可以访问。用这种方法来传递一些静态数据，可以避免通过bridge进行一次来回交互。</p>
 
@@ -1046,12 +1046,12 @@ function (RCTResponseSenderBlock)</p>
 </code></pre>
 </div>
 
-<h3 id="section-18">6.3 枚举常量</h3>
+<h3 id="section-16">6.3 枚举常量</h3>
 
 <p>用NS_ENUM定义的枚举类型必须要先扩展对应的RCTConvert方法才可以作为函数参数传递。</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="k">@implementation</span> <span class="nc">RCTConvert</span> <span class="p">(</span><span class="nl">StatusBarAnimation</span><span class="p">)</span>
-  <span class="nc">RCT_ENUM_CONVERTER</span><span class="p">(</span><span class="n">UIStatusBarAnimation</span><span class="p">,</span> <span class="p">(</span><span class="err">@</span><span class="p">{</span> <span class="s">@"statusBarAnimationNone"</span> <span class="o">:</span> <span class="err">@</span><span class="p">(</span><span class="n">UIStatusBarAnimationNone</span><span class="p">),</span>
+  <span class="n">RCT_ENUM_CONVERTER</span><span class="p">(</span><span class="n">UIStatusBarAnimation</span><span class="p">,</span> <span class="p">(@{</span> <span class="s">@"statusBarAnimationNone"</span> <span class="o">:</span> <span class="err">@</span><span class="p">(</span><span class="n">UIStatusBarAnimationNone</span><span class="p">),</span>
                                                <span class="s">@"statusBarAnimationFade"</span> <span class="o">:</span> <span class="err">@</span><span class="p">(</span><span class="n">UIStatusBarAnimationFade</span><span class="p">),</span>
                                                <span class="s">@"statusBarAnimationSlide"</span> <span class="o">:</span> <span class="err">@</span><span class="p">(</span><span class="n">UIStatusBarAnimationSlide</span><span class="p">)},</span>
                       <span class="n">UIStatusBarAnimationNone</span><span class="p">,</span> <span class="n">integerValue</span><span class="p">)</span>
@@ -1060,7 +1060,7 @@ function (RCTResponseSenderBlock)</p>
 
 <span class="o">-</span> <span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="n">constantsToExport</span>
 <span class="p">{</span>
-  <span class="k">return</span> <span class="err">@</span><span class="p">{</span> <span class="s">@"statusBarAnimationNone"</span> <span class="o">:</span> <span class="err">@</span><span class="p">(</span><span class="n">UIStatusBarAnimationNone</span><span class="p">),</span>
+  <span class="k">return</span> <span class="p">@{</span> <span class="s">@"statusBarAnimationNone"</span> <span class="o">:</span> <span class="err">@</span><span class="p">(</span><span class="n">UIStatusBarAnimationNone</span><span class="p">),</span>
             <span class="s">@"statusBarAnimationFade"</span> <span class="o">:</span> <span class="err">@</span><span class="p">(</span><span class="n">UIStatusBarAnimationFade</span><span class="p">),</span>
             <span class="s">@"statusBarAnimationSlide"</span> <span class="o">:</span> <span class="err">@</span><span class="p">(</span><span class="n">UIStatusBarAnimationSlide</span><span class="p">)</span> <span class="p">}</span>
 <span class="p">};</span>
@@ -1085,7 +1085,7 @@ function (RCTResponseSenderBlock)</p>
 <span class="p">{</span>
   <span class="n">NSString</span> <span class="o">*</span><span class="n">eventName</span> <span class="o">=</span> <span class="n">notification</span><span class="p">.</span><span class="n">userInfo</span><span class="p">[</span><span class="s">@"name"</span><span class="p">];</span>
   <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">bridge</span><span class="p">.</span><span class="n">eventDispatcher</span> <span class="nf">sendAppEventWithName</span><span class="p">:</span><span class="s">@"EventReminder"</span>
-                                               <span class="nf">body</span><span class="p">:</span><span class="err">@</span><span class="p">{</span><span class="s">@"name"</span><span class="o">:</span> <span class="n">eventName</span><span class="p">}];</span>
+                                               <span class="nf">body</span><span class="p">:@{</span><span class="s">@"name"</span><span class="o">:</span> <span class="n">eventName</span><span class="p">}];</span>
 <span class="p">}</span>
 
 <span class="k">@end</span>

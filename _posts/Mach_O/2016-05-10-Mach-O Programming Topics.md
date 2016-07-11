@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  Mach-O Programming Topics 
-category: 技术
+category: mach-o文件结构
 comments: true
 ---
 

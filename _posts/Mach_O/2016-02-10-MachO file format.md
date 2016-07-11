@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  sdfdfdfsdfqfsdfdfdfs
-category: 技术
+category: mach-o 文件结构
 comments: true
 ---
 

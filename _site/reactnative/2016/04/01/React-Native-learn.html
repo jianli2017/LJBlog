@@ -496,7 +496,7 @@ CalendarManager.addEvent('Birthday Party', '4 Privet Drive, Surrey');
 <p>你需要这样来扩展RCTConvert类：</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="k">@implementation</span> <span class="nc">RCTConvert</span> <span class="p">(</span><span class="nl">StatusBarAnimation</span><span class="p">)</span>
-  <span class="nc">RCT_ENUM_CONVERTER</span><span class="p">(</span><span class="n">UIStatusBarAnimation</span><span class="p">,</span> <span class="p">(</span><span class="err">@</span><span class="p">{</span> <span class="s">@"statusBarAnimationNone"</span> <span class="o">:</span> <span class="err">@</span><span class="p">(</span><span class="n">UIStatusBarAnimationNone</span><span class="p">),</span>
+  <span class="n">RCT_ENUM_CONVERTER</span><span class="p">(</span><span class="n">UIStatusBarAnimation</span><span class="p">,</span> <span class="p">(@{</span> <span class="s">@"statusBarAnimationNone"</span> <span class="o">:</span> <span class="err">@</span><span class="p">(</span><span class="n">UIStatusBarAnimationNone</span><span class="p">),</span>
                                                <span class="s">@"statusBarAnimationFade"</span> <span class="o">:</span> <span class="err">@</span><span class="p">(</span><span class="n">UIStatusBarAnimationFade</span><span class="p">),</span>
                                                <span class="s">@"statusBarAnimationSlide"</span> <span class="o">:</span> <span class="err">@</span><span class="p">(</span><span class="n">UIStatusBarAnimationSlide</span><span class="p">)},</span>
                       <span class="n">UIStatusBarAnimationNone</span><span class="p">,</span> <span class="n">integerValue</span><span class="p">)</span>
